@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\Desktop\FileConversion\FileConversion.cpp">
+    <ClCompile Include="FileConversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
