@@ -1,3 +1,7 @@
+## others
+*.fbx
+
+
 ## Ignore the SDK Files
 FileConversion/FBX SDK/
 
