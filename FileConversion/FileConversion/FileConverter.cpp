@@ -12,11 +12,6 @@ FileConverter::FileConverter()
 FileConverter::~FileConverter()
 {
 	sdkManager->Destroy();
-	
-	if (scene != nullptr)
-	{
-		scene->Destroy();
-	}
 }
 
 FileConverter::Return FileConverter::LoadFile(std::string filename)
