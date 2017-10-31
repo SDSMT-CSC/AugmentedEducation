@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -28,8 +29,32 @@ namespace ARFE.Controllers
                 if (file.ContentLength > 0)
                 {
                     string _FileName = Path.GetFileName(file.FileName);
+                    int index = _FileName.LastIndexOf(".");
+                    string noExtension = _FileName.Substring(0, index);
+                    string fbxExtension = noExtension + ".fbx";
+
                     string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
                     file.SaveAs(_path);
+
+                    Process process = new System.Diagnostics.Process();
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    process.StartInfo.FileName = Server.MapPath("~/Content/FileConversion.exe");
+                    process.StartInfo.Arguments = Server.MapPath("~/UploadedFiles/" + _FileName);
+                    process.Start();
+                    process.Close();
+
+                    System.Threading.Thread.Sleep(5000);
+
+                    String FilePath = AppDomain.CurrentDomain.BaseDirectory + "\\UploadedFiles\\" + fbxExtension;
+                    System.Web.HttpResponse response = System.Web.HttpContext.Current.Response;
+                    response.ClearContent();
+                    response.Clear();
+                    response.ContentType = "application/octet-stream";
+                    response.AddHeader("Content-Disposition", "attachment; filename=" + fbxExtension + ";");
+                    response.TransmitFile(FilePath);
+                    response.Flush();
+                    response.End();
+
                 }
                 ViewBag.Message = "File Uploaded Successfully!!";
                 return View();

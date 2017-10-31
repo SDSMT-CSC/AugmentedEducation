@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,19 +23,27 @@ namespace ARFE.Controllers
 
         public ActionResult Download()
         {
-            string filepath = AppDomain.CurrentDomain.BaseDirectory + "\\UploadedFiles\\test.txt";
-            byte[] filedata = System.IO.File.ReadAllBytes(filepath);
-            string contentType = MimeMapping.GetMimeMapping(filepath);
 
-            var cd = new System.Net.Mime.ContentDisposition
-            {
-                FileName = "test.txt",
-                Inline = true,
-            };
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.FileName = Server.MapPath("~/Content/FileConversion.exe");
+            process.StartInfo.Arguments = Server.MapPath("~/UploadedFiles/sphere.obj");
+            process.Start();
+            process.Close();
 
-            Response.AppendHeader("Content-Disposition", cd.ToString());
 
-            return File(filedata, contentType);
+            //String FileName = "sphere.obj";
+            //String FilePath = AppDomain.CurrentDomain.BaseDirectory + "\\UploadedFiles\\sphere.obj";
+            //System.Web.HttpResponse response = System.Web.HttpContext.Current.Response;
+            //response.ClearContent();
+            //response.Clear();
+            //response.ContentType = "application/octet-stream";
+            //response.AddHeader("Content-Disposition", "attachment; filename=" + FileName + ";");
+            //response.TransmitFile(FilePath);
+            //response.Flush();
+            //response.End();
+
+            return null;
+
         }
     }
 }
