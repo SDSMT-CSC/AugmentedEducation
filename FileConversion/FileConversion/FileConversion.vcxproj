@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AssimpConverter.cpp" />
     <ClCompile Include="FBXConverter.cpp" />
     <ClCompile Include="FileConverter.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -26,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractConverter.h" />
+    <ClInclude Include="AssimpConverter.h" />
     <ClInclude Include="FBXConverter.h" />
     <ClInclude Include="FileConverter.h" />
     <ClInclude Include="ParseParameters.h" />
@@ -35,7 +37,7 @@
     <ProjectGuid>{C48769E3-B812-4735-937D-6FF73024E018}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>FileConversion</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

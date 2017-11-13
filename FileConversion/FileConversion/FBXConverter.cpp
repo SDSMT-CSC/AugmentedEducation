@@ -1,4 +1,5 @@
 #include "FBXConverter.h"
+#include <set>
 
 FBXConverter::FBXConverter()
 {
@@ -7,6 +8,16 @@ FBXConverter::FBXConverter()
 	sdkManager->SetIOSettings(io);
 
 	sceneFBX = nullptr;
+
+	acceptedInputTypes.insert(".dae");
+	acceptedInputTypes.insert(".obj");
+	acceptedInputTypes.insert(".fbx");
+	acceptedInputTypes.insert(".dxf");
+
+	acceptedOutputTypes.insert(".dae");
+	acceptedOutputTypes.insert(".obj");
+	acceptedOutputTypes.insert(".fbx");
+	acceptedOutputTypes.insert(".dxf");
 }
 
 
@@ -17,12 +28,12 @@ FBXConverter::~FBXConverter()
 
 bool FBXConverter::SupportsInputFileType(std::string fileType)
 {
-	return false;
+	return acceptedInputTypes.count(fileType) > 0;
 }
 
 bool FBXConverter::SupportsOutputFileType(std::string fileType)
 {
-	return false;
+	return acceptedOutputTypes.count(fileType) > 0;
 }
 
 FBXConverter::Result FBXConverter::ConvertFile(std::string inputFileName, std::string outputFileName)

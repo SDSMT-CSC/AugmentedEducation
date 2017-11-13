@@ -1,6 +1,7 @@
 #pragma once
 #include "AbstractConverter.h"
 #include <fbxsdk.h>
+#include <set>
 
 class FBXConverter : public AbstractConverter
 {
@@ -21,5 +22,7 @@ private:
 	FbxManager *sdkManager;
 	FbxScene *sceneFBX;
 
+	std::set <std::string> acceptedInputTypes;
+	std::set <std::string> acceptedOutputTypes;
 };
 
