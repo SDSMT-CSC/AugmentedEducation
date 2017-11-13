@@ -21,9 +21,15 @@
     <ClCompile Include="FileConverter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParseParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileConverter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParseParameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

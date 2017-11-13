@@ -1,39 +1,29 @@
 #include <iostream>
 #include "FileConverter.h"
+#include "ParseParameters.h"
 #include <string>
-
-const enum ARGUMENTS {FNAME = 1};
-
-void PrintUsage()
-{
-	std::cout << "FileConversion.exe <file name>" << std::endl;
-}
 
 int main(int argc, char ** argv)
 {
-	if (argc <= 1)
+	ParseParameters parser(argc, argv);
+	if (parser.success == false)
 	{
-		PrintUsage();
 		return -1;
 	}
 
 	FileConverter convert;
 
-	std::string inputFileName(argv[FNAME]);
-	std::string nameBase = inputFileName.substr(0, inputFileName.rfind('.'));
-
-	FileConverter::Return retVal = convert.LoadFile(inputFileName);
+	FileConverter::Return retVal = convert.LoadFile(parser.inputFile);
 	if (retVal < 0)
 	{
-		std::cout << "Unalbe to load file parabola.obj" << std::endl;
+		std::cout << "Unalbe to load: " << parser.inputFile << std::endl;
 		return -2;
 	}
 
-	std::string outFileName = nameBase + ".fbx";
-	retVal = convert.ExportFile(outFileName);
+	retVal = convert.ExportFile(parser.outputFile);
 	if (retVal < 0)
 	{
-		std::cout << "Unable to write file out.fbx" << std::endl;
+		std::cout << "Unable to write to: " << parser.outputFile << std::endl;
 		return -3;
 	}
 	

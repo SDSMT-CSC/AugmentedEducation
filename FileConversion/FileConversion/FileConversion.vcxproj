@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="FileConverter.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ParseParameters.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileConverter.h" />
+    <ClInclude Include="ParseParameters.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

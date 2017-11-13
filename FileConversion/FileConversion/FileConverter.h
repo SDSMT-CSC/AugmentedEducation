@@ -7,7 +7,7 @@
 class FileConverter
 {
 public:
-	enum Return {Failed = INT_MIN, IOError, SceneNotLoaded, Success = 1};
+	enum Return {Failed = INT_MIN, IOError, SceneNotLoaded, NotInitialized, Success = 1};
 
 	FileConverter();
 	
