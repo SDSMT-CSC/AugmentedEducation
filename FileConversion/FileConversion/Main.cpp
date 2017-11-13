@@ -12,20 +12,12 @@ int main(int argc, char ** argv)
 	}
 
 	FileConverter convert;
-
-	FileConverter::Return retVal = convert.LoadFile(parser.inputFile);
-	if (retVal < 0)
+	int returnValue = convert.ConvertFile(parser.inputFile, parser.outputFile);
+	if (returnValue < 0)
 	{
-		std::cout << "Unalbe to load: " << parser.inputFile << std::endl;
+		cout << "Error while converting file " << parser.inputFile << " to " << parser.outputFile << endl;
 		return -2;
 	}
 
-	retVal = convert.ExportFile(parser.outputFile);
-	if (retVal < 0)
-	{
-		std::cout << "Unable to write to: " << parser.outputFile << std::endl;
-		return -3;
-	}
-	
 	return 0;
 }

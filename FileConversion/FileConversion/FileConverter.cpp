@@ -2,57 +2,27 @@
 
 FileConverter::FileConverter()
 {
-	sdkManager = FbxManager::Create();
-	FbxIOSettings *io = FbxIOSettings::Create(sdkManager, IOSROOT);
-	sdkManager->SetIOSettings(io);
-
-	sceneFBX = nullptr;
+	importTool = ConversionTool::NotInitialized;
+	intermediateTool = ConversionTool::NotInitialized;
+	exportTool = ConversionTool::NotInitialized;
 }
 
 FileConverter::~FileConverter()
 {
-	sdkManager->Destroy();
+
 }
 
-FileConverter::Return FileConverter::LoadFile(std::string filename)
+bool FileConverter::SupportsInputFileType(std::string fileType)
 {
-	if (sceneFBX != nullptr)
-	{
-		sceneFBX->Destroy();
-		sceneFBX = nullptr;
-	}
-
-	FbxImporter *importer = FbxImporter::Create(sdkManager, "");
-
-	if (!importer->Initialize(filename.c_str(), -1, sdkManager->GetIOSettings()))
-	{
-		return FileConverter::IOError;
-	}
-
-	sceneFBX = FbxScene::Create(sdkManager, "");
-
-	importer->Import(sceneFBX);
-
-	importer->Destroy();
-	return FileConverter::Success;
+	return false;
 }
 
-FileConverter::Return FileConverter::ExportFile(std::string filename)
+bool FileConverter::SupportsOutputFileType(std::string fileType)
 {
-	if (sceneFBX == nullptr)
-	{
-		return FileConverter::SceneNotLoaded;
-	}
+	return false;
+}
 
-	FbxExporter *exporter = FbxExporter::Create(sdkManager, "");
-
-	if (!exporter->Initialize(filename.c_str(), -1, sdkManager->GetIOSettings()))
-	{
-		return FileConverter::IOError;
-	}
-
-	exporter->Export(sceneFBX);
-
-	exporter->Destroy();
-	return FileConverter::Success;
+FileConverter::Result FileConverter::ConvertFile(std::string inputFilename, std::string outputFilename)
+{
+	return fbx.ConvertFile(inputFilename, outputFilename);
 }

@@ -24,12 +24,21 @@
     <ClCompile Include="ParseParameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FBXConverter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileConverter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParseParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractConverter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXConverter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

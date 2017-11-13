@@ -1,24 +1,28 @@
 #pragma once
 
 #include <string>
-#include <fbxsdk.h>
-#include <assimp\Importer.hpp>
 #include <limits>
+#include "AbstractConverter.h"
+#include "FBXConverter.h"
 
-class FileConverter
+class FileConverter : public AbstractConverter
 {
 public:
-	enum Return {Failed = INT_MIN, IOError, SceneNotLoaded, NotInitialized, Success = 1};
-
 	FileConverter();
 	
 	~FileConverter();
 
-	Return LoadFile(std::string filename);
+	bool SupportsInputFileType(std::string fileType);
+	bool SupportsOutputFileType(std::string fileType);
 
-	Return ExportFile(std::string filename);
+	Result ConvertFile(std::string inputFileName, std::string outputFileName);
 
-private:
-	FbxManager *sdkManager;
-	FbxScene *sceneFBX;
+private:	
+	enum ConversionTool {NotInitialized = -1, FBX = 0, Assimp = 1};
+	ConversionTool importTool;
+	ConversionTool intermediateTool;
+	ConversionTool exportTool;
+
+	FBXConverter fbx;
+
 };

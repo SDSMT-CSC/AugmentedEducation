@@ -11,10 +11,6 @@ void ParseParameters::PrintUsage()
 
 ParseParameters::ParseParameters(int count, char **args)
 {
-
-	//std::string inputFileName(argv[FNAME]);
-	//std::string nameBase = inputFileName.substr(0, inputFileName.rfind('.'));
-
 	for (int i = 0; i < count; i++)
 	{
 		string temp = args[i];
@@ -100,6 +96,11 @@ ParseParameters::ParseParameters(int count, char **args)
 		if (fileExtention == "")
 		{
 			cout << "File extention needed." << endl;
+		}
+
+		if (fileExtention.find('.') == string::npos)
+		{
+			fileExtention = '.' + fileExtention;
 		}
 
 		if (outDir == "")
