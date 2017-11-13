@@ -8,8 +8,34 @@ team, project, environment, etc.
 
 
 \section{Team Member's Roles}
-Describe who was involved and what role(s) were played. 
+%Describe who was involved and what role(s) were played. 
+The team is divided into two main parts:
 
+\begin{enumerate}
+    \item Website
+        \begin{itemize}
+            \item Daniel Hodgin
+            \item Brady Shimp
+            \item Savoy Schuler
+        \end{itemize}
+    \item Conversion Software
+        \begin{itemize}
+            \item Aaron Alphonses
+            \item Cheldon Coughlen
+            \item Kenneth Petry
+        \end{itemize}
+\end{enumerate}
+
+The website team is responsible for creating the web portal that users will 
+interact with.  The duties of the website include: uploaded file management, 
+user authentication, running the conversion software, etc.
+
+The conversion software is responsible for converting 3D models from an uploaded 
+file type, to one usable by Augmented Reality devices.  
+The software will be run by the website when a user or AR device requests a
+ file. 
+The team will also be responsible for determining which file type to stored in
+ the backend of the website.
 
 \section{Project  Management Approach}
 This section will provide an explanation of the basic approach to managing the 
@@ -75,19 +101,38 @@ representation given below.
 Gantt chart or other type of visual representation of the project timeline.
 
 \section{Development Environment}
-The basic purpose for this section is to give a developer all of the necessary 
-information to setup their development environment to run, test, and/or develop. 
-
+%The basic purpose for this section is to give a developer all of the necessary 
+%information to setup their development environment to run, test, and/or develop. 
+Both teams agreed to use the Microsoft ecosystem to develop the product.
 
 \section{Development IDE and Tools}
-Describe which IDE and provide links to installs and/or reference material. 
+%Describe which IDE and provide links to installs and/or reference material. 
+
+The IDE of choice for the website and file conversion team is Visual Studio 2017 Enterprise Edition.
+
+\paragraph{}
+To compile the web conversion software two libraries are needed.
+\begin{itemize}
+    \item Autodesk's FBX SDK is required to export .fbx files.  It must be installed in a folder located in the project directory nmed \"FBX SDK\".  The download can be found at: 
+    \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}.
+    The Windows VS2015 version must be installed.
+    
+    \item Open Asset Import Library supports a wide variety of import and export file types.  The download can be found at: \url{http://assimp.org/main_downloads.html}.  Version 3.1.1 is what was used in the project. 
+\end{itemize}
 
 \section{Source  Control}
 Which source control system is/was used?  How was it setup?  How does a developer 
 connect to it? 
 
 \section{Dependencies}
-Describe all dependencies associated with developing the system. 
+%Describe all dependencies associated with developing the system. 
+\paragraph{Website}
+
+\paragraph{File Conversion}
+\begin{description}
+    \item [FBX SDK] A library produced by Autodesk that converts from a select few file types to the .fbx file that is easily viewed on Microsoft supported software (Windows 10, Hololens).
+    \item [Open Asset Import Library] A library the reads and writes multiple file types (does not export to .fbx).
+\end{description}
 
 \section{Build  Environment}
 How are the packages built?  Are there build scripts? 
