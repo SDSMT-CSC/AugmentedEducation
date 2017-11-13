@@ -1,9 +1,10 @@
 ## others
 *.fbx
-
+*.bat
 
 ## Ignore the SDK Files
-FileConversion/FBX SDK/
+FileConversion/FBX SDK/*
+FileConversion/Assimp/*
 
 ## Ignore C++ files
 # Prerequisites

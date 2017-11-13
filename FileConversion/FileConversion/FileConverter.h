@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fbxsdk.h>
+#include <assimp\Importer.hpp>
 #include <limits>
 
 class FileConverter
@@ -19,5 +20,5 @@ public:
 
 private:
 	FbxManager *sdkManager;
-	FbxScene *scene;
+	FbxScene *sceneFBX;
 };

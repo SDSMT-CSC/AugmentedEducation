@@ -6,7 +6,7 @@ FileConverter::FileConverter()
 	FbxIOSettings *io = FbxIOSettings::Create(sdkManager, IOSROOT);
 	sdkManager->SetIOSettings(io);
 
-	scene = nullptr;
+	sceneFBX = nullptr;
 }
 
 FileConverter::~FileConverter()
@@ -16,10 +16,10 @@ FileConverter::~FileConverter()
 
 FileConverter::Return FileConverter::LoadFile(std::string filename)
 {
-	if (scene != nullptr)
+	if (sceneFBX != nullptr)
 	{
-		scene->Destroy();
-		scene = nullptr;
+		sceneFBX->Destroy();
+		sceneFBX = nullptr;
 	}
 
 	FbxImporter *importer = FbxImporter::Create(sdkManager, "");
@@ -29,9 +29,9 @@ FileConverter::Return FileConverter::LoadFile(std::string filename)
 		return FileConverter::IOError;
 	}
 
-	scene = FbxScene::Create(sdkManager, "");
+	sceneFBX = FbxScene::Create(sdkManager, "");
 
-	importer->Import(scene);
+	importer->Import(sceneFBX);
 
 	importer->Destroy();
 	return FileConverter::Success;
@@ -39,7 +39,7 @@ FileConverter::Return FileConverter::LoadFile(std::string filename)
 
 FileConverter::Return FileConverter::ExportFile(std::string filename)
 {
-	if (scene == nullptr)
+	if (sceneFBX == nullptr)
 	{
 		return FileConverter::SceneNotLoaded;
 	}
@@ -51,7 +51,7 @@ FileConverter::Return FileConverter::ExportFile(std::string filename)
 		return FileConverter::IOError;
 	}
 
-	exporter->Export(scene);
+	exporter->Export(sceneFBX);
 
 	exporter->Destroy();
 	return FileConverter::Success;
