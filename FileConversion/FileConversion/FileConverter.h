@@ -4,6 +4,7 @@
 #include <limits>
 #include "AbstractConverter.h"
 #include "FBXConverter.h"
+#include "AssimpConverter.h"
 
 class FileConverter : public AbstractConverter
 {
@@ -24,5 +25,6 @@ private:
 	ConversionTool exportTool;
 
 	FBXConverter fbx;
+	AssimpConverter assimp;
 
 };

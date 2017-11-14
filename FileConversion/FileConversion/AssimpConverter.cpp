@@ -1,5 +1,7 @@
 #include "AssimpConverter.h"
 
+#include <iostream>
+
 AssimpConverter::AssimpConverter()
 {
 	acceptedInputTypes.insert(".fbx");
@@ -47,5 +49,49 @@ bool AssimpConverter::SupportsOutputFileType(std::string fileType)
 
 AssimpConverter::Result AssimpConverter::ConvertFile(std::string inputFileName, std::string outputFileName)
 {
-	return Result::Failed;
+	if (!SupportsInputFileType(this->ExtractFileExtention(inputFileName)))
+	{
+		return Result::FileTypeNotSupported;
+	}
+	else if (!SupportsOutputFileType(this->ExtractFileExtention(outputFileName)))
+	{
+		return Result::FileTypeNotSupported;
+	}
+
+	Assimp::Importer importer;
+	this->scene = importer.ReadFile(inputFileName,
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_ImproveCacheLocality);
+
+
+	if (scene == nullptr || scene == NULL)
+	{
+		return Result::SceneNotLoaded;
+	}
+
+	Assimp::Exporter exporter;
+
+	const aiExportFormatDesc *description = nullptr;
+
+	size_t count = exporter.GetExportFormatCount();
+	for (unsigned int i = 0; i < count; i++)
+	{
+		const aiExportFormatDesc *desc = exporter.GetExportFormatDescription(i);
+		if (desc->fileExtension == this->ExtractFileExtention(outputFileName).substr(1))
+		{
+			description = desc;
+			break;
+		}
+	}
+
+	if (description != nullptr)
+	{
+		exporter.Export(scene, description->id, outputFileName);
+	}
+	else
+	{
+		return Result::FileTypeNotSupported;
+	}
+
+	return Result::Success;
 }

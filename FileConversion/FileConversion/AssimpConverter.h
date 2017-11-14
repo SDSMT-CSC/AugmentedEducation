@@ -1,6 +1,11 @@
 #pragma once
 #include "AbstractConverter.h"
+#include <assimp\Importer.hpp>
+#include <assimp\postprocess.h>
+#include <assimp\scene.h>
+#include <assimp\Exporter.hpp>
 #include <set>
+
 
 class AssimpConverter :
 	public AbstractConverter
@@ -16,5 +21,7 @@ public:
 private:
 	std::set < std::string> acceptedInputTypes;
 	std::set < std::string> acceptedOutputTypes;
+
+	const aiScene *scene;
 };
 

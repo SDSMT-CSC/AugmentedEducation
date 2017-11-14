@@ -24,5 +24,6 @@ bool FileConverter::SupportsOutputFileType(std::string fileType)
 
 FileConverter::Result FileConverter::ConvertFile(std::string inputFilename, std::string outputFilename)
 {
-	return fbx.ConvertFile(inputFilename, outputFilename);
+	return assimp.ConvertFile(inputFilename, outputFilename);
+	//return fbx.ConvertFile(inputFilename, outputFilename);
 }
