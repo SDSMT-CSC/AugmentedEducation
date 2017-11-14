@@ -2,7 +2,7 @@
 
 AssimpConverter::AssimpConverter()
 {
-	acceptedInputTypes.insert(".fbx");
+	//acceptedInputTypes.insert(".fbx");
 	acceptedInputTypes.insert(".dae");
 	acceptedInputTypes.insert(".glft");
 	acceptedInputTypes.insert(".glb");
