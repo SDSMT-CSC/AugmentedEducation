@@ -1,7 +1,5 @@
 #include "AssimpConverter.h"
 
-#include <iostream>
-
 AssimpConverter::AssimpConverter()
 {
 	acceptedInputTypes.insert(".fbx");
