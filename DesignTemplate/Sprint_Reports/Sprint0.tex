@@ -2,10 +2,97 @@
 
 \section{Sprint 0 Report}
 \subsection{Sprint Backlog}
+    \begin{itemize}
+        \item Define the Minimum Viable Product (MVP)
+        \item Define the toolchain
+        \item Identify use cases and create user stories
+        \item Estimate a timeline for the development process
+    \end{itemize}
+
 \subsection{Deliverable}
-\subsection{Results of testing}
+    \begin{itemize} 
+        \item Timeline (tentative) 
+        \label{itm:Sprint0-Timeline}
+        \begin{itemize}
+            \item 9/18:
+            \begin{itemize}
+                \item Define user stories.
+                \item Define the MVP.
+                \item Define the toolchain.
+                \item Create tentative timeline.
+            \end{itemize}
+
+            \item 10/2: 
+            \begin{itemize}
+                \item Sample website setup with file upload to web root directory.
+            \end{itemize}
+
+            \item 10/16: 
+            \begin{itemize}
+                \item First client presentation documents.
+                \item Standalone file conversion.
+            \end{itemize}
+
+            \item 10/30:
+            \begin{itemize}
+                \item File conversion on Azure.
+                \item Download original and converted file from Azure.
+            \end{itemize}
+
+            \item 11/13:
+            \begin{itemize}
+                \item Generate unique AR Tags that map to each converted file on Azure.
+            \end{itemize}
+            
+            \item 11/27:
+            \begin{itemize}
+                \item User accounts and login on the Azure site.
+            \end{itemize}
+            
+            \item 12/4 - 12/11:
+            \begin{itemize}
+                \item File sharing permissions between users
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+
 \subsection{Successes and Failures}
-\subsection{Modifications required (product backlog, design, requirements, etc)}
+    \subsubsection{Successes}
+        \begin{itemize} \item Defined the MVP \end{itemize}
+        \hspace{7mm}
+        Upload a Maplesoft 3D object file to a website.  Have the website perform an automatic file conversion and 
+        present the user with an AR Tag.  When the user views the AR Tag through an AR device, download and render 
+        the 3D object file.
+
+        \begin{itemize} \item Decided to develop with the Microsoft Hololens being the primary supported AR device. \end{itemize}
+        \hspace{7mm} 
+        A conscious decision was made in accordance with current technologies and the Mobile Computing Grant awarded 
+        to the South Dakota School of Mines and Technology that this service aims to satisfy to keep development 
+        centered around the Hololens and other Microsoft supported or compatible tools and services.
+
+        \begin{itemize} \item Decided to use Azure for cloud hosting services \end {itemize}
+        \hspace{7mm}The decision was between using Azure cloud services or Amazon Web Services.
+        Azure was voted as the better of the two options on the grounds that the primary device we intend to make work
+        using this service is the Microsoft Hololens and compatibility conflicts should be avoided.
+
+        \begin{itemize} 
+            \item Created initial user stories 
+            \begin{itemize}
+                \item As a faculty member, I want to upload a maple file to a cloud server.
+
+                \item As a faculty member, I want the maple file to be automatically converted to an AR tag on the 
+                cloud server.
+
+                \item As a faculty member, I want to be able to download the AR tag for my document from the cloud 
+                server.
+
+                \item As a user of this product, I want to be able to view the AR tag through a Microsoft Hololens 
+                to render a 3D model.
+            \end{itemize}
+        \end{itemize}
+
+        \begin{itemize} \item Estimated tentative development timeline. \hyperref[itm:Sprint0-Timeline]{(See 6.1.2)} \end{itemize}
+
 \subsection{Sprint Review}
 \subsection{Sprint Retrospective}
 \subsection{Sprint Analytics} 

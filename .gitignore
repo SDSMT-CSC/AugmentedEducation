@@ -218,4 +218,7 @@ TSWLatexianTemp*
 
 # expex forward references with \gathertags
 *-tags.tex
-/.vs/
+*.synctex.gz
+.vs
+**/.vs/*
+
