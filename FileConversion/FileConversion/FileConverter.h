@@ -27,4 +27,6 @@ private:
 	FBXConverter fbx;
 	AssimpConverter assimp;
 
+	std::string tempFileType = ".dae";
+
 };

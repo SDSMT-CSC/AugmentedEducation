@@ -29,15 +29,6 @@ AssimpConverter::AssimpConverter()
 	acceptedOutputTypes.insert(".stl");
 	acceptedOutputTypes.insert(".obj");
 	acceptedOutputTypes.insert(".ply");
-	
-	/*Assimp::Exporter exporter;
-	unsigned int acceptedFileTypesCount = exporter.GetExportFormatCount();
-	for (unsigned int i = 0; i < acceptedFileTypesCount; i++)
-	{
-		std::string fileType = exporter.GetExportFormatDescription(i)->fileExtension;
-		fileType = "." + fileType;
-		acceptedOutputTypes.insert(fileType);
-	}*/
 
 }
 

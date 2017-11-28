@@ -39,14 +39,35 @@ FileConverter::Result FileConverter::ConvertFile(std::string inputFilename, std:
 	else if (assimp.SupportsInputFileType(inputFileType) && fbx.SupportsOutputFileType(outputFileType))
 	{
 		std::string tempFilename = inputFilename.substr(0, inputFilename.rfind("."));
-		tempFilename = tempFilename + ".dae";
+		tempFilename = tempFilename + tempFileType;
 
-		Result converionResult;
-		converionResult = assimp.ConvertFile(inputFilename, tempFilename);
+		Result conversionResult;
+		conversionResult = assimp.ConvertFile(inputFilename, tempFilename);
 
-		if (converionResult < 0)
-			return converionResult;
+		if (conversionResult < 0)
+		{
+			return conversionResult;
+		}
 
 		return fbx.ConvertFile(tempFilename, outputFilename);
+	}
+	else if (fbx.SupportsInputFileType(inputFileType) && assimp.SupportsOutputFileType(outputFileType))
+	{
+		std::string tempFilename = inputFilename.substr(0, inputFilename.rfind("."));
+		tempFilename = tempFilename + tempFileType;
+
+		Result conversionResult;
+		conversionResult = fbx.ConvertFile(inputFilename, tempFilename);
+
+		if (conversionResult < 0)
+		{
+			return conversionResult;
+		}
+
+		return assimp.ConvertFile(tempFilename, outputFilename);
+	}
+	else
+	{
+		return Result::FileTypeNotSupported;
 	}
 }
