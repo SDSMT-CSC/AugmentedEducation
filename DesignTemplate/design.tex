@@ -137,7 +137,16 @@ This is where you will place the overall system design and the architecture.   T
     \end{table}
 
     Note the -t flag is only needed when using the -odir flag.  The -odir just specifies which directory to write to, but not the file type.
-    Therefore, more information is needed in order to export to a file.  The -o flag will parse the file name and extract the file type.
+    Therefore, more information is needed in order to export to a file.  The -o flag will parse the file name and extract the file type from the -i file name.
+
+    An example command to run:
+
+    \begin{center}
+        .\textbackslash FileConversion.exe -i C:\textbackslash SomePath\textbackslash someFile.obj -t fbx -odir C:\textbackslash SomeOtherPath\textbackslash
+    \end{center}
+
+    This will convert a file named someFile.obj located at C:\textbackslash SomePath\textbackslash  to an FBX file named someFile.fbx located at 
+    C:\textbackslash SomeOtherPath\textbackslash
 
     \subsection{Technologies Used}
 
@@ -153,6 +162,12 @@ This is where you will place the overall system design and the architecture.   T
             \item \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}
         \end{itemize}
     \end{itemize}
+
+    Multiple librarires are needed to support the file types that are necessary for common AR rendering.  In the Microsoft Hololens, the default
+    3D viewer supports FBX files very easily.  Therefore, it was decided that the conversion software needed to export to FBX.  The best tool to do 
+    so i sthe FBX SDK, sice FBX is a propriatary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it will read write.
+    Therefore, the Open Asset Import Library is used to better support a wide array of file types.  So in using assimp and the FBX SDK together,
+    the converison software can support a wide range of both import and export file types.
 
     \subsection{Data Flow Diagram}
 
