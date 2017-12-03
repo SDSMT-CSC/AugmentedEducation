@@ -204,6 +204,96 @@ This is where you will place the overall system design and the architecture.   T
 
     \subsection{Design Details}
 
+    \subsubsection{Code Architecture}
+    The file conversion software is broken into two main sections: parameter parsing and file conversion.
+
+    \paragraph{Parameter Parsing}
+    \hfill \break
+    The parameter parsing code is in a class called ParseParameters.  ParseParameters has a constructor that takes the number of command line arguments, 
+    and the command line arguments.  It will parse the values needed out into member variables that are public.  It will ignore invalid arguments,
+    and print a usage statement if the correct arguments are not supplied.  When printing the useage statement, cout is used to write to standard out.
+
+    After processing the command line arguments, the member variables in the class will be set with the appropriate information.  The member variables are:
+
+    \begin{tabular}{l l}
+        \centering
+        success & bool \\
+        & True if the needed information is set, false otherwise \\
+
+        inputFile & string \\
+        & The name/path of the file to convert \\
+
+        outputFile & string \\
+        & The name/path of the file to export to \\
+
+        fileExtention & string \\
+        & The file extention of the output file
+    \end{tabular}
+
+    If the success variable is false, the other member variables possibly have bad data that should not be used.
+
+    \paragraph{File Conversion}
+    \hfill \break
+    The file conversion portion of the progarm is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
+    This seciton implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
+    library implementation classes are called AssimpConverter and FBXConverter.  A class named FileConverter contains the logic on determining which 
+    library/libraries to use when converting the file.
+
+    \subparagraph{AbstractConverter}
+    \hfill \break
+    The AbstractConverter is an abstract class that acts like an interface for the child classes.  The abstract methods are:
+    \begin{itemize}
+        \item SupportsInputFileType
+        \begin{itemize}
+            \item Return true if the converter can read in a file with a given file type
+        \end{itemize}
+
+        \item SupportsOutputFileType
+        \begin{itemize}
+            \item Return true if the converter can write to a file with a given type
+        \end{itemize}
+
+        \item ConvertFile
+        \begin{itemize}
+            \item Performs the file conversion
+        \end{itemize}
+    \end{itemize}
+
+    An emum is defined, called Result, that provides a more self documenting way to return information from functions.  Values less than zero are errors, while
+    value greater than zero are successes.  The levels of the enum are:
+    
+    \begin{tabular}{l l}
+        \centering
+        Failed &\\
+        IOError &\\
+        SceneNotLoaded &\\
+        NotInitialized &\\
+        FileTypeNotSupported &\\
+        Success &
+    \end{tabular}
+
+    \subparagraph{AssimpConverter}
+    \hfill \break
+    The AssimpConverter inherits from the AbstractConverter and uses the Open Asset Import Library for file conversion.  
+    The file type supported methods are implementd by adding the supported file types to a set, and checking whether the questionable type is in the set.
+    The list of file types supported is taken from the Open Asset Import Library website's list of supported input file types.  
+    The output file types list comes from the same location.
+    When converting a file, optimizations may be performed on the file to remove unnecessary/duplicate information.  For example, when importing a file, 
+    repeatedverticies in the meshes will be condensed into one, to help reduce the size of the file.
+
+    \subparagraph{FBXConverter}
+    \hfill \break
+    The FBXConverter inherits the AbstractConverter and uses the FBX SDK to import and export files.
+    THe file type input and output lists are derived from the FBX SDK website.
+
+    \subparagraph{FileConverter}
+    \hfill \break
+    The FileConverter looks at the input and output file types, and determines which library/libraries needed to convert the file.
+    It tries see if a single library can do the conversion.  If not, then both libraries are used by exporting from one into a 
+    temporary file (.dae) and converting that to the final file type. After comparing the read/write lists between the libraries,
+    the DAE file type was common between the two, and included features that other file types did not.  Therefore, it was chosen
+    to have DAE as the common intermediate file type.
+
  \begin{comment}
     \section{Major Component \#1 }
 
