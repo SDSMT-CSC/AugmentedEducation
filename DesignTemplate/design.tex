@@ -204,7 +204,22 @@ This is where you will place the overall system design and the architecture.   T
 
     \subsection{Design Details}
 
-    \subsubsection{Code Architecture}
+    \subsubsection{Overview}
+
+    The file converison software is written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
+    in the program is defined.  Instances of the classes will be created when needed.  
+    The high level view of the program is:
+    \begin{enumerate}
+        \item Parse command line arguments
+        \item Convert the file
+        \item Print error messages if errors occured
+    \end{enumerate}
+
+    The parsing the command line arguments section may fail if the user does not supply the correct arguments.  A flag is set after parsing to indicate
+    whether the correct arguments were supplied.  If an error occurrs during file conversion, the error will be denoted by an integer error code.  
+    During file conversion, if a single library could not convert it on its own, an extra file will be created as an intermediate file.
+
+    \subsubsection{Code Structure}
     The file conversion software is broken into two main sections: parameter parsing and file conversion.
 
     \paragraph{Parameter Parsing}
