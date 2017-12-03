@@ -169,7 +169,38 @@ This is where you will place the overall system design and the architecture.   T
     Therefore, the Open Asset Import Library is used to better support a wide array of file types.  So in using assimp and the FBX SDK together,
     the converison software can support a wide range of both import and export file types.
 
-    \subsection{Data Flow Diagram}
+    \subsection{Data Flow}
+        There are four main paths data can flow.
+        \begin{itemize}
+            \item assimp
+            \begin{itemize}
+                \item import and export all with the assimp library
+            \end{itemize}
+            
+            \item FBX SDK
+            \begin{itemize}
+                \item import and export all with the FBX SDK library
+            \end{itemize}
+
+            \item assimp $\rightarrow$ FBX SDK
+            \begin{itemize}
+                \item import with assimp, export to temporary file type
+                \item import temporary file with FBX SDK, export to final file 
+            \end{itemize}
+
+            \item FBX SDK $\rightarrow$ assimp
+            \begin{itemize}
+                \item import with FBX SDK, export to temporary file type
+                \item import temporary file with assimp, export to final file 
+            \end{itemize}
+        \end{itemize}
+        
+        This outlines that the program tries to use a single library to convert the file before using multiple.  If a singe library is unable to 
+        read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
+        using a simgle library is if a user wants to read a .obj and write to a .fbx.  The FBX SDK can handle read and writing those particular file
+        types, so it will be used ot do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
+        Assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimpo is used to 
+        read the .ply, write to a .dae (common file type).  The FBX SDK then reads the .dae and writes to a .fbx.
 
     \subsection{Design Details}
 
