@@ -29,6 +29,22 @@ The unit test framework is described here.
 \section{System Integration Analysis}
 
 \section{Risk Analysis}
+There are two main risks associated with our project. These risks pertain to the functionality of the product itself and the security of our data.
+Minimizing and preventing these risks are vital to providing quality software and positive relationships with users.
 
+The first risk is that the software may fail to convert or render a given input file.
+This could be caused by the file being too large or complex for our system to handle, or part of the file is corrupt. 
+
+File security poses the other risk to our project, as some of the files uploaded may contain sensitive or confidential data.
+We want to ensure that we maintain our users' privacy and trust as we strive to ensure only specified people can access certain files.
 \subsection{Risk Mitigation}
+To mitigate these risks, we have multiple strategies implemented to prevent the issues from happening in the first place.
 
+Addressing the first risk of failed conversion or rendering, we intend to ensure product quality through rapid iteration and testing of MVPs. 
+We have a variety of test files of varying sizes and formats that we have run through our system to make sure we cover many of the common (and uncommon) use cases.
+Additionally, we aim to stay informed on the documentation of the libraries and platforms we use in our software to make sure we understand the capabilities and limitations of the tools we are using.
+Especially for the file conversion software, we have researched which file types can be run through the libraries and have implemented that functionality in our product and need to communicate to our users which file types are acceptable for our system. 
+
+For the second risk of data security, we try our best to examine and remove any possible security holes in our data flow.
+We will need to analyze the website code to limit file access only to properly-privileged users. 
+We also plan to implement features such as https and end-to-end encryption to maintain data security on our connections.
