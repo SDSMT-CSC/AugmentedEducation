@@ -112,10 +112,32 @@ This is where you will place the overall system design and the architecture.   T
     \end{table}
 
     \subsection{Overview}
-    
+    \paragraph{}
     A major tool in the project is the File Conversion Software.  
-    The file conversion software aims to read in many different 3D model file types (e.g. .fbx, .obj, .dae, etc...) and convert them to another desired 3D file type.  
-    A brief listing of suported file types is in table \ref{table:suportedfiletypes}
+    The file conversion software aims to read in many different 3D model file types (.fbx, .obj, .dae, ...) and convert them to another desired 3D file type.  
+    A brief listing of suported file types is in table \ref{table:suportedfiletypes}.
+
+    \paragraph{}
+    This tool is intended to be used on the back end of the website.  Whenever a user uploads a file, it can be converted to a common file type, using this tool.
+    When the user requests a download on an AR device, the type may be different than what is stored.  Therefore, the tool will be used to convert the file before
+    it is sent to the user.
+
+    \paragraph{}
+    Since this tool is intended to be used on the backend of a website, it is appropriate to use a command line interface.  
+    The flags that can be passed to the program are listed below:
+
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{l  l}
+            -i & Input file name (can specify full path), inferrs the input file type from the name \\
+            -o & Name (or full path) to write the converted file, inferrs the export file type from the name \\
+            -odir & The path to the directory, the file name is inferred from the input file name \\
+            -t & The file type (.fbx, .obj, .dae, ...) to export to
+        \end{tabular}
+    \end{table}
+
+    Note the -t flag is only needed when using the -odir flag.  The -odir just specifies which directory to write to, but not the file type.
+    Therefore, more information is needed in order to export to a file.  The -o flag will parse the file name and extract the file type.
 
     \subsection{Technologies Used}
 
@@ -131,6 +153,10 @@ This is where you will place the overall system design and the architecture.   T
             \item \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}
         \end{itemize}
     \end{itemize}
+
+    \subsection{Data Flow Diagram}
+
+    \subsection{Design Details}
 
  \begin{comment}
     \section{Major Component \#1 }
