@@ -199,7 +199,7 @@ This is where you will place the overall system design and the architecture.   T
         read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
         using a simgle library is if a user wants to read a .obj and write to a .fbx.  The FBX SDK can handle read and writing those particular file
         types, so it will be used ot do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
-        Assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimpo is used to 
+        Assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimp is used to 
         read the .ply, write to a .dae (common file type).  The FBX SDK then reads the .dae and writes to a .fbx.
 
     \subsection{Design Details}
