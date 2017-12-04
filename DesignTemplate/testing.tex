@@ -6,27 +6,42 @@
 This section describes the approach taken with regard to system and unit testing.    This chapter does not describe the outcome of those tests.  That will be described in the prototypes chapter.     
 
 \section{Overview}
-Provides a brief overview of the testing approach, testing frameworks, and general 
-how testing is/will be done to provide a measure of success for the system. 
-
-Each requirement (user story component) should be tested.    A review of objectives and
-constraints might be needed here.  
+The testing approach is based on manual testing so far. 
+The website and file conversion are tested separately, with their integration being tested as well.
+Our tests ensure that the features provided in our user stories are met and work as intended.
+The tests for each user story can be found below.
 
 \section{Dependencies}
-Describe the basic dependencies which should include unit testing frameworks and 
-reference material. 
-
+The main testing framework for the Azure website is Microsoft's C\# testing framework.
+The file conversion needs no external testing framework as it is tested manually for accuracy.
 
 \section{Test design and setup}
-Describe how test cases were developed/designed, setup, and how they connect to the requirements.  This section can 
-be extremely involved if a complete list of test cases was warranted for the system.   One 
-approach is to list each requirement, module, or component and describe the test.
+There are currently no unit tests for the website, as all testing has been done by hand so far.
+We may utilize Microsoft's C\# testing framework in the future.
+The file conversion is performed manually, as we cannot validate accuracy of conversion through software alone.
 
-The unit test framework is described here.   
+Upload Maple 3D file to a cloud server - tested by manually accessing the website and uploading a file, then checking that it is present in the filesystem.
+
+Maple 3D file will be automatically converted to a QR tag - this feature is not yet implemented, but the conversion test was tested manually as a part and the as a system with the website.
+
+Download the QR tage for a model from the cloud server - tags for models are not yet available, but a user can download a converted version of their uploaded file.
+
+View the QR tage with an AR headset and render the 3D model - QR tags are not yet implemented, but we successfully rendered 3D models on the hololens by accessing files through OneDrive or using the converted file from the upload page.
+
+Convert a 3D file from one format to another - the file conversion is manually tested using a variety of inputs to ensure robust and consistent performance. As there are two libraries (assimp and FBX SDK), they were both manually tested for simple functionality as the were implemented. After the two were put together, we had more tests to run. We tried sending through file types that can all be inputs for assimp and made sure that the file made it to the FBX section and output the correct file format (.fbx). There are many different inputs so we sent through files for the common types we would expect such as .stl, .obj, .dae etc. Unsupported file types were also tested and we received appropriate errors from the conversion libraries. We also tried large files so we would know how long we could expect the system to take to process files of different sizes. There are certain limitations on the hololens hardware for file size and complexity that can be rendered, so we are aware of the limitations on that end and will inform our users appropriately. We also plan on testing files with textures embedded in them, to make sure the textures get converted with the file. Our system does not yet support textures so this feature will be tested as it is developed. 
+
+All other user stories post-MVP are not yet implemented or tested, and they pertain mostly to secure accounts, file permissions, and more advanced features on the hololens viewer. 
+These features will be tested appropriately through manual testing or the C\# framework as they are developed.
 
 \section{System Testing}
+Testing our system involved manually using our software as a user would.
+The test relied on being able to access the website, uploading a file, and being able to download the converted version of it.
+This was successfully tested through manual tests and these features were present in our MVP.
 
 \section{System Integration Analysis}
+We performed some manual tests while integrating the file conversion with the website.
+The integration was relatively simple and required us only to upload the executable to Azure and call it as we regularly would from our PC.
+We successfully uploaded, converted, and downloaded files using the website to access the file conversion software.
 
 \section{Risk Analysis}
 There are two main risks associated with our project. These risks pertain to the functionality of the product itself and the security of our data.
@@ -40,7 +55,7 @@ We want to ensure that we maintain our users' privacy and trust as we strive to 
 \subsection{Risk Mitigation}
 To mitigate these risks, we have multiple strategies implemented to prevent the issues from happening in the first place.
 
-Addressing the first risk of failed conversion or rendering, we intend to ensure product quality through rapid iteration and testing of MVPs. 
+Addressing the first risk of failed conversion or rendering, we will ensure product quality through rapid iteration and testing of MVPs. 
 We have a variety of test files of varying sizes and formats that we have run through our system to make sure we cover many of the common (and uncommon) use cases.
 Additionally, we aim to stay informed on the documentation of the libraries and platforms we use in our software to make sure we understand the capabilities and limitations of the tools we are using.
 Especially for the file conversion software, we have researched which file types can be run through the libraries and have implemented that functionality in our product and need to communicate to our users which file types are acceptable for our system. 
