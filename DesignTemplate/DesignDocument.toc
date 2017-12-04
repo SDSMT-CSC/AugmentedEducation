@@ -1,9 +1,9 @@
 \contentsline {chapter}{Title}{i}{Doc-Start}
-\contentsline {chapter}{Contents}{vii}{chapter*.1}
-\contentsline {chapter}{List of Figures}{ix}{chapter*.2}
-\contentsline {chapter}{List of Tables}{xi}{chapter*.3}
-\contentsline {chapter}{List of Algorithms}{xiii}{chapter*.4}
-\contentsline {chapter}{Document Preparation and Updates}{xv}{chapter*.5}
+\contentsline {chapter}{Contents}{vi}{chapter*.1}
+\contentsline {chapter}{List of Figures}{vii}{chapter*.2}
+\contentsline {chapter}{List of Tables}{ix}{chapter*.3}
+\contentsline {chapter}{List of Algorithms}{xi}{chapter*.4}
+\contentsline {chapter}{Document Preparation and Updates}{xiii}{chapter*.5}
 \contentsline {chapter}{\numberline {1}Overview, Description and Deliverables}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}Team Members and Team Name}{1}{section.1.1}
 \contentsline {section}{\numberline {1.2}Client}{1}{section.1.2}
@@ -88,88 +88,87 @@
 \contentsline {section}{\numberline {4.5}Website}{17}{section.4.5}
 \contentsline {section}{\numberline {4.6}File Conversion}{17}{section.4.6}
 \contentsline {subsection}{\numberline {4.6.1}Overview}{17}{subsection.4.6.1}
+\contentsline {paragraph}{}{17}{subsection.4.6.1}
+\contentsline {paragraph}{}{17}{subsection.4.6.1}
+\contentsline {paragraph}{}{17}{subsection.4.6.1}
 \contentsline {subsection}{\numberline {4.6.2}Technologies Used}{17}{subsection.4.6.2}
-\contentsline {section}{\numberline {4.7}Major Component \#2 }{17}{section.4.7}
-\contentsline {subsection}{\numberline {4.7.1}Technologies Used}{17}{subsection.4.7.1}
-\contentsline {subsection}{\numberline {4.7.2}Component Overview}{17}{subsection.4.7.2}
-\contentsline {subsection}{\numberline {4.7.3}Phase Overview}{17}{subsection.4.7.3}
-\contentsline {subsection}{\numberline {4.7.4} Architecture Diagram}{17}{subsection.4.7.4}
-\contentsline {subsection}{\numberline {4.7.5}Data Flow Diagram}{18}{subsection.4.7.5}
-\contentsline {subsection}{\numberline {4.7.6}Design Details}{18}{subsection.4.7.6}
-\contentsline {section}{\numberline {4.8}Major Component \#3 }{18}{section.4.8}
-\contentsline {subsection}{\numberline {4.8.1}Technologies Used}{18}{subsection.4.8.1}
-\contentsline {subsection}{\numberline {4.8.2}Component Overview}{18}{subsection.4.8.2}
-\contentsline {subsection}{\numberline {4.8.3}Phase Overview}{18}{subsection.4.8.3}
-\contentsline {subsection}{\numberline {4.8.4} Architecture Diagram}{18}{subsection.4.8.4}
-\contentsline {subsection}{\numberline {4.8.5}Data Flow Diagram}{18}{subsection.4.8.5}
-\contentsline {subsection}{\numberline {4.8.6}Design Details}{18}{subsection.4.8.6}
-\contentsline {chapter}{\numberline {5}System and Unit Testing Design}{19}{chapter.5}
-\contentsline {section}{\numberline {5.1}Overview}{19}{section.5.1}
-\contentsline {section}{\numberline {5.2}Dependencies}{19}{section.5.2}
-\contentsline {section}{\numberline {5.3}Test design and setup}{19}{section.5.3}
-\contentsline {section}{\numberline {5.4}System Testing}{19}{section.5.4}
-\contentsline {section}{\numberline {5.5}System Integration Analysis}{19}{section.5.5}
-\contentsline {section}{\numberline {5.6}Risk Analysis}{19}{section.5.6}
-\contentsline {subsection}{\numberline {5.6.1}Risk Mitigation}{19}{subsection.5.6.1}
-\contentsline {chapter}{\numberline {6}Sprint Results and Prototypes}{21}{chapter.6}
-\contentsline {section}{\numberline {6.1}Sprint 0 Report}{21}{section.6.1}
-\contentsline {subsection}{\numberline {6.1.1}Sprint Backlog}{21}{subsection.6.1.1}
-\contentsline {subsection}{\numberline {6.1.2}Deliverable}{21}{subsection.6.1.2}
-\contentsline {subsection}{\numberline {6.1.3}Successes and Failures}{22}{subsection.6.1.3}
-\contentsline {subsubsection}{\numberline {6.1.3.a}Successes}{22}{subsubsection.6.1.3.1}
-\contentsline {subsection}{\numberline {6.1.4}Sprint Review}{22}{subsection.6.1.4}
-\contentsline {subsection}{\numberline {6.1.5}Sprint Retrospective}{22}{subsection.6.1.5}
-\contentsline {subsection}{\numberline {6.1.6}Sprint Analytics}{22}{subsection.6.1.6}
-\contentsline {section}{\numberline {6.2}Sprint 1 Report}{22}{section.6.2}
-\contentsline {subsection}{\numberline {6.2.1}Sprint Backlog}{22}{subsection.6.2.1}
-\contentsline {subsection}{\numberline {6.2.2}Deliverable}{22}{subsection.6.2.2}
-\contentsline {subsection}{\numberline {6.2.3}Results of testing}{22}{subsection.6.2.3}
-\contentsline {subsection}{\numberline {6.2.4}Successes and Failures}{22}{subsection.6.2.4}
-\contentsline {subsection}{\numberline {6.2.5}Modifications required (product backlog, design, requirements, etc)}{22}{subsection.6.2.5}
-\contentsline {subsection}{\numberline {6.2.6}Sprint Review}{22}{subsection.6.2.6}
-\contentsline {subsection}{\numberline {6.2.7}Sprint Retrospective}{22}{subsection.6.2.7}
-\contentsline {subsection}{\numberline {6.2.8}Sprint Analytics}{22}{subsection.6.2.8}
-\contentsline {section}{\numberline {6.3}Sprint 2 Report}{23}{section.6.3}
-\contentsline {subsection}{\numberline {6.3.1}Sprint Backlog}{23}{subsection.6.3.1}
-\contentsline {subsection}{\numberline {6.3.2}Deliverable}{23}{subsection.6.3.2}
-\contentsline {subsection}{\numberline {6.3.3}Results of testing}{23}{subsection.6.3.3}
-\contentsline {subsection}{\numberline {6.3.4}Successes and Failures}{23}{subsection.6.3.4}
-\contentsline {subsection}{\numberline {6.3.5}Modifications required (product backlog, design, requirements, etc)}{23}{subsection.6.3.5}
-\contentsline {subsection}{\numberline {6.3.6}Sprint Review}{23}{subsection.6.3.6}
-\contentsline {subsection}{\numberline {6.3.7}Sprint Retrospective}{23}{subsection.6.3.7}
-\contentsline {subsection}{\numberline {6.3.8}Sprint Analytics}{23}{subsection.6.3.8}
-\contentsline {section}{\numberline {6.4}Sprint 3 Report}{23}{section.6.4}
-\contentsline {subsection}{\numberline {6.4.1}Sprint Backlog}{23}{subsection.6.4.1}
-\contentsline {subsection}{\numberline {6.4.2}Deliverable}{23}{subsection.6.4.2}
-\contentsline {subsection}{\numberline {6.4.3}Results of testing}{23}{subsection.6.4.3}
-\contentsline {subsection}{\numberline {6.4.4}Successes and Failures}{23}{subsection.6.4.4}
-\contentsline {subsection}{\numberline {6.4.5}Modifications required (product backlog, design, requirements, etc)}{23}{subsection.6.4.5}
-\contentsline {subsection}{\numberline {6.4.6}Sprint Review}{23}{subsection.6.4.6}
-\contentsline {subsection}{\numberline {6.4.7}Sprint Retrospective}{23}{subsection.6.4.7}
-\contentsline {subsection}{\numberline {6.4.8}Sprint Analytics}{23}{subsection.6.4.8}
-\contentsline {section}{\numberline {6.5}Sprint 4 Report}{23}{section.6.5}
-\contentsline {subsection}{\numberline {6.5.1}Sprint Backlog}{23}{subsection.6.5.1}
-\contentsline {subsection}{\numberline {6.5.2}Deliverable}{23}{subsection.6.5.2}
-\contentsline {subsection}{\numberline {6.5.3}Results of testing}{23}{subsection.6.5.3}
-\contentsline {subsection}{\numberline {6.5.4}Successes and Failures}{23}{subsection.6.5.4}
-\contentsline {subsection}{\numberline {6.5.5}Modifications required (product backlog, design, requirements, etc)}{23}{subsection.6.5.5}
-\contentsline {subsection}{\numberline {6.5.6}Sprint Review}{23}{subsection.6.5.6}
-\contentsline {subsection}{\numberline {6.5.7}Sprint Retrospective}{23}{subsection.6.5.7}
-\contentsline {subsection}{\numberline {6.5.8}Sprint Analytics}{23}{subsection.6.5.8}
-\contentsline {chapter}{\numberline {7}Release -- Setup -- Deployment}{25}{chapter.7}
-\contentsline {section}{\numberline {7.1}Deployment Information and Dependencies}{25}{section.7.1}
-\contentsline {section}{\numberline {7.2}Setup Information}{25}{section.7.2}
-\contentsline {section}{\numberline {7.3}System Versioning Information}{25}{section.7.3}
-\contentsline {chapter}{\numberline {8}User Documentation}{27}{chapter.8}
-\contentsline {section}{\numberline {8.1}User Guide}{27}{section.8.1}
-\contentsline {section}{\numberline {8.2}Installation Guide}{27}{section.8.2}
-\contentsline {section}{\numberline {8.3}Programmer Manual}{27}{section.8.3}
-\contentsline {chapter}{\numberline {9}Research Results}{29}{chapter.9}
-\contentsline {section}{\numberline {9.1}Result 1}{29}{section.9.1}
-\contentsline {section}{\numberline {9.2}Result 2}{29}{section.9.2}
-\contentsline {section}{\numberline {9.3}Conclusions}{29}{section.9.3}
-\contentsline {section}{\numberline {9.4}Further work}{29}{section.9.4}
-\contentsline {chapter}{Bibliography}{31}{chapter*.6}
+\contentsline {subsection}{\numberline {4.6.3}Data Flow}{18}{subsection.4.6.3}
+\contentsline {subsection}{\numberline {4.6.4}Design Details}{18}{subsection.4.6.4}
+\contentsline {subsubsection}{\numberline {4.6.4.a}Overview}{18}{subsubsection.4.6.4.1}
+\contentsline {subsubsection}{\numberline {4.6.4.b}Code Structure}{19}{subsubsection.4.6.4.2}
+\contentsline {paragraph}{Parameter Parsing}{19}{subsubsection.4.6.4.2}
+\contentsline {paragraph}{File Conversion}{19}{subsubsection.4.6.4.2}
+\contentsline {subparagraph}{AbstractConverter}{19}{subsubsection.4.6.4.2}
+\contentsline {subparagraph}{AssimpConverter}{20}{subsubsection.4.6.4.2}
+\contentsline {subparagraph}{FBXConverter}{20}{subsubsection.4.6.4.2}
+\contentsline {subparagraph}{FileConverter}{20}{subsubsection.4.6.4.2}
+\contentsline {chapter}{\numberline {5}System and Unit Testing Design}{21}{chapter.5}
+\contentsline {section}{\numberline {5.1}Overview}{21}{section.5.1}
+\contentsline {section}{\numberline {5.2}Dependencies}{21}{section.5.2}
+\contentsline {section}{\numberline {5.3}Test design and setup}{21}{section.5.3}
+\contentsline {section}{\numberline {5.4}System Testing}{21}{section.5.4}
+\contentsline {section}{\numberline {5.5}System Integration Analysis}{21}{section.5.5}
+\contentsline {section}{\numberline {5.6}Risk Analysis}{21}{section.5.6}
+\contentsline {subsection}{\numberline {5.6.1}Risk Mitigation}{22}{subsection.5.6.1}
+\contentsline {chapter}{\numberline {6}Sprint Results and Prototypes}{23}{chapter.6}
+\contentsline {section}{\numberline {6.1}Sprint 0 Report}{23}{section.6.1}
+\contentsline {subsection}{\numberline {6.1.1}Sprint Backlog}{23}{subsection.6.1.1}
+\contentsline {subsection}{\numberline {6.1.2}Deliverable}{23}{subsection.6.1.2}
+\contentsline {subsection}{\numberline {6.1.3}Successes and Failures}{24}{subsection.6.1.3}
+\contentsline {subsubsection}{\numberline {6.1.3.a}Successes}{24}{subsubsection.6.1.3.1}
+\contentsline {subsection}{\numberline {6.1.4}Sprint Review}{24}{subsection.6.1.4}
+\contentsline {subsection}{\numberline {6.1.5}Sprint Retrospective}{24}{subsection.6.1.5}
+\contentsline {subsection}{\numberline {6.1.6}Sprint Analytics}{24}{subsection.6.1.6}
+\contentsline {section}{\numberline {6.2}Sprint 1 Report}{24}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}Sprint Backlog}{24}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}Deliverable}{24}{subsection.6.2.2}
+\contentsline {subsection}{\numberline {6.2.3}Results of testing}{24}{subsection.6.2.3}
+\contentsline {subsection}{\numberline {6.2.4}Successes and Failures}{24}{subsection.6.2.4}
+\contentsline {subsection}{\numberline {6.2.5}Modifications required (product backlog, design, requirements, etc)}{24}{subsection.6.2.5}
+\contentsline {subsection}{\numberline {6.2.6}Sprint Review}{24}{subsection.6.2.6}
+\contentsline {subsection}{\numberline {6.2.7}Sprint Retrospective}{24}{subsection.6.2.7}
+\contentsline {subsection}{\numberline {6.2.8}Sprint Analytics}{24}{subsection.6.2.8}
+\contentsline {section}{\numberline {6.3}Sprint 2 Report}{25}{section.6.3}
+\contentsline {subsection}{\numberline {6.3.1}Sprint Backlog}{25}{subsection.6.3.1}
+\contentsline {subsection}{\numberline {6.3.2}Deliverable}{25}{subsection.6.3.2}
+\contentsline {subsection}{\numberline {6.3.3}Results of testing}{25}{subsection.6.3.3}
+\contentsline {subsection}{\numberline {6.3.4}Successes and Failures}{25}{subsection.6.3.4}
+\contentsline {subsection}{\numberline {6.3.5}Modifications required (product backlog, design, requirements, etc)}{25}{subsection.6.3.5}
+\contentsline {subsection}{\numberline {6.3.6}Sprint Review}{25}{subsection.6.3.6}
+\contentsline {subsection}{\numberline {6.3.7}Sprint Retrospective}{25}{subsection.6.3.7}
+\contentsline {subsection}{\numberline {6.3.8}Sprint Analytics}{25}{subsection.6.3.8}
+\contentsline {section}{\numberline {6.4}Sprint 3 Report}{25}{section.6.4}
+\contentsline {subsection}{\numberline {6.4.1}Sprint Backlog}{25}{subsection.6.4.1}
+\contentsline {subsection}{\numberline {6.4.2}Deliverable}{25}{subsection.6.4.2}
+\contentsline {subsection}{\numberline {6.4.3}Results of testing}{25}{subsection.6.4.3}
+\contentsline {subsection}{\numberline {6.4.4}Successes and Failures}{25}{subsection.6.4.4}
+\contentsline {subsection}{\numberline {6.4.5}Modifications required (product backlog, design, requirements, etc)}{25}{subsection.6.4.5}
+\contentsline {subsection}{\numberline {6.4.6}Sprint Review}{25}{subsection.6.4.6}
+\contentsline {subsection}{\numberline {6.4.7}Sprint Retrospective}{25}{subsection.6.4.7}
+\contentsline {subsection}{\numberline {6.4.8}Sprint Analytics}{25}{subsection.6.4.8}
+\contentsline {section}{\numberline {6.5}Sprint 4 Report}{25}{section.6.5}
+\contentsline {subsection}{\numberline {6.5.1}Sprint Backlog}{25}{subsection.6.5.1}
+\contentsline {subsection}{\numberline {6.5.2}Deliverable}{25}{subsection.6.5.2}
+\contentsline {subsection}{\numberline {6.5.3}Results of testing}{25}{subsection.6.5.3}
+\contentsline {subsection}{\numberline {6.5.4}Successes and Failures}{25}{subsection.6.5.4}
+\contentsline {subsection}{\numberline {6.5.5}Modifications required (product backlog, design, requirements, etc)}{25}{subsection.6.5.5}
+\contentsline {subsection}{\numberline {6.5.6}Sprint Review}{25}{subsection.6.5.6}
+\contentsline {subsection}{\numberline {6.5.7}Sprint Retrospective}{25}{subsection.6.5.7}
+\contentsline {subsection}{\numberline {6.5.8}Sprint Analytics}{25}{subsection.6.5.8}
+\contentsline {chapter}{\numberline {7}Release -- Setup -- Deployment}{27}{chapter.7}
+\contentsline {section}{\numberline {7.1}Deployment Information and Dependencies}{27}{section.7.1}
+\contentsline {section}{\numberline {7.2}Setup Information}{27}{section.7.2}
+\contentsline {section}{\numberline {7.3}System Versioning Information}{27}{section.7.3}
+\contentsline {chapter}{\numberline {8}User Documentation}{29}{chapter.8}
+\contentsline {section}{\numberline {8.1}User Guide}{29}{section.8.1}
+\contentsline {section}{\numberline {8.2}Installation Guide}{29}{section.8.2}
+\contentsline {section}{\numberline {8.3}Programmer Manual}{29}{section.8.3}
+\contentsline {chapter}{\numberline {9}Research Results}{31}{chapter.9}
+\contentsline {section}{\numberline {9.1}Result 1}{31}{section.9.1}
+\contentsline {section}{\numberline {9.2}Result 2}{31}{section.9.2}
+\contentsline {section}{\numberline {9.3}Conclusions}{31}{section.9.3}
+\contentsline {section}{\numberline {9.4}Further work}{31}{section.9.4}
+\contentsline {chapter}{Bibliography}{33}{chapter*.6}
 \contentsline {chapter}{Software Agreement}{SA-1}{chapter.10}
 \contentsline {chapter}{\numberline {A}Product Description}{A-1}{appendix.A}
 \contentsline {chapter}{\numberline {B}Class Index}{B-1}{appendix.B}
@@ -182,15 +181,6 @@
 \contentsline {subsection}{\numberline {1.2}Member Function Documentation}{C-1}{subsection.C.1.2}
 \contentsline {subsubsection}{\numberline {1.2.a}myfunction}{C-1}{subsubsection.C.1.2.1}
 \contentsline {chapter}{\numberline {D}Business Plan}{D-1}{appendix.D}
-\contentsline {section}{\numberline {1}Business Model}{D-1}{section.D.1}
-\contentsline {section}{\numberline {2}Market and Competition}{D-1}{section.D.2}
-\contentsline {section}{\numberline {3}Regulatory environment}{D-1}{section.D.3}
-\contentsline {section}{\numberline {4}Intellectual Property and Freedom to Operate}{D-1}{section.D.4}
-\contentsline {section}{\numberline {5}Management Team and Advisors}{D-1}{section.D.5}
-\contentsline {section}{\numberline {6}Sources and Uses of Capital}{D-1}{section.D.6}
-\contentsline {section}{\numberline {7}Financial Statements}{D-1}{section.D.7}
-\contentsline {section}{\numberline {8}Metrics and Milestones}{D-1}{section.D.8}
-\contentsline {section}{\numberline {9}Exit Plan}{D-1}{section.D.9}
 \contentsline {chapter}{\numberline {E}Experimental Log}{E-1}{appendix.E}
 \contentsline {chapter}{\numberline {F}Publications}{F-1}{appendix.F}
 \contentsline {chapter}{\numberline {G}Acknowledgment}{G-1}{appendix.G}
