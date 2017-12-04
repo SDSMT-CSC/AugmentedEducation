@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2017.11.26)  3 DEC 2017 22:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2017.11.26)  4 DEC 2017 00:21
 entering extended mode
 **./DesignDocument.tex
 (DesignDocument.tex
@@ -1714,6 +1714,11 @@ Overfull \hbox (2.48369pt too wide) in paragraph at lines 29--29
  []
 
 
+Overfull \hbox (2.48369pt too wide) in paragraph at lines 30--30
+[]|\T1/lmss/bx/sl/10 12/03/17|  
+ []
+
+
 Overfull \hbox (7.03629pt too wide) in paragraph at lines 19--42
 [] 
  []
@@ -1761,9 +1766,7 @@ File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 
 ]
 Chapter 3.
-[11] [12]) (design.tex [13] [14
-
-]
+[11] [12] [13]) (design.tex [14]
 Chapter 4.
 <./diagram.png, id=987, 722.7pt x 542.025pt>
 File: ./diagram.png Graphic file (type png)
@@ -1772,8 +1775,10 @@ Package pdftex.def Info: ./diagram.png  used on input line 26. on input line 26
 .
 Package pdftex.def Info: Requested size: 352.31624pt x 264.23819pt on input lin
 e 26.
-[15pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1
-}) has been already used, duplicate ignored
+[15
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1}) 
+has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
@@ -2820,7 +2825,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 122.
 Here is how much of TeX's memory you used:
  26417 strings out of 493312
  462571 string characters out of 3146702
- 608063 words of memory out of 3000000
+ 608061 words of memory out of 3000000
  28998 multiletter control sequences out of 15000+200000
  84924 words of font info for 80 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2837,7 +2842,7 @@ c/lm/lmssbx10.pfb><D:/MikTex/fonts/type1/public/lm/lmsso10.pfb><D:/MikTex/fonts
 /type1/public/lm/lmsso12.pfb><D:/MikTex/fonts/type1/public/lm/lmsy10.pfb><D:/Mi
 kTex/fonts/type1/public/lm/lmsy7.pfb><D:/MikTex/fonts/type1/public/lm/lmtt10.pf
 b>
-Output written on DesignDocument.pdf (104 pages, 1674948 bytes).
+Output written on DesignDocument.pdf (104 pages, 1678412 bytes).
 PDF statistics:
  1623 PDF objects out of 1728 (max. 8388607)
  301 named destinations out of 1000 (max. 500000)
