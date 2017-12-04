@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2017.11.26)  3 DEC 2017 22:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2017.11.26)  3 DEC 2017 22:27
 entering extended mode
 **./DesignDocument.tex
 (DesignDocument.tex
@@ -1687,15 +1687,10 @@ Overfull \hbox (8.25029pt too wide) detected at line 192
 LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <10> not available
 (Font)              Font shape `T1/lmss/m/sl' tried instead on input line 11.
 LaTeX Font Info:    Font shape `T1/lmss/bx/it' in size <10> not available
-(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 19.
-
-Overfull \hbox (2.48369pt too wide) in paragraph at lines 24--24
-[]|\T1/lmss/bx/sl/10 10/10/17|  
- []
-
+(Font)              Font shape `T1/lmss/bx/sl' tried instead on input line 20.
 
 Overfull \hbox (2.48369pt too wide) in paragraph at lines 25--25
-[]|\T1/lmss/bx/sl/10 10/27/17|  
+[]|\T1/lmss/bx/sl/10 10/10/17|  
  []
 
 
@@ -1704,7 +1699,22 @@ Overfull \hbox (2.48369pt too wide) in paragraph at lines 26--26
  []
 
 
-Overfull \hbox (7.03629pt too wide) in paragraph at lines 18--39
+Overfull \hbox (2.48369pt too wide) in paragraph at lines 27--27
+[]|\T1/lmss/bx/sl/10 10/27/17|  
+ []
+
+
+Overfull \hbox (2.48369pt too wide) in paragraph at lines 28--28
+[]|\T1/lmss/bx/sl/10 12/03/17|  
+ []
+
+
+Overfull \hbox (2.48369pt too wide) in paragraph at lines 29--29
+[]|\T1/lmss/bx/sl/10 12/03/17|  
+ []
+
+
+Overfull \hbox (7.03629pt too wide) in paragraph at lines 19--42
 [] 
  []
 
@@ -2827,7 +2837,7 @@ c/lm/lmssbx10.pfb><D:/MikTex/fonts/type1/public/lm/lmsso10.pfb><D:/MikTex/fonts
 /type1/public/lm/lmsso12.pfb><D:/MikTex/fonts/type1/public/lm/lmsy10.pfb><D:/Mi
 kTex/fonts/type1/public/lm/lmsy7.pfb><D:/MikTex/fonts/type1/public/lm/lmtt10.pf
 b>
-Output written on DesignDocument.pdf (104 pages, 1670968 bytes).
+Output written on DesignDocument.pdf (104 pages, 1674227 bytes).
 PDF statistics:
  1623 PDF objects out of 1728 (max. 8388607)
  301 named destinations out of 1000 (max. 500000)
