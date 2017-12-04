@@ -181,7 +181,45 @@ connect to it?
 How are the packages built?  Are there build scripts? 
 
 \section{Development Machine Setup}
-If warranted, provide a list of steps and details associated with setting up a 
-machine for use by a developer. 
 
+Pull the git repository with both the Website and File Conversion code located at: \url{https://github.com/SavoySchuler/ARFE}
 
+% If warranted, provide a list of steps and details associated with setting up a 
+% machine for use by a developer. 
+
+\paragraph{File Conversion}
+
+There are two libraries that need to be installed: Assimp and FBX SDK.
+
+\subparagraph{FBX SDK}
+
+\begin{enumerate}
+    \item Got to the following link and install the FBX SDK.
+    \begin{itemize}
+        \item \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}
+        \item Use the installer under: Windows / FBX SDK 2018.0 VS2015
+    \end{itemize}
+
+    \item Copy the FBX SDK folder to the directory with the source code (the deepest FileConverion folder)
+    \begin{itemize}
+        \item At the location of the installiation, the file structure should be: Autodesk/FBX/FBX SDK/
+        \item Copy the FBX SDK folder to the source code directory.
+    \end{itemize}
+\end{enumerate}
+
+\subparagraph{Assimp}
+
+\begin{enumerate}
+    \item Go to the following link and install the Assimp software.
+    \begin{itemize}
+        \item \url{http://assimp.org/main_downloads.html}
+        \item Version 3.1.1 is what was used during development.
+    \end{itemize}
+
+    \item From the installiation location, copy the \"Assimp\" folder into the deeper FileConverion directory.
+    \begin{itemize}
+        \item Paste the folder into the same folder as the source code of the File Conversion.
+    \end{itemize}
+
+    \item Copy FileConverion/Assimp/bin/x86/assimp-vc140-mt.dll to the same directory as the source code.
+\end{enumerate}

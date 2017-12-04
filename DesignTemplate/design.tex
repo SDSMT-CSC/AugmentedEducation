@@ -28,15 +28,31 @@ update correctly.
 \caption{A sample figure .... System Diagram \label{systemdiagram}}
 \end{figure}
 
-\subsection{Major System Component \#1}
+\subsection{Website}
 Describe briefly the role this major component plays in this system. 
 
-\subsection{Major System Component \#2}
-Describe briefly the role this major component plays in this system. 
+\subsection{File Conversion}
+The file conversion software converts files between common 3D file types.  It
 
-\subsection{Major System Component \#3}
-Describe briefly the role this major component plays in this system. 
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{| c | c |}
+        \hline
+        Input file type & Output file type \\
+        \hline
+        .fbx & .fbx \\
+        .dae & .dae \\
+        .blend & .obj \\ 
+        .obj & .stl \\
+        .stl & .ply \\
+        .ply & \\
+        \hline
+    \end{tabular}
+    \caption{Supported File Types}
+    \label{table:suportedfiletypes}
+\end{table}
 
+The above table \ref{table:suportedfiletypes} lists the minimum file types supported.  More may be supported
 
 \section{Technologies Overview}
 This section should contain a list of specific technologies used to
@@ -92,24 +108,6 @@ This is where you will place the overall system design and the architecture.   T
  \section{Website}
 
  \section{File Conversion}
-
-    \begin{table}[!h]
-        \centering
-        \begin{tabular}{| c | c |}
-            \hline
-            Input file type & Output file type \\
-            \hline
-            .fbx & .fbx \\
-            .dae & .dae \\
-            .blend & .obj \\ 
-            .obj & .stl \\
-            .stl & .ply \\
-            .ply & \\
-            \hline
-        \end{tabular}
-        \caption{Supported File Types}
-        \label{table:suportedfiletypes}
-    \end{table}
 
     \subsection{Overview}
     \paragraph{}
