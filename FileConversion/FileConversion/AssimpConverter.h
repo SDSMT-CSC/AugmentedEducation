@@ -19,8 +19,8 @@ public:
 
 	Result ConvertFile(std::string inputFileName, std::string outputFileName);
 private:
-	std::set < std::string> acceptedInputTypes;
-	std::set < std::string> acceptedOutputTypes;
+	std::set <std::string> acceptedInputTypes;
+	std::set <std::string> acceptedOutputTypes;
 
 	const aiScene *scene;
 };
