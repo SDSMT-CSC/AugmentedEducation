@@ -1,29 +1,35 @@
-
+z
 % !TEX root = DesignDocument.tex
 
 \chapter{Design  and Implementation}
 
 \section{Systems Goals}
-%Briefly describe the overall goals this system plans to achieve. These goals are typically provided by the stakeholders.  This is not intended to be a detailed requirements listing.  Keep in mind that this section is still part of the Overview.
-
-The goal of this system is to establish a tool chain between CAD files and AR hardware. To this affect, the system must provide a web interface for users to upload CAD files to the cloud to be converted to file types render-able by AR hardware for on-demand downloading and rendering by AR devices. 
-
+Briefly describe the overall goals this system plans to achieve.
+These goals are typically provided by the stakeholders.  This is not
+intended to be a detailed requirements listing.  Keep in mind that
+this section is still part of the Overview.
 
 \section{System Overview and Description}
-%Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components.  See Figure~\ref{systemdiagram}. This is a floating figure environment.  \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
-CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
+Provide a more detailed description of the major system components
+without getting too detailed.  This section should contain a
+high-level block and/or flow diagram of the system highlighting the
+major components.  See Figure~\ref{systemdiagram}.  This is a floating
+figure environment.  \LaTeX\ will try to put it close to where it was
+typeset but will not allow the figure to be split if moving it can not
+happen.  Figures, tables, algorithms and many other floating
+environments are automatically numbered and placed in the appropriate
+type of table of contents.  You can move these and the numbers will
+update correctly.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{UMLSystemOverview.png}
-	\caption{System Overview Diagram} 
-	\label{UMLSystemOverview}	
+\begin{figure}[tbh]
+\begin{center}
+\includegraphics[width=0.75\textwidth]{./diagram}
+\end{center}
+\caption{A sample figure .... System Diagram \label{systemdiagram}}
 \end{figure}
 
 \subsection{Website}
-%Describe briefly the role this major component plays in this system. 
-
-This major component of the system will broker all interactions occurring across the platform. A user interface will be used to provided to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The  
+Describe briefly the role this major component plays in this system. 
 
 \subsection{File Conversion}
 The file conversion software converts files between common 3D file types.  It is designed to 
@@ -94,13 +100,9 @@ This is where you will place the overall system design and the architecture.   T
  \subsection{Classes}
  
  \subsection{UML}
-    
-   \begin{figure}
-   	\centering
-   	\includegraphics[width=\textwidth]{UML.png}
-   	\caption{Architecture UML Diagram} 	
-   \end{figure}
-   
+ 
+    \includegraphics[width=\textwidth]{UML.png}
+
  \subsection{UX}
  
  \subsection{UI}
@@ -108,6 +110,124 @@ This is where you will place the overall system design and the architecture.   T
  \subsection{MVVM, etc}
 
  \section{Website}
+
+ \subsection{Overview}
+ \paragraph{}
+ A major tool in the project is the website interface for hosting the 3D models that users generate.
+ The website is where a user will be able to upload their 3D models
+ and get the reference tag for that model.
+ 
+ \paragraph{}
+ The website is intended to be a full user experience, where they can
+ can sign in to view and manage their own content. In the long term view
+ this will be a service similar to GitHub, where users can collaberate and share
+ their material with friends and co-workers.
+
+\paragraph{}
+This website will be making use of Microsoft's ASP.NET stack along with
+Azure services for database and website hosting. A more indepth look into 
+these tool will be offered below.
+
+\subsection{Technologies Used}
+
+    As stated earlier in this document, this product is making use
+    of the Microsoft environment for its tools. Below is an indepth 
+    break down of the tools currently being used:
+
+    \begin{itemize}
+    \item ASP.NET MVC
+    \begin{itemize}
+        \item An MVC web architecture, where the backend logic is writen in controller classes
+        that send and recieve data from the client.
+        \item It allows for dynamic html pages using a Razor synatax. Razor allows
+        you to embed C\# Code into the html and execute logic.
+    \end{itemize}
+    
+    \item Azure
+        \begin{itemize}
+            \item Microsoft cloud hosting services.
+            \item Allows for simple database and web hosting.
+            \item Paid features are offered free to students.
+        \end{itemize}
+    \end{itemize}
+
+    These tools make up the core development of this website. The website is also
+    making use of other smaller packages to handles user authentication and database management.
+
+    The website also impliments the file conversion software that is described later.
+    The file conversion was written in C++, so it couldn't be compiled with the website.
+    The work around was that was used, was the file conversion was compiled into a executable.
+    The executable was used through a system command to convert the file.
+
+
+    \subsection{Data Flow}
+    The data flow happens in two main places. It is set up into a Upload controller
+    and a Download Controller.
+
+    \begin{itemize}
+        \item Upload Controller
+        \begin{itemize}
+            \item The user browses through the their file system and uploads
+            the 3D model that selected.
+            \item Once the file is on the server side it is then converted to an
+            .fbx and stored for download.
+            \item A tag to reference the model is returned to the client.
+        \end{itemize}
+        
+        \item Download Controller
+        \begin{itemize}
+            \item The client sends the reference tag was given when it was uploaded to the server.
+            \item The server takes that tag and finds the assoicated model.
+            \item Using the httpresponse datastructure to create the response and send
+            the model back to the user.
+        \end{itemize}
+    \end{itemize}
+
+
+\subsection{Design Details}
+
+    \subsubsection{Overview}
+
+    The website is written in C\# with the ASP.NET MVC framework. The main logic
+    of the website is contained in two controllers
+    \begin{itemize}
+        \item Upload Controller
+        \begin{itemize}
+            \item Handles upload from client to the server.
+            \item Uses File Conversion executable to convert to .fbx
+            \item Stores file on the web.
+        \end{itemize}
+        \item Download
+        \begin{itemize}
+            \item Uploads Model tag from client to server.
+            \item Finds associated store model.
+            \item Returns model to the client.
+        \end{itemize}
+    \end{itemize}
+
+    \subsubsection{Code Structure}
+    As stated before the website is using ASP.NET MVC framework. 
+    The logic happens in the controllers and is split up into the upload and download controller.
+    
+    \paragraph{Parameter Passing}
+    \hfill \break
+    The main functions that are being used are the upload and download function.
+    
+    \begin{itemize}
+        \item Upload Function
+        \begin{itemize}
+           \item HttpPostedFileBase - http message sent from client to server containing the file
+           \item The message is parsed to retrieve the file and save to the web.
+        \end{itemize}
+
+        \item Download Function
+        \begin{itemize}
+            \item input string ModelTag - string containing the reference tag to the model.
+            \item output httpresponse - http message sent from server to client containing the file. 
+        \end{itemize}
+    \end{itemize}
+
+
 
  \section{File Conversion}
 
@@ -198,7 +318,7 @@ This is where you will place the overall system design and the architecture.   T
         This outlines that the program tries to use a single library to convert the file before using multiple.  If a single library is unable to 
         read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
         using a single library is if a user wants to read a .obj and write to a .fbx.  The FBX SDK can handle reading and writing those particular file
-        types, so it will be used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
+        types, so it will be used ot do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
         Assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimp is used to 
         read the .ply, write to a .dae (common file type).  The FBX SDK then reads the .dae and writes to a .fbx.
 
@@ -249,7 +369,7 @@ This is where you will place the overall system design and the architecture.   T
 
     \paragraph{File Conversion}
     \hfill \break
-    The file conversion portion of the program is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
+    The file conversion portion of the progarm is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
     This seciton implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
     library implementation classes are called AssimpConverter and FBXConverter.  A class named FileConverter contains the logic on determining which 
     library/libraries to use when converting the file.
@@ -294,16 +414,16 @@ This is where you will place the overall system design and the architecture.   T
     The list of file types supported is taken from the Open Asset Import Library website's list of supported input file types.  
     The output file types list comes from the same location.
     When converting a file, optimizations may be performed on the file to remove unnecessary/duplicate information.  For example, when importing a file, 
-    repeated verticies in the meshes will be condensed into one, to help reduce the size of the file.
+    repeatedverticies in the meshes will be condensed into one, to help reduce the size of the file.
 
     \subparagraph{FBXConverter}
     \hfill \break
     The FBXConverter inherits the AbstractConverter and uses the FBX SDK to import and export files.
-    The file type input and output lists are derived from the FBX SDK website.
+    THe file type input and output lists are derived from the FBX SDK website.
 
     \subparagraph{FileConverter}
     \hfill \break
-    The FileConverter looks at the input and output file types, and determines which library/libraries are needed to convert the file.
+    The FileConverter looks at the input and output file types, and determines which library/libraries needed to convert the file.
     It tries see if a single library can do the conversion.  If not, then both libraries are used by exporting from one into a 
     temporary file (.dae) and converting that to the final file type. After comparing the read/write lists between the libraries,
     the DAE file type was common between the two, and included features that other file types did not.  Therefore, it was chosen
