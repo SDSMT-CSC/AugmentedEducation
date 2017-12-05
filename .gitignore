@@ -221,4 +221,4 @@ TSWLatexianTemp*
 *.synctex.gz
 .vs
 **/.vs/*
-
+**/.vscode
