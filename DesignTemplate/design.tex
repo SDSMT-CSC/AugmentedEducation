@@ -53,8 +53,30 @@ Models created in most common Computer Aided Design software can export to some 
 % {\it It is important for you to say why as much as what.   }
  
    \subsection{Design Selection}
- Failed designs, design ideas, rejected designs here.
+   \paragraph{}
+ Many design tools and coding stacks were considered at the beginning of this project.
+ The main decisions we had to make were was our development environment and the cloud services.
  
+ \paragraph{}
+ The first thing that was decided on was the hosting tools.
+ We decided on using the Azure cloud hosting tools for the following reasons.
+
+ \begin{itemize}
+    \item Allows for simple database and web hosting.
+    \item Paid features are offered free to students.
+ \end{itemize}
+
+ We also debated on the coding stack to use for the website.
+ We went with ASP.NET MVC for the following reasons:
+\begin{itemize}
+    \item A majority of the developers were familiar with C\# and Visual Studio.
+    \item The decision to use Azure made ASP.NET MVC a natural choice, since they are both part of the Microsoft stack.
+\end{itemize}
+
+\paragraph{}
+The other options we explored were Amazon Web Service for cloud hosting and linux development environment using Python and Django for the backend logic.
+We didn't persue these because negative feedback from our own developers as other professional reviews.
+
  \subsection{Data Flow}
 The web interface for users creates a data upstream exists between a web browser and a cloud server. Users may upload, update, and delete remotely hosted files.
 
