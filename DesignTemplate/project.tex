@@ -222,22 +222,36 @@ tools with descriptions:
 
 
 \section{Source  Control}
-Github was used to manage the source code. It was picked because it was most well known amongst the
-developers. It was set up wth the with three branches, Master, Develop and Release. The work is done on the Develop branch
-and once it is throughly tested it is then pushed up to release.
+\subsection{Source Control Tool}
+GitHub was used to provide source control and a private repository. This tool was chosen over others available as it is unanimously familiar to all developers. 
 
-The following steps were taken to contribute to the code.
-	
-I am trying to make this into a list and it is giving me an hbox overfull and justifying the text to the right in the pdf. I simply want to put numbers on this and make a list.
+\subsection{Source Control Architecture}
+The repository was created with the following three branches: Master, Develop and Release. 
+Develop is used for work in progress. After features have been verified through thorough testing, they will be merged into the Release branch for beta usage. Once verified in Release, features are merged into the Master branch is reserved for the final deliverable. 
+
+
+\subsection{Source Control Etiquette}
+The following steps represent the code flow process: 
 
 \begin{enumerate}
-
 \item Pull latest code from the develop branch
 \item Implement feature
 \item Push to Develop and assign other developer for QA
-\item Once properly tested, push to Release branch.
-
+\item Once properly tested, merge feature into Release branch
+\item Once feature verified in Release, merge feature into Master
 \end{enumerate}
+
+\subsection{Developer Contributions}
+Figure \ref{Contributions} shows a snapshot of repository activity and developer contributions 
+
+\begin{figure}[H]
+	\centering
+	%\includegraphics[width=\textwidth]{Contributions.png}
+	\caption{Developer Contributions} 
+	\label{Contributions}	
+\end{figure}
+
+
 
 \section{Dependencies}
 %Describe all dependencies associated with developing the system. 
