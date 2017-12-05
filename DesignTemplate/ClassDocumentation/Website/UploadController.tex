@@ -1,0 +1,33 @@
+\hypertarget{website_UploadController}
+{
+    \label{website_UploadController}
+    \index{Website@UploadController}
+}
+
+\subsection{Upload Controller}
+    \paragraph{}
+        This is the controller that handles the communication between the client and server dealing with uploading a model.
+        It parses the httpPostedfilebase object to get the file and save it to the web.
+
+
+    \subsubsection{Member Functions}
+
+        \begin{itemize}
+            \item ActionResult UploadFile(HttpPostedFileBase file)
+            \item ActionResult UploadFile()
+        \end{itemize}
+
+        \paragraph{UploadFile()}
+            \hfill \break
+            This function is call by and http request and it navigates the user to the fileupload page by return the file upload view.
+    
+
+        \paragraph{UploadFile(HttpPostedFileBase file)}
+            \hfill \break
+            This funciton handles the user uploaded file.
+            It accepts the HttpPostedFileBase object and parses it to find the file.
+            Currently, it the calls the fileconversion executable and stores the converted file.
+            It then generate a random string to later reference the model and returns that to the user where it is displayed to them.
+
+        
+        
