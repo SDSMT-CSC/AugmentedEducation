@@ -4,17 +4,17 @@ z
 \chapter{Design  and Implementation}
 
 \section{Systems Goals}
-The goal of this system is to establish a tool chain between CAD files and AR hardware. To this affect, the system must provide a web interface for users to upload CAD files to the cloud to be converted to file types render-able by AR hardware for on-demand downloading and rendering by AR devices.  
+The goal of this system is to establish a tool chain between CAD files and AR hardware. To this effect, the system must provide a web interface for users to upload CAD files to the cloud to be converted to file types render-able by AR hardware for on-demand downloading and rendering by AR devices.  
 
 \section{System Overview and Description}
 %Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
-CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
+CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See \ref{fig:UMLSystemOverview}.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{UMLSystemOverview.png}
 	\caption{System Overview Diagram} 
-	\label{UMLSystemOverview}	
+	\label{fig:UMLSystemOverview}	
 \end{figure}
 
 \subsection{Website}
@@ -25,7 +25,7 @@ This major component of the system will broker all interactions occurring across
 \subsection{File Conversion}
 The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
 
-Table \ref{table:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
+Table \ref{tab:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
 Models created in most common Computer Aided Design software can export to some of the input file types.
 
 \begin{table}[!h]
@@ -43,7 +43,7 @@ Models created in most common Computer Aided Design software can export to some 
         \hline
     \end{tabular}
     \caption{Supported File Types}
-    \label{table:suportedfiletypes}
+    \label{tab:suportedfiletypes}
 \end{table}
 
  \section{Architecture and System Design}
@@ -86,11 +86,16 @@ When a file us upload, a QR code generator plugin will be activated to generate 
 
 When a file is accessed by an AR device, conversion software will convert the file to the appropriate AR compatible file type before delivery. This converted file will be stored on the cloud server for a limited time to streamline repeated and multi-user access.
   
- \subsection{UML}
+\subsection{UML}
  
-    \includegraphics[width=\textwidth]{UML.png}
-
- \subsection{UX}
+	\begin{figure}[H]
+	 	\centering
+		\includegraphics[width=\textwidth]{UML.png}
+		\caption{System UML Diagram} 
+	 	\label{fig:SystemUML}	
+	\end{figure}
+    
+\subsection{UX}
 
 Upon delivery of the MVP, user experience testing will be conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing will include inspection of the elements including, but not limited to, the following:
 
@@ -258,24 +263,23 @@ You can find refeneces to the wireframes below.
     \end{itemize}
 
 
-
  \section{File Conversion}
 
     \subsection{Overview}
     \paragraph{}
     A major tool in the project is the File Conversion Software.  
     The file conversion software aims to read in many different 3D model file types (.fbx, .obj, .dae, ...) and convert them to another desired 3D file type.  
-    A brief listing of suported file types is in table \ref{table:suportedfiletypes}.
-
+    A brief listing of supported file types is in table \ref{tab:suportedfiletypes}.
+    
     \paragraph{}
     This tool is intended to be used on the back end of the website.  Whenever a user uploads a file, it can be converted to a common file type, using this tool.
     When the user requests a download on an AR device, the type may be different than what is stored.  Therefore, the tool will be used to convert the file before
     it is sent to the user.
-
+    
     \paragraph{}
     Since this tool is intended to be used on the backend of a website, it is appropriate to use a command line interface.  
     The flags that can be passed to the program are listed below:
-
+    
     \begin{table}[h]
         \centering
         \begin{tabular}{l  l}
@@ -285,21 +289,40 @@ You can find refeneces to the wireframes below.
             -t & The file type (.fbx, .obj, .dae, ...) to export to
         \end{tabular}
     \end{table}
-
+    
     Note the -t flag is only needed when using the -odir flag.  The -odir just specifies which directory to write to, but not the file type.
     Therefore, more information is needed in order to export to a file.  The -o flag will parse the file name and extract the file type from the -i file name.
-
+    
     An example command to run:
-
+    
     \begin{center}
         .\textbackslash FileConversion.exe -i C:\textbackslash SomePath\textbackslash someFile.obj -t fbx -odir C:\textbackslash SomeOtherPath\textbackslash
     \end{center}
-
+    
     This will convert a file named someFile.obj located at C:\textbackslash SomePath\textbackslash  to an FBX file named someFile.fbx located at 
     C:\textbackslash SomeOtherPath\textbackslash
+    
+    \subsubsection{File Type Research}
+
+    The goal for the file type research was to find out what the commond 3D model file types are, and what is commonly used with AR devices.  Another goal was to determine a common file type for all file types on the website.
+
+    \paragraph{OBJ}
+    The OBJ filetype (Wavefront OBJ) stores a list of verticies, and constructs faces using the verticies.  OBJ supports textures, applied to each face, that are stored in a seperate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed.
+
+    \paragraph{STL}
+    The STL file type (sterolithography) stores a list of verticies and forms triangles to form the surfaces of an object.  This file type does not support textures.  It is commonly used in 3D printing.
+
+    \paragraph{DAE}
+    The DAE file type (Collada) uses XML to store a 3D model.  It supports textures and animations imbedded in the file.  Therefore, a model with textures and/or animations are stored in a single file.
+
+    \paragraph{FBX}
+    The FBX file type (Autodesk FilmBox) is a propriatary file format for Autodesk.  It is commonly used, and is supported, by many different AR devices.
+
+    \paragraph{Conculsions}
+    The above file types were found to be the most common.  The intermediate file type was agreed to be DAE.  It supported the most features while encapsulating all the data in a single file.
 
     \subsection{Technologies Used}
-
+    
     The code for the file conversion toolset is written in C++.  There are two main external libraries used:
     \begin{itemize}
         \item Open Asset Import Library (assimp)
@@ -399,13 +422,8 @@ You can find refeneces to the wireframes below.
 
     \paragraph{File Conversion}
     \hfill \break
-<<<<<<< HEAD
-    The file conversion portion of the progarm is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
-    This seciton implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
-=======
     The file conversion portion of the program is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
     This section implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
->>>>>>> 4b470a99679d11b27f642932af414e45e9903a45
     library implementation classes are called AssimpConverter and FBXConverter.  A class named FileConverter contains the logic on determining which 
     library/libraries to use when converting the file.
 
