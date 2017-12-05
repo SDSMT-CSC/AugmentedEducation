@@ -59,17 +59,30 @@ Models created in most common Computer Aided Design software can export to some 
  Failed designs, design ideas, rejected designs here.
  
  \subsection{Data Flow}
- %me
+The web interface for users creates a data upstream exists between the web interface and cloud server. Users may upload, update, and delete remotely hosted files. 
+
+Data downstream exists between the cloud server and AR hardware. Data downstream is initiated by users calling file download via QR codes or direct download link. 
+
+When a file us upload, a QR code generator plugin will be activated to generate and deliver a unique QR code to the web interface to be downloaded by the user and stored on the cloud server in association with the related file. 
+
+When a file is accessed by an AR device, conversion software will intercede to convert the file to the appropriate AR compatible file type before delivery. This converted file will be stored on the cloud server for a limited time to streamline repeat or  multi-user access. 
+  
  \subsection{UML}
     
    \begin{figure}[H]
    	\centering
    	\includegraphics[width=\textwidth]{UML.png}
-   	\caption{Architecture UML Diagram} 	
+   	\caption{Architecture UML Diagram}
+   	\label{UML}
    \end{figure}
    
  \subsection{UX}
-%me
+
+
+
+
+
+
 
  \section{Website}
 
