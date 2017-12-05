@@ -10,6 +10,7 @@ intended to be a detailed requirements listing.  Keep in mind that
 this section is still part of the Overview.
 
 \section{System Overview and Description}
+<<<<<<< HEAD
 Provide a more detailed description of the major system components
 without getting too detailed.  This section should contain a
 high-level block and/or flow diagram of the system highlighting the
@@ -30,10 +31,25 @@ update correctly.
 
 \subsection{Website}
 Describe briefly the role this major component plays in this system. 
+=======
+%Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
+CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{UMLSystemOverview.png}
+	\caption{System Overview Diagram} 
+	\label{UMLSystemOverview}	
+\end{figure}
+
+\subsection{Website}
+%Describe briefly the role this major component plays in this system. 
+
+This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
+>>>>>>> 4b470a99679d11b27f642932af414e45e9903a45
 
 \subsection{File Conversion}
-The file conversion software converts files between common 3D file types.  It is designed to 
-be called from the back end of the website.
+The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
 
 Table \ref{table:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
 Models created in most common Computer Aided Design software can export to some of the input file types.
@@ -56,58 +72,39 @@ Models created in most common Computer Aided Design software can export to some 
     \label{table:suportedfiletypes}
 \end{table}
 
-\section{Technologies Overview}
-This section should contain a list of specific technologies used to
-develop the system.  The list should contain the name of the
-technology, brief description, link to reference material for further
-understanding, and briefly how/where/why it was used in the system.
-See Table~\ref{somenumbers}.  This is a floating table environment.
-\LaTeX\ will try to put it close to where it was typeset but will not
-allow the table to be split.
-
-\begin{table}[tbh]
-\caption{A sample Table ... some numbers. \label{somenumbers}}
-\begin{center}
-\begin{tabular}{|r|l|}
-  \hline
-  7C0 & hexadecimal \\
-  3700 & octal \\ \cline{2-2}
-  11111000000 & binary \\
-  \hline \hline
-  1984 & decimal \\
-  \hline
-\end{tabular}
-\end{center}
-\end{table}
-
-
  \section{Architecture and System Design}
-This is where you will place the overall system design and the architecture.   This section will be very detailed and should be image rich.  There is the old phrase {\it a picture is worth a thousand words}, in this class it could be worth hundreds of points (well if you sum up over the entire team).   One needs to enter the design and why a particular design has been done.   THIS IS THE CORE OF THE COURSE.    
+%This is where you will place the overall system design and the architecture.   This section will be very detailed and should be image rich.  There is the old phrase {\it a picture is worth a thousand words}, in this class it could be worth hundreds of points (well if you sum up over the entire team).   One needs to enter the design and why a particular design has been done.   THIS IS THE CORE OF THE COURSE.    
  
  
- {\it It is important for you to say why as much as what.   }
+% {\it It is important for you to say why as much as what.   }
  
    \subsection{Design Selection}
  Failed designs, design ideas, rejected designs here.
  
- \subsection{Data Structures and Algorithms}
- Describe the special data structures and any special algorithms.
- 
  \subsection{Data Flow}
- 
- \subsection{Communications}
- 
- \subsection{Classes}
- 
+The web interface for users creates a data upstream exists between a web browser and a cloud server. Users may upload, update, and delete remotely hosted files.
+
+Data downstream exists between the cloud server and AR hardware. Data downstream is initiated by users calling file download through QR codes or direct download links. 
+
+When a file us upload, a QR code generator plugin will be activated to generate and deliver a unique QR code to the web interface to be downloaded by the user and stored on the cloud server in association with the related file. 
+
+When a file is accessed by an AR device, conversion software will convert the file to the appropriate AR compatible file type before delivery. This converted file will be stored on the cloud server for a limited time to streamline repeated and multi-user access.
+  
  \subsection{UML}
  
     \includegraphics[width=\textwidth]{UML.png}
 
  \subsection{UX}
- 
- \subsection{UI}
- 
- \subsection{MVVM, etc}
+
+Upon delivery of the MVP, user experience testing will be conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing will include inspection of the elements including, but not limited to, the following:
+
+\begin{itemize}
+	\item Appearance
+	\item Ease of use
+	\item Help and guidance features
+	\item Ease of locating control features and elements of interest
+	\item Speed of content delivery 
+\end{itemize}
 
  \section{Website}
 
@@ -287,7 +284,7 @@ these tool will be offered below.
     3D viewer supports FBX files very easily.  Therefore, it was decided that the conversion software needed to export to FBX.  The best tool to do 
     so is the FBX SDK, since FBX is a propriatary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it will read and write.
     Therefore, the Open Asset Import Library is used to better support a wide array of file types.  So in using assimp and the FBX SDK together,
-    the converison software can support a wide range of both import and export file types.
+    the conversion software can support a wide range of both import and export file types.
 
     \subsection{Data Flow}
         There are four main paths data can flow.
@@ -346,7 +343,7 @@ these tool will be offered below.
     \hfill \break
     The parameter parsing code is in a class called ParseParameters.  ParseParameters has a constructor that takes the number of command line arguments, 
     and the command line arguments.  It will parse the values needed out into member variables that are public.  It will ignore invalid arguments,
-    and print a usage statement if the correct arguments are not supplied.  When printing the useage statement, cout is used to write to standard out.
+    and print a usage statement if the correct arguments are not supplied.  When printing the usage statement, cout is used to write to standard out.
 
     After processing the command line arguments, the member variables in the class will be set with the appropriate information.  The member variables are:
 
@@ -369,8 +366,13 @@ these tool will be offered below.
 
     \paragraph{File Conversion}
     \hfill \break
+<<<<<<< HEAD
     The file conversion portion of the progarm is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
     This seciton implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
+=======
+    The file conversion portion of the program is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
+    This section implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
+>>>>>>> 4b470a99679d11b27f642932af414e45e9903a45
     library implementation classes are called AssimpConverter and FBXConverter.  A class named FileConverter contains the logic on determining which 
     library/libraries to use when converting the file.
 
