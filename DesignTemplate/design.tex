@@ -13,7 +13,7 @@ The goal of this system is to establish a tool chain between CAD files and AR ha
 %Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
 CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{UMLSystemOverview.png}
 	\caption{System Overview Diagram} 
@@ -49,31 +49,6 @@ Models created in most common Computer Aided Design software can export to some 
     \label{table:suportedfiletypes}
 \end{table}
 
-\section{Technologies Overview}
-This section should contain a list of specific technologies used to
-develop the system.  The list should contain the name of the
-technology, brief description, link to reference material for further
-understanding, and briefly how/where/why it was used in the system.
-See Table~\ref{somenumbers}.  This is a floating table environment.
-\LaTeX\ will try to put it close to where it was typeset but will not
-allow the table to be split.
-
-\begin{table}[tbh]
-\caption{A sample Table ... some numbers. \label{somenumbers}}
-\begin{center}
-\begin{tabular}{|r|l|}
-  \hline
-  7C0 & hexadecimal \\
-  3700 & octal \\ \cline{2-2}
-  11111000000 & binary \\
-  \hline \hline
-  1984 & decimal \\
-  \hline
-\end{tabular}
-\end{center}
-\end{table}
-
-
  \section{Architecture and System Design}
 %This is where you will place the overall system design and the architecture.   This section will be very detailed and should be image rich.  There is the old phrase {\it a picture is worth a thousand words}, in this class it could be worth hundreds of points (well if you sum up over the entire team).   One needs to enter the design and why a particular design has been done.   THIS IS THE CORE OF THE COURSE.    
  
@@ -83,28 +58,18 @@ allow the table to be split.
    \subsection{Design Selection}
  Failed designs, design ideas, rejected designs here.
  
- \subsection{Data Structures and Algorithms}
- Describe the special data structures and any special algorithms.
- 
  \subsection{Data Flow}
- 
- \subsection{Communications}
- 
- \subsection{Classes}
- 
+ %me
  \subsection{UML}
     
-   \begin{figure}
+   \begin{figure}[H]
    	\centering
    	\includegraphics[width=\textwidth]{UML.png}
    	\caption{Architecture UML Diagram} 	
    \end{figure}
    
  \subsection{UX}
- 
- \subsection{UI}
- 
- \subsection{MVVM, etc}
+%me
 
  \section{Website}
 
