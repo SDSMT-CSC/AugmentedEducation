@@ -1,6 +1,9 @@
 % !TEX root = DesignDocument.tex
 
 \chapter{User Stories,  Requirements, and Product Backlog}
+
+
+
 \section{Overview}
 
 
@@ -24,7 +27,7 @@ ourselves organized and creating clear definitions of what needed to be done.
 In order to define actionable items for our product backlog, we had to define
 the requirements for our project. This in turn was defined through user stories.
 
-% The user stories are provided by the stakeholders. You will create he
+% The user stories are provided by the stakeholders. You will create the
 % backlogs and the requirements, and document here. This chapter should
 % contain details about each of the requirements and how the requirements are 
 % or will be satisfied in the design and implementation of the system.
@@ -33,19 +36,9 @@ the requirements for our project. This in turn was defined through user stories.
 % could be any number of sub-sections to help provide the necessary level of
 % detail.
 
-\section{User Stories}
-% This section can really be seen as the guts of the document.  This section
-% should be the result of discussions with the stakeholders with regard to the
-% actual functional requirements of the software.  It is the user stories that
-% will be used in the work breakdown structure to build tasks to fill the
-% product backlog for implementation through the sprints.
 
-% This section should contain sub-sections to define and potentially provide a
-% breakdown of larger user stories into smaller user stories. Each component
-% must have a test identified, meaning you need to know how you plan to test 
-% it. If a requirement is not testable, then some justification needs to be 
-% made on why the requirement has been included. The results of the tests 
-% should go in the testing chapter.
+\section{User Stories}
+
 
 User stories are collected through conversations with the stakeholders and
 regularly displaying what we have accomplished. Our senior design team has
@@ -73,100 +66,132 @@ Some base requirements we have identified for our platform include:
 	\item Must render files on the Microsoft HoloLens
 \end{itemize}
 
-% Syllabus:
-% It is strongly suggested that you have a minimum of three development cycles
-% with deliverables each semester to achieve these goals.  These decisions are
-% part of the design document grade.
+At the advice of our faculty advisor, we grouped our user stories into three 
+development rounds. For each user story we discuss the testability of the 
+feature, and include the test if it is.
 
-% WIP: defining 3 'cycles' with the following user stories
+% This section can really be seen as the guts of the document.  This section
+% should be the result of discussions with the stakeholders with regard to the
+% actual functional requirements of the software.  It is the user stories that
+% will be used in the work breakdown structure to build tasks to fill the
+% product backlog for implementation through the sprints.
 
-% As an SD Mines faculty member, I want:
-% To upload a Maple 3D file to a cloud server
-% The Maple 3D file to be automatically converted to an AR Tag
-% To download the AR Tag for my model from the cloud server
-
-% As a user, I want:
-% To view the AR Tag with an AR Headset and render the 3D model
-
-% As an SD Mines faculty member, I want:
-% To log in to a secure account on the cloud server
-% To choose my files to be private, shared with some, or public
-% To browse and download files that are public or shared with me
-% To be able to build models for a ‘time lapse layered’ presentation
-% Swipe right for more detail, left for less
+% This section should contain sub-sections to define and potentially provide a
+% breakdown of larger user stories into smaller user stories. Each component
+% must have a test identified, meaning you need to know how you plan to test 
+% it. If a requirement is not testable, then some justification needs to be 
+% made on why the requirement has been included. The results of the tests 
+% should go in the testing chapter.
 
 \subsection{Round One}
 
 User Stories:
-
 \begin{itemize}
-	\item As a faculty member, I want a Maple file to be automatically converted into an AR Tag on a cloud server.
-	\item As a user, I want to be able to view an AR tag through a Microsoft HoloLens to render a 3D model.
+	\item As an SD Mines faculty member, I want:
+		\begin{itemize}
+			\item To upload a Maple 3D file to a cloud server.
+			\item Have the Maple 3D file to be automatically converted to an AR 
+			Tag.
+			\item Download the AR Tag for my model from the cloud server.
+		\end{itemize}
+\end{itemize}
+Tests:
+\begin{itemize}
+	\item Test conversion of multiple types of 3D models.
+	\item Test viewing and manipulating the models on the HoloLens.
+	\item Test generation of a unique AR tag for each model.
+	\item Test the upload and download process for a 3D model.
 \end{itemize}
 
-View a Maple 3D model on a Microsoft HoloLens
+\subsection{Round Two}
 
-\subsubsection{AR Rendering}
-
+User Stories:
 \begin{itemize}
-	\item As a faculty member, I want a Maple file to be automatically converted into an AR Tag on a cloud server.
-	\item As a user, I want to be able to view an AR tag through a Microsoft HoloLens to render a 3D model.
+	\item As a faculty member, I want:
+	\begin{itemize}
+		\item A Maple file to be automatically converted into an AR Tag on a 
+		cloud server.
+		\item To log in to my secure account on the cloud server and view my 
+		uploaded files.
+		\item To choose my files to be private, shared with some, or public.
+	\end{itemize}
+	\item As a user, I want:
+	\begin{itemize}
+		\item To be able to view surface materials.
+		\item To be able to detect an AR tag through a Microsoft HoloLens and 
+		have the 3D model rendered.
+	\end{itemize}
+\end{itemize}
+Tests:
+\begin{itemize}
+	\item Upload a file and verify that the AR tag received links to the correct
+	model.
+	\item Testing the security of an account may be out of the scope of this 
+	project. We will strive to research and maintain best practices while 
+	implementing features.
+	\item Test privacy rules and visibility for files by creating multiple 
+	profiles with different privacy settings.
+	\item Gather 3D models of multiple file types and test the rendering of 
+	textures and surface materials.
 \end{itemize}
 
-\subsubsection{Website Hosting}
+\subsection{Round Three}
 
+User Stories:
 \begin{itemize}
-	\item As a faculty member, I want to upload a Maple 3D model to a cloud server.
-	\item As a faculty member, I want to be able to download the AR tag for my document from a cloud server.
+	\item As a faculty member, I want:
+	\begin{itemize}
+		\item To browse and download files that are public or shared with me.
+		\item To be able to build models for a ‘time lapse layered’ 
+		presentation. Swipe right for more detail, left for less
+	\end{itemize}
+	\item As a user, I want: 
+	\begin{itemize}
+		\item To be able to slice a 3D model and view a section of the model.
+		\item To be able to be able to switch between models quickly in the AR 
+		device.
+	\end{itemize}
 \end{itemize}
-
-\subsubsection{Sprint Zero Breakdown}
-User stories can be broken down into two main categories: AR Rendering and Website Hosting.  Half of the team will primarily work on
-the AR Rendering stories, and the other half the Website Hosting stories.  The main goal of these user stories is to view a
-3D model from the Maple software on a Microsoft HoloLens where the files are stored and managed in the cloud.
-
-\subsection{Round One}
-
-\subsubsection{AR Rendering}
-
+Tests:
 \begin{itemize}
-	\item As a user, I want to be able to view surface materials
-	\item As a user, I want to be able to slice a 3D model and view a section of the model
-	\item As a user, I want to be able to be able to switch between models quickly in the AR device
+	\item Verify that privacy settings work and users are able to download files
+	according to permissions on those files.
+	\item Test gesture control in the HoloLens application.
+	\item Use multiple 3D models and multiple examples of slicing to create 
+	sections.
 \end{itemize}
-
-\subsubsection{Sprint Three Breakdown}
-
-The clients shared some of their requests for how the files are rendered and viewed in an AR device.  These include viewing surfact
-
-\subsection{User Story \#2}
-
-\subsubsection{User Story \#2 Breakdown}
-User story \#2  ....
-
-\subsection{User Story \#3}
-
-\subsubsection{User Story \#3 Breakdown}
-User story \#3  ....
-
 
 
 \section{Requirements and Design Constraints}
+
+
+One of the big requirements for this product is having an AR-capable headset
 Use this section to discuss what requirements exist that deal with meeting the
 business need.  These requirements might equate to design constraints which can
 take the form of system, network, and/or user constraints.  Examples:  Windows
 Server only, iOS only, slow network constraints, or no offline, local storage capabilities.
 
+\subsection{System Requirements}
 
-\subsection{System  Requirements}
 % What are they? How will they impact the potential design? Are there alternatives
+The basic system requirements to use the website are to have a web browser 
+installed with internet access.  The user must have access to modeling software 
+or a method to create/provide 3D models to the website.
 
-The basic system requirements to use the website are to have a web browser installed with internet access.  The user must have access to modeling software or a method to create/provide 3D models to the website.
+In order to fully use the product, a user must have an Augmented Reality device.
+Each device may have different system requirements. Some AR devices such as the 
+HoloLens or AR compatible smartphones will not require a computer to run off. 
+However, some AR devices require to be tethered to a computer. Usually, 
+manufacturers detail a set of quite high minimum specifications for a computer 
+that can be used
 
-In order to fully use the product, a user must have an Augmented Reality device.  Each device may have different system requirements.
-
-For example, the Meta 2 requires a seperate computer in order to run.  The minimum and recommended specifications are listed below.  The list was crated in November 2017, and can be found in table \ref{table:metatwosystemrequirements}.
-
+The Meta 2 is an example of a headset that requires a seperate computer in order
+to run.  In our research we found that the Meta 2 specified one of the highest 
+recommended specifications among popular VR headsets. This makes it a good 
+example for system specifications that would run an AR application smoothly. 
+The minimum and recommended specifications are listed below. The list was crated
+in November 2017, and can be found in table 
+\ref{table:metatwosystemrequirements}.
 
 \begin{table}[H]
 	\centering
@@ -186,37 +211,62 @@ For example, the Meta 2 requires a seperate computer in order to run.  The minim
 	\label{table:metatwosystemrequirements}
 \end{table}
 
-More up to date requirements can be found on the Meta 2 website at: \url{https://buy.metavision.com/}
+More up to date requirements can be found on the Meta 2 website at: 
+\url{https://buy.metavision.com/}
 
 \subsection{Network Requirements}
-What are they?
 
+Being able to take advantage of the features in this product will need a network
+that is able to easily upload and download 3D models. The user will need to have
+both their computer and AR viewer configured for network access.
 
 \subsection{Development Environment Requirements}
-What are they?  Is the system supposed to be cross-platform?
+% What are they? Is the system supposed to be cross-platform?
+\begin{itemize}
+	\item Windows 10 - To be able to develop for the HoloLens.
+	\item Visual Studio 2017 Enterprise with ASP.NET MVS, Azure and Unity tools.
+	\item Unity Personal
+	\item HoloToolkit - Unity Set of tools for Hololens development with Unity.
+	\item Assimp library
+	\item FBX SDK
+\end{itemize}
 
-\subsection{Project  Management Methodology}
-The stakeholders might restrict how the project implementation will be managed.
- There may be constraints on when design meetings will take place.  There might
-be restrictions on how often progress reports need to be provided and to whom.
+
+\subsection{Project Management Methodology}
+% The stakeholders might restrict how the project implementation will be managed.
+%  There may be constraints on when design meetings will take place. There might
+% be restrictions on how often progress reports need to be provided and to whom.
+The team has a weekly meeting with our client representative Jared Johnson and 
+our faculty advisors, Dr. McGough and Dr. Karlsson. At these meetings we provide
+progress reports and discuss any design modifications and blocks.
+
+The team for this project has self-organized and decided on Brady Shimp as a
+Scrum Master and Cheldon Coughlen as Team Lead. We use GitHub for the majority 
+of our project management tools, issue tracking being the main feature.
+
+% \section{Specifications}
 
 
-\section{Specifications}
-Any specifications that need to be understood?  Put it here.
+% Any specifications that need to be understood? Put it here.
+
 
 \section{Product Backlog}
+
+
 This is the entire backlog for the project, including each actionable item we 
 have completed or will be working on. New items and checkpoints will be added 
 here as they come up.
+
 \begin{itemize}
 \item Take in files from Maple and convert them to stored file type.
 \item Create website to upload and download 3D models
 \item \textbf{Checkpoint One:} Create wireframes, documentation for presentation 1.
 \item Host conversion software on the website.
 \item Test viewing 3D objects on the HoloLens.
-\item Create unique QR codes for each file. 
+\item Manually create unique QR codes for each file. 
 \item \textbf{Checkpoint Two:} Create wireframes, demos, documentation for presentation 
 2.
+\item Automatic QR code generation.
 \item Detect QR code and download file.
 \item Create and manage user profiles.
 \item Allow users to control visibility of uploaded models.
@@ -226,6 +276,7 @@ with it.
 \end{itemize}
 
 \subsection{Backlog Tracker}
+
 We manage our backlog using GitHub's project board. Using GitHub's system is 
 convenient as we also use it to host our code repository. Items from our backlog 
 are added to the backlog column of the project board. They are sometimes broken 
@@ -234,13 +285,21 @@ developers.
 
 When the issue is ready to be worked on, it is taken from the backlog and 
 assigned to a developer. The project board has three other sections: 
-'Work in Progress', 'QA', and 'Ready'. Once the developer begins working on it, 
+'Work in Progress', 'QA', and 'Ready' as seen in Figure 
+~\ref{fig:ProjectTaskBoard}. Once the developer begins working on it, 
 they move it to 'Work in Progress'. When they have the issue taken care of, they
 move it to 'QA' and assign it to a developer that has not worked on the issue, 
 but has the background to test it. Once it is verified that the issue has been 
 fixed, it is moved to 'Ready'. If any problems arise while testing the solution,
 it is communicated to the developers who worked on it and the issue is moved 
 back to 'QA'.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{ProjectTaskBoard.png}
+    \caption{Project Task Board}
+    \label{fig:ProjectTaskBoard}
+\end{figure}
 
 By default, just the development team has access to the Sprint and Product 
 Backlog on GitHub, but through stand-alone documentation, presentations, and 
@@ -258,19 +317,30 @@ what needs to happen in subsequent sprints.
 
 
 \section{Research or Proof of Concept Results}
-This section is reserved for the discussion centered on any research that needed
-to take place before full system design.  The research efforts may have led to
-the need to actually provide a proof of concept for approval by the stakeholders.
- The proof of concept might even go to the extent of a user interface design or
-mockups.
+
+
+To some extent, the work done in our first semester is centered on giving our 
+stakeholders a proof of concept so that they can begin to drive the requirements
+of the project in the future. We had a couple of meetings with faculty to demo 
+what we were able to create in VR and AR so that they could see the capabilities
+of the technology, and think about how they could integrate it in their 
+classroom. At the end of our first semester of development, we will have an MVP
+to demonstrate the proof of concept. Our presentations through the semester have 
+contained wireframes and demos that reflect the features our MVP will have.
+
+With regards to research and system design, the team has been doing both
+concurrently. This is possible since Dr. McGough provided the team with a 
+high-level view of the entire system and the data flow before we began the 
+project. This meant that the team able to focus on researching and implementing 
+smaller pieces of the system. 
 
 
 \section{Supporting Material}
 
 
-As mentioned earlier, the original mobile computing grant proposed by Dr.
+As mentioned earlier, the original mobile computing grant proposed by Dr. 
 McGough and other SD Mines faculty is the main source that has driven the
-specifications of the product. We have provided the grant in
+specifications of the product. We have provided the grant in 
 ~\autoref{ch:support} so that the reader has a good understanding of the
 motivation behind this product, and what the long-term goals are.
 
