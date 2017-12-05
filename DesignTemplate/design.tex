@@ -200,7 +200,7 @@ This is where you will place the overall system design and the architecture.   T
         This outlines that the program tries to use a single library to convert the file before using multiple.  If a single library is unable to 
         read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
         using a single library is if a user wants to read a .obj and write to a .fbx.  The FBX SDK can handle reading and writing those particular file
-        types, so it will be used ot do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
+        types, so it will be used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
         Assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimp is used to 
         read the .ply, write to a .dae (common file type).  The FBX SDK then reads the .dae and writes to a .fbx.
 
@@ -251,7 +251,7 @@ This is where you will place the overall system design and the architecture.   T
 
     \paragraph{File Conversion}
     \hfill \break
-    The file conversion portion of the progarm is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
+    The file conversion portion of the program is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
     This seciton implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
     library implementation classes are called AssimpConverter and FBXConverter.  A class named FileConverter contains the logic on determining which 
     library/libraries to use when converting the file.
@@ -296,16 +296,16 @@ This is where you will place the overall system design and the architecture.   T
     The list of file types supported is taken from the Open Asset Import Library website's list of supported input file types.  
     The output file types list comes from the same location.
     When converting a file, optimizations may be performed on the file to remove unnecessary/duplicate information.  For example, when importing a file, 
-    repeatedverticies in the meshes will be condensed into one, to help reduce the size of the file.
+    repeated verticies in the meshes will be condensed into one, to help reduce the size of the file.
 
     \subparagraph{FBXConverter}
     \hfill \break
     The FBXConverter inherits the AbstractConverter and uses the FBX SDK to import and export files.
-    THe file type input and output lists are derived from the FBX SDK website.
+    The file type input and output lists are derived from the FBX SDK website.
 
     \subparagraph{FileConverter}
     \hfill \break
-    The FileConverter looks at the input and output file types, and determines which library/libraries needed to convert the file.
+    The FileConverter looks at the input and output file types, and determines which library/libraries are needed to convert the file.
     It tries see if a single library can do the conversion.  If not, then both libraries are used by exporting from one into a 
     temporary file (.dae) and converting that to the final file type. After comparing the read/write lists between the libraries,
     the DAE file type was common between the two, and included features that other file types did not.  Therefore, it was chosen
