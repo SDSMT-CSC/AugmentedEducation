@@ -4,34 +4,9 @@ z
 \chapter{Design  and Implementation}
 
 \section{Systems Goals}
-Briefly describe the overall goals this system plans to achieve.
-These goals are typically provided by the stakeholders.  This is not
-intended to be a detailed requirements listing.  Keep in mind that
-this section is still part of the Overview.
+The goal of this system is to establish a tool chain between CAD files and AR hardware. To this affect, the system must provide a web interface for users to upload CAD files to the cloud to be converted to file types render-able by AR hardware for on-demand downloading and rendering by AR devices.  
 
 \section{System Overview and Description}
-<<<<<<< HEAD
-Provide a more detailed description of the major system components
-without getting too detailed.  This section should contain a
-high-level block and/or flow diagram of the system highlighting the
-major components.  See Figure~\ref{systemdiagram}.  This is a floating
-figure environment.  \LaTeX\ will try to put it close to where it was
-typeset but will not allow the figure to be split if moving it can not
-happen.  Figures, tables, algorithms and many other floating
-environments are automatically numbered and placed in the appropriate
-type of table of contents.  You can move these and the numbers will
-update correctly.
-
-\begin{figure}[tbh]
-\begin{center}
-\includegraphics[width=0.75\textwidth]{./diagram}
-\end{center}
-\caption{A sample figure .... System Diagram \label{systemdiagram}}
-\end{figure}
-
-\subsection{Website}
-Describe briefly the role this major component plays in this system. 
-=======
 %Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
 CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
 
@@ -44,9 +19,8 @@ CAD software and AR hardware are assumed available for use of this platform. Thu
 
 \subsection{Website}
 %Describe briefly the role this major component plays in this system. 
-
 This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
->>>>>>> 4b470a99679d11b27f642932af414e45e9903a45
+
 
 \subsection{File Conversion}
 The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
@@ -79,8 +53,30 @@ Models created in most common Computer Aided Design software can export to some 
 % {\it It is important for you to say why as much as what.   }
  
    \subsection{Design Selection}
- Failed designs, design ideas, rejected designs here.
+   \paragraph{}
+ Many design tools and coding stacks were considered at the beginning of this project.
+ The main decisions we had to make were was our development environment and the cloud services.
  
+ \paragraph{}
+ The first thing that was decided on was the hosting tools.
+ We decided on using the Azure cloud hosting tools for the following reasons.
+
+ \begin{itemize}
+    \item Allows for simple database and web hosting.
+    \item Paid features are offered free to students.
+ \end{itemize}
+
+ We also debated on the coding stack to use for the website.
+ We went with ASP.NET MVC for the following reasons:
+\begin{itemize}
+    \item A majority of the developers were familiar with C\# and Visual Studio.
+    \item The decision to use Azure made ASP.NET MVC a natural choice, since they are both part of the Microsoft stack.
+\end{itemize}
+
+\paragraph{}
+The other options we explored were Amazon Web Service for cloud hosting and linux development environment using Python and Django for the backend logic.
+We didn't persue these because negative feedback from our own developers as other professional reviews.
+
  \subsection{Data Flow}
 The web interface for users creates a data upstream exists between a web browser and a cloud server. Users may upload, update, and delete remotely hosted files.
 
@@ -124,6 +120,36 @@ Upon delivery of the MVP, user experience testing will be conducted once per spr
 This website will be making use of Microsoft's ASP.NET stack along with
 Azure services for database and website hosting. A more indepth look into 
 these tool will be offered below.
+
+\subsection{User Interface}
+The user interface is made to be very simple. The final product
+UI was decided to be made of five main windows. 
+\begin{itemize}
+    \item Home Screen
+    \begin{itemize}
+        \item Here the user will be able to navigate to the different sections of the website.
+        \item The user will need to be logged in to navigate to their pages.
+        \item It has a link link to the sign in and sign up.
+        \item If the user tries to navigate to a page without signing in
+        they will be taken to the login page.
+    \end{itemize}
+
+    \item Upload Screen
+    \begin{itemize}
+        \item This is a very simple page where the user can upload their files
+        \item Once the file is uploaded a QR code will be showing for a reference to the file.
+    \end{itemize}
+
+    \item User, Organization and All Screens
+    \begin{itemize}
+        \item These screens will all be very similar.
+        \item They will allow for the user to search through all
+        available models associatated to the section they are in.
+    \end{itemize}
+\end{itemize}
+
+The wireframes of all of these pages can be found in prototypes and demos section of this document.
+
 
 \subsection{Technologies Used}
 

@@ -4,66 +4,66 @@
 \section{Overview}
 
 
-The purpose of this document is to give the reader a thorough understanding of 
-not only the product created by this senior design team, but also of the 
-process behind developing the project. This spans project purpose, user 
-requirements, team organization, design, implementation, testing, project 
+The purpose of this document is to give the reader a thorough understanding of
+not only the product created by this senior design team, but also of the
+process behind developing the project. This spans project purpose, user
+requirements, team organization, design, implementation, testing, project
 management, and user documentation.
 
-While creating this document, we have endeavored to make it detailed enough 
-that it could be the sole resource needed by a similar team to create an exact 
-replica of our product. 
+While creating this document, we have endeavored to make it detailed enough
+that it could be the sole resource needed by a similar team to create an exact
+replica of our product.
 
-The purpose of this product is to heighten the education experience for 
-students, expecially in scenarios that require 3D visualization. The goal is to 
-make 3D content creation simple so that instructors can take advantage of the 
+The purpose of this product is to heighten the education experience for
+students, expecially in scenarios that require 3D visualization. The goal is to
+make 3D content creation simple so that instructors can take advantage of the
 technology and give their students a more immersive, engaging experience.
 
-Once we had our purpose for the product set out, it was a matter of getting 
-ourselves organized and creating clear definitions of what needed to be done. 
-In order to define actionable items for our product backlog, we had to define 
+Once we had our purpose for the product set out, it was a matter of getting
+ourselves organized and creating clear definitions of what needed to be done.
+In order to define actionable items for our product backlog, we had to define
 the requirements for our project. This in turn was defined through user stories.
 
-% The user stories are provided by the stakeholders. You will create he backlogs 
-% and the requirements, and document here. This chapter should contain details 
-% about each of the requirements and how the requirements are or will be 
-% satisfied in the design and implementation of the system.
+% The user stories are provided by the stakeholders. You will create he
+% backlogs and the requirements, and document here. This chapter should
+% contain details about each of the requirements and how the requirements are 
+% or will be satisfied in the design and implementation of the system.
 
-% Below: list, describe, and define the requirements in this chapter.  There 
+% Below: list, describe, and define the requirements in this chapter.  There
 % could be any number of sub-sections to help provide the necessary level of
-% detail. 
+% detail.
 
 \section{User Stories}
-% This section can really be seen as the guts of the document.  This section 
-% should be the result of discussions with the stakeholders with regard to the 
-% actual functional requirements of the software.  It is the user stories that 
-% will be used in the work breakdown structure to build tasks to fill the 
+% This section can really be seen as the guts of the document.  This section
+% should be the result of discussions with the stakeholders with regard to the
+% actual functional requirements of the software.  It is the user stories that
+% will be used in the work breakdown structure to build tasks to fill the
 % product backlog for implementation through the sprints.
 
-% This section should contain sub-sections to define and potentially provide a 
-% breakdown of larger user stories into smaller user stories. Each component 
-% must have a test identified, meaning you need to know how you plan to test it.
-% If a requirement is not testable, then some justification needs to be made on 
-% why the requirement has been included.  
-% The results of the tests should go in the testing chapter. 
+% This section should contain sub-sections to define and potentially provide a
+% breakdown of larger user stories into smaller user stories. Each component
+% must have a test identified, meaning you need to know how you plan to test 
+% it. If a requirement is not testable, then some justification needs to be 
+% made on why the requirement has been included. The results of the tests 
+% should go in the testing chapter.
 
-User stories are collected through conversations with the stakeholders and 
-regularly displaying what we have accomplished. Our senior design team has 
-weekly meetings with our client to review progress on the project. We meet 
-with other faculty related to the project as necessary in order to receive 
+User stories are collected through conversations with the stakeholders and
+regularly displaying what we have accomplished. Our senior design team has
+weekly meetings with our client to review progress on the project. We meet
+with other faculty related to the project as necessary in order to receive
 specific feedback.
 
 The starting point for the requirements and user stories for this project comes
-from the original grant proposal by Dr. McGough and other SD Mines faculty 
-which can be found in \autoref{sec:support}. Over the course of several 
-meetings and conversations with the professors on the grant, we refined the 
+from the original grant proposal by Dr. McGough and other SD Mines faculty
+which can be found in \autoref{sec:support}. Over the course of several
+meetings and conversations with the professors on the grant, we refined the
 requirements for our product.
 
-An example user story from the grant, which is a close representation of the use 
-case we are trying to support with our MVP, is as follows: 
-"As a Calc III professor, I would like to provide visualizations of 3D objects
-so that students can find the volume of an object by being able to view the
-object from different angles, and being able to slice the object's volume"
+An example user story from the grant, which is a close representation of the
+use case we are trying to support with our MVP, is as follows: "As a Calc III
+professor, I would like to provide visualizations of 3D objects so that
+students can find the volume of an object by being able to view the object
+from different angles, and being able to slice the object's volume"
 
 Some base requirements we have identified for our platform include:
 \begin{itemize}
@@ -74,8 +74,8 @@ Some base requirements we have identified for our platform include:
 \end{itemize}
 
 % Syllabus:
-% It is strongly suggested that you have a minimum of three development cycles 
-% with deliverables each semester to achieve these goals.  These decisions are 
+% It is strongly suggested that you have a minimum of three development cycles
+% with deliverables each semester to achieve these goals.  These decisions are
 % part of the design document grade.
 
 % WIP: defining 3 'cycles' with the following user stories
@@ -95,15 +95,14 @@ Some base requirements we have identified for our platform include:
 % To be able to build models for a ‘time lapse layered’ presentation
 % Swipe right for more detail, left for less
 
-% Create and manage user profiles
-% Securely upload and download files
-% HoloLens application development
-% Integrating QR code reader
-% View uploaded 3D models
+\subsection{Round One}
 
-\subsection{Round Zero}
+User Stories:
 
-Main Goal:
+\begin{itemize}
+	\item As a faculty member, I want a Maple file to be automatically converted into an AR Tag on a cloud server.
+	\item As a user, I want to be able to view an AR tag through a Microsoft HoloLens to render a 3D model.
+\end{itemize}
 
 View a Maple 3D model on a Microsoft HoloLens
 
@@ -122,7 +121,7 @@ View a Maple 3D model on a Microsoft HoloLens
 \end{itemize}
 
 \subsubsection{Sprint Zero Breakdown}
-User stories can be broken down into two main categories: AR Rendering and Website Hosting.  Half of the team will primarily work on 
+User stories can be broken down into two main categories: AR Rendering and Website Hosting.  Half of the team will primarily work on
 the AR Rendering stories, and the other half the Website Hosting stories.  The main goal of these user stories is to view a
 3D model from the Maple software on a Microsoft HoloLens where the files are stored and managed in the cloud.
 
@@ -140,23 +139,23 @@ the AR Rendering stories, and the other half the Website Hosting stories.  The m
 
 The clients shared some of their requests for how the files are rendered and viewed in an AR device.  These include viewing surfact
 
-\subsection{User Story \#2} 
+\subsection{User Story \#2}
 
 \subsubsection{User Story \#2 Breakdown}
-User story \#2  .... 
+User story \#2  ....
 
-\subsection{User Story \#3} 
+\subsection{User Story \#3}
 
 \subsubsection{User Story \#3 Breakdown}
-User story \#3  .... 
+User story \#3  ....
 
 
 
 \section{Requirements and Design Constraints}
-Use this section to discuss what requirements exist that deal with meeting the 
-business need.  These requirements might equate to design constraints which can 
-take the form of system, network, and/or user constraints.  Examples:  Windows 
-Server only, iOS only, slow network constraints, or no offline, local storage capabilities. 
+Use this section to discuss what requirements exist that deal with meeting the
+business need.  These requirements might equate to design constraints which can
+take the form of system, network, and/or user constraints.  Examples:  Windows
+Server only, iOS only, slow network constraints, or no offline, local storage capabilities.
 
 
 \subsection{System  Requirements}
@@ -182,7 +181,7 @@ For example, the Meta 2 requires a seperate computer in order to run.  The minim
 		I/O Ports & 1X HDMI 1.4b and 2X USB 3.0 ports & 1X HDMI 1.4b and 2X USB 3.0 ports \\ \hline
 		3D Engine & Unity 5.6 or higher & Unity 5.6 or higher \\ \hline
 	\end{tabular}
-	
+
 	\caption{Meta 2 System Requirements}
 	\label{table:metatwosystemrequirements}
 \end{table}
@@ -190,53 +189,78 @@ For example, the Meta 2 requires a seperate computer in order to run.  The minim
 More up to date requirements can be found on the Meta 2 website at: \url{https://buy.metavision.com/}
 
 \subsection{Network Requirements}
-What are they? 
+What are they?
 
 
 \subsection{Development Environment Requirements}
-What are they?  Is the system supposed to be cross-platform? 
+What are they?  Is the system supposed to be cross-platform?
 
 \subsection{Project  Management Methodology}
-The stakeholders might restrict how the project implementation will be managed. 
- There may be constraints on when design meetings will take place.  There might 
-be restrictions on how often progress reports need to be provided and to whom. 
+The stakeholders might restrict how the project implementation will be managed.
+ There may be constraints on when design meetings will take place.  There might
+be restrictions on how often progress reports need to be provided and to whom.
 
 
 \section{Specifications}
-Any specifications that need to be understood?  Put it here.  
+Any specifications that need to be understood?  Put it here.
 
 \section{Product Backlog}
-The full initial product backlog should go here.  The sprint backlogs are located in the prototypes chapter.
-
-% Break each point into subsection
+This is the entire backlog for the project, including each actionable item we 
+have completed or will be working on. New items and checkpoints will be added 
+here as they come up.
 \begin{itemize}
-\item What system will be used to keep track of the backlogs and sprint status?
-\item Will all parties have access to the Sprint and Product Backlogs?
-\item How many Sprints will encompass this particular project?
-\item How long are the Sprint Cycles?
-\item Are there restrictions on source control? 
+\item Take in files from Maple and convert them to stored file type.
+\item Create website to upload and download 3D models
+\item \textbf{Checkpoint One:} Create wireframes, documentation for presentation 1.
+\item Host conversion software on the website.
+\item Test viewing 3D objects on the HoloLens.
+\item Create unique QR codes for each file. 
+\item \textbf{Checkpoint Two:} Create wireframes, demos, documentation for presentation 
+2.
+\item Detect QR code and download file.
+\item Create and manage user profiles.
+\item Allow users to control visibility of uploaded models.
+\item HoloLens application development to view downloaded 3D model and interact 
+with it.
+\item \textbf{Final Checkpoint:} Prepare materials for design fair.
 \end{itemize}
 
+% Break each point into subsection
+% \begin{itemize}
+% \item What system will be used to keep track of the backlogs and sprint status?
+% \item Will all parties have access to the Sprint and Product Backlogs?
+% \item How many Sprints will encompass this particular project?
+% \item How long are the Sprint Cycles?
+% \item Are there restrictions on source control?
+% \end{itemize}
+
 % \subsection{Backlog Tracker}
-% What system will be used to keep track of the backlogs and sprint status?
+% We manage our backlog using GitHub's project board. The board has three other 
+% sections: 'Work in Progress', 'QA', and 'Ready'. Using GitHub's system is 
+% convenient as we also use it to host our code repository. 
+
+% By default, just the development team has access to the Sprint and Product 
+% Backlog on GitHub, but through stand-alone documentation, presentations and 
+% other communication, we share this information with our other stakeholders. 
+% If required, we can provide this 
 
 
 
 
 \section{Research or Proof of Concept Results}
-This section is reserved for the discussion centered on any research that needed 
-to take place before full system design.  The research efforts may have led to 
-the need to actually provide a proof of concept for approval by the stakeholders. 
- The proof of concept might even go to the extent of a user interface design or 
-mockups. 
+This section is reserved for the discussion centered on any research that needed
+to take place before full system design.  The research efforts may have led to
+the need to actually provide a proof of concept for approval by the stakeholders.
+ The proof of concept might even go to the extent of a user interface design or
+mockups.
 
 
 \section{Supporting Material}
 
 
-As mentioned earlier, the original mobile computing grant proposed by Dr. 
-McGough and other SD Mines faculty is the main source that has driven the 
-specifications of the product. We have provided the grant in 
-\autoref{sec:support} so that the reader has a good understanding of the 
+As mentioned earlier, the original mobile computing grant proposed by Dr.
+McGough and other SD Mines faculty is the main source that has driven the
+specifications of the product. We have provided the grant in
+\autoref{sec:support} so that the reader has a good understanding of the
 motivation behind this product, and what the long-term goals are.
 
