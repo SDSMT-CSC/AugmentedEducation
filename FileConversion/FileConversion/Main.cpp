@@ -16,7 +16,8 @@ int main(int argc, char ** argv)
 	if (returnValue < 0)
 	{
 		cout << "Error while converting file " << parser.inputFile << " to " << parser.outputFile << endl;
-		return -2;
+		cout << AbstractConverter::ResultString((AbstractConverter::Result) returnValue) << endl;
+		return returnValue;
 	}
 
 	return 0;

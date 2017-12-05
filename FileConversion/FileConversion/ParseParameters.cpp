@@ -107,6 +107,10 @@ ParseParameters::ParseParameters(int count, char **args)
 		{
 			outDir = ".\\";
 		}
+		else if (outDir[outDir.size() - 1] != '\\')
+		{
+			outDir += "\\";
+		}
 
 		outputFile = outDir;
 		int start = inputFile.rfind('\\') + 1;
