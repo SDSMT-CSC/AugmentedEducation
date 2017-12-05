@@ -15,7 +15,7 @@ FBXConverter::FBXConverter()
 	acceptedInputTypes.insert(".dxf");
 
 	acceptedOutputTypes.insert(".dae");
-	acceptedOutputTypes.insert(".obj");
+	//acceptedOutputTypes.insert(".obj");
 	acceptedOutputTypes.insert(".fbx");
 	acceptedOutputTypes.insert(".dxf");
 }
