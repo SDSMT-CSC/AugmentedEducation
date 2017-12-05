@@ -1,0 +1,41 @@
+\hypertarget{fileconversion_fileconverter}
+{
+    \label{fileconversion_fileconverter}
+    \index{FileConversion@FileConverter}
+}
+
+\subsection{FileConverter}
+    \paragraph{}
+        Uses both the AssimpConverter and FBXConverter to convert files.
+
+    \subsubsection{Member Functions}
+
+        \begin{itemize}
+            \item FileConverter()
+            \item \textasciitilde FileConverter()
+            \item bool SupportsInputFileType(string fileType)
+            \item bool SupportsOutputFileType(string fileType)
+            \item Result ConvertFile(string inputFileName, string outputFileName)
+        \end{itemize}
+
+        \paragraph{FileConverter()}
+            \hfill \break
+            The constructor for the class. Initializes the assimp objects.   
+        
+        \paragraph{\textasciitilde FileConverter()}
+            \hfill \break
+            The destructor for the class.
+
+        \paragraph{bool SupportsInputFileType(string fileType)}
+            \hfill \break
+            Defines the method inherited from the abstract method.  The result is whether the Assimp or FBX Converters can read in the file type.
+
+        \paragraph{bool SupportsOutputFileType(string fileType)}
+            \hfill \break
+            Defines the method inherited from the abstract method.  The values of the supported file types are derived the Assimp and FBX Converters and whether they can export to the file type.
+
+        \paragraph{Result ConvertFile(string inputFileName, string outputFileName)}
+            \hfill \break
+            Converts the input file into output file.  The return is a value from the Result enum.  If an in dividual library can fully convert the file, this function will have it do so.  If a single library cannot fully convert a file, a temporary file is created to work between the two libraries.
+        
+        
