@@ -1,0 +1,41 @@
+\hypertarget{fileconversion_assimpconverter}
+{
+    \label{fileconversion_assimpconverter}
+    \index{FileConversion@AssimpConverter}
+}
+
+\subsection{AssimpConverter}
+    \paragraph{}
+        Uses the Open Asset Import Library to convert files.
+
+    \subsubsection{Member Functions}
+
+        \begin{itemize}
+            \item AssimpConverter()
+            \item ~AssimpConverter()
+            \item bool SupportsInputFileType(string fileType)
+            \item bool SupportsOutputFileType(string fileType)
+            \item Result ConvertFile(string inputFileName, string outputFileName)
+        \end{itemize}
+
+        \paragraph{AssimpConverter()}
+            \hfill \break
+            The constructor for the class. Initializes the assimp objects.   
+        
+        \paragraph{~AssimpConverter()}
+            \hfill \break
+            The destructor for the class.
+
+        \paragraph{bool SupportsInputFileType(string fileType)}
+            \hfill \break
+            Defines the method inherited from the abstract method.  The values of the supported file types are derived from the website.
+
+        \paragraph{bool SupportsOutputFileType(string fileType)}
+            \hfill \break
+            Defines the method inherited from the abstract method.  The values of the supported file types are derived from the website.
+
+        \paragraph{Result ConvertFile(string inputFileName, string outputFileName)}
+            \hfill \break
+            Converts the input file into output file.  The return is a value from the Result enum.
+        
+        

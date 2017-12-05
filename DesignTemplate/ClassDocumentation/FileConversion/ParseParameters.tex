@@ -1,0 +1,50 @@
+\hypertarget{fileconversion_parseparameters}
+{
+    \label{fileconversion_parseparameters}
+    \index{FileConversion@ParseParameters}
+}
+
+\subsection{ParseParameters}
+    \paragraph{}
+        Parses the parameters for the input and output file names.  It will set a flag to denote the success of the parsing.
+
+    \subsubsection{Member Functions}
+
+        \begin{itemize}
+            \item ParseParameters(int argc, char ** argv)
+            \item ~ParseParameters()
+        \end{itemize}
+
+        \paragraph{ParseParameters(int argc, char ** argv)}
+            \hfill \break
+            The constructor for the class.  It performs the parsing of the parameters.   
+        
+        \paragraph{~ParseParameters()}
+            \hfill \break
+            The destructor for the class.
+
+    \subsubsection{Member Variables}
+        
+        \begin{itemize}
+            \item (bool) success
+            \item (string) inputFile
+            \item (string) outputFile
+            \item (string) fileExtention
+        \end{itemize}
+
+        \paragraph{(bool) success}
+            A flag for whether a the parameter parsing was successful or not.
+            \begin{itemize}
+                \item True = Successful
+                \item False = Unsuccessful
+            \end{itemize}
+
+        \paragraph{(string) inputFile}
+            The path of the file to read for conversion.  This can be a relative path or a direct path.
+        
+        \paragraph{(string) outputFile}
+            The path of where to write the converted file.  This can be a relative or direct path.
+        
+        \paragraph{(string) fileType}
+            The type set with the -t option.  Used when creating the output file name if a file extention was not provided.
+            
