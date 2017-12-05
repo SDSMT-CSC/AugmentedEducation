@@ -1,63 +1,19 @@
 % !TEX root = DesignDocument.tex
 
 \section{Sprint 0 Report}
-\subsection{Sprint Backlog}
-    \begin{itemize}
-        \item Define the Minimum Viable Product (MVP)
-        \item Define the toolchain
-        \item Identify use cases and create user stories
-        \item Estimate a timeline for the development process
-    \end{itemize}
-
-\subsection{Deliverable}
-    \begin{itemize} 
-        \item Timeline (tentative) 
-        \label{itm:Sprint0-Timeline}
+\label{sec:Sprint0_report}
+    \subsection{Sprint Backlog}
+    \label{sec:Sprint0_backlog}
         \begin{itemize}
-            \item 9/18:
-            \begin{itemize}
-                \item Define user stories.
-                \item Define the MVP.
-                \item Define the toolchain.
-                \item Create tentative timeline.
-            \end{itemize}
-
-            \item 10/2: 
-            \begin{itemize}
-                \item Sample website setup with file upload to web root directory.
-            \end{itemize}
-
-            \item 10/16: 
-            \begin{itemize}
-                \item First client presentation documents.
-                \item Standalone file conversion.
-            \end{itemize}
-
-            \item 10/30:
-            \begin{itemize}
-                \item File conversion on Azure.
-                \item Download original and converted file from Azure.
-            \end{itemize}
-
-            \item 11/13:
-            \begin{itemize}
-                \item Generate unique AR Tags that map to each converted file on Azure.
-            \end{itemize}
-            
-            \item 11/27:
-            \begin{itemize}
-                \item User accounts and login on the Azure site.
-            \end{itemize}
-            
-            \item 12/4 - 12/11:
-            \begin{itemize}
-                \item File sharing permissions between users
-            \end{itemize}
+            \item Define the toolchain
+            \item Define the Minimum Viable Product (MVP)
+            \item Create a data flow diagram to detail the MVP            
+            \item Identify use cases and create user stories
+            \item Estimate a timeline for the development process
         \end{itemize}
-    \end{itemize}
 
-\subsection{Successes and Failures}
-    \subsubsection{Successes}
+    \subsection{Successes}
+    \label{sec:Sprint0_successes}
         \begin{itemize} \item Defined the MVP \end{itemize}
         \hspace{7mm}
         Upload a Maplesoft 3D object file to a website.  Have the website perform an automatic file conversion and 
@@ -78,22 +34,50 @@
         \begin{itemize} 
             \item Created initial user stories 
             \begin{itemize}
-                \item As a faculty member, I want to upload a maple file to a cloud server.
-
-                \item As a faculty member, I want the maple file to be automatically converted to an AR tag on the 
-                cloud server.
-
-                \item As a faculty member, I want to be able to download the AR tag for my document from the cloud 
-                server.
-
-                \item As a user of this product, I want to be able to view the AR tag through a Microsoft Hololens 
-                to render a 3D model.
+                \item As a faculty member, I want:
+                \begin{itemize} 
+                    \item to upload a maple file to a cloud server.
+                    \item the maple file to be automatically converted to an AR tag on the cloud server.
+                    \item to be able to download the AR tag for my document from the cloud server.
+                \end{itemize}
+                \item As a user of this product, I want: 
+                \begin{itemize}
+                    \item to be able to view the AR tag through a Microsoft Hololens to render a 3D model.
+                \end{itemize}
             \end{itemize}
+            \item Estimated tentative development timeline.
         \end{itemize}
 
-        \begin{itemize} \item Estimated tentative development timeline. \hyperref[itm:Sprint0-Timeline]{(See 6.1.2)} \end{itemize}
+    \subsection{Failures}
+    \label{sec:Sprint0_failures}
+        \begin{itemize} \item None \end{itemize}
 
-\subsection{Sprint Review}
-\subsection{Sprint Retrospective}
-\subsection{Sprint Analytics} 
-Place your burndown charts, team velocity information, etc here if they are not discussed above.
+    \subsection{Deliverables}
+    \label{sec:Sprint0_deliverables}
+        \begin{itemize} 
+            \item Definition of the MVP
+            \item Data flow diagram            
+            \item User stories
+            \item Defined toolchain
+            \item A production timeline (tentative)
+        \end{itemize}
+
+    \subsection{Sprint Review}
+    \label{sec:Sprint0_review}
+        All items on the sprint backlog were resolved in a timely, effective manner.
+
+    \subsection{Sprint Retrospective}
+    \label{sec:Sprint0_retrospective}
+        As this is the `setup' sprint, tasks and discussion were primarily limited to topics of planning and preparation.
+        The team has been split into two subteams, a web team and a file conversion team.\\ 
+
+        The web team will be responsible for the development and management of the ASP.NET website.  This includes the
+        structure and design of the website,  as well as the content, 
+        organization, and data storage/access.  Members are Daniel Hodgin, Savoy Schuler, and Brady Shimp.\\
+
+        The file conversion team will be responsible for research into file type and structure of commonly used 3D modelling
+        softwares such as Maplesoft (TM), and file types that are render-able in commonly used Augmented Reality viewing devices.
+        The expected result of the research is to devise a system to convert common 3D modelling software file types into either
+        a common file type that is made render-able by commonly used Augmented Reality viewing devices, or a ubiquitous format
+        that can then be exported to the necessary file format, depending on which Augmented Reality viewing device is 
+        requesting the file.
