@@ -8,13 +8,13 @@ The goal of this system is to establish a tool chain between CAD files and AR ha
 
 \section{System Overview and Description}
 %Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
-CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
+CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See \ref{fig:UMLSystemOverview}.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{UMLSystemOverview.png}
 	\caption{System Overview Diagram} 
-	\label{UMLSystemOverview}	
+	\label{fig:UMLSystemOverview}	
 \end{figure}
 
 \subsection{Website}
@@ -25,7 +25,7 @@ This major component of the system will broker all interactions occurring across
 \subsection{File Conversion}
 The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
 
-Table \ref{table:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
+Table \ref{tab:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
 Models created in most common Computer Aided Design software can export to some of the input file types.
 
 \begin{table}[!h]
@@ -43,7 +43,7 @@ Models created in most common Computer Aided Design software can export to some 
         \hline
     \end{tabular}
     \caption{Supported File Types}
-    \label{table:suportedfiletypes}
+    \label{tab:suportedfiletypes}
 \end{table}
 
  \section{Architecture and System Design}
@@ -86,11 +86,16 @@ When a file us upload, a QR code generator plugin will be activated to generate 
 
 When a file is accessed by an AR device, conversion software will convert the file to the appropriate AR compatible file type before delivery. This converted file will be stored on the cloud server for a limited time to streamline repeated and multi-user access.
   
- \subsection{UML}
+\subsection{UML}
  
-    \includegraphics[width=\textwidth]{UML.png}
-
- \subsection{UX}
+	\begin{figure}[H]
+	 	\centering
+		\includegraphics[width=\textwidth]{UML.png}
+		\caption{System UML Diagram} 
+	 	\label{fig:SystemUML}	
+	\end{figure}
+    
+\subsection{UX}
 
 Upon delivery of the MVP, user experience testing will be conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing will include inspection of the elements including, but not limited to, the following:
 
@@ -258,7 +263,7 @@ The wireframes of all of these pages can be found in prototypes and demos sectio
     \paragraph{}
     A major tool in the project is the File Conversion Software.  
     The file conversion software aims to read in many different 3D model file types (.fbx, .obj, .dae, ...) and convert them to another desired 3D file type.  
-    A brief listing of suported file types is in table \ref{table:suportedfiletypes}.
+    A brief listing of supported file types is in table \ref{tab:suportedfiletypes}.
 
     \paragraph{}
     This tool is intended to be used on the back end of the website.  Whenever a user uploads a file, it can be converted to a common file type, using this tool.
