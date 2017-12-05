@@ -178,44 +178,55 @@ Below is the timeline of accomplished milestones.
 \section{Development Environment}
 %The basic purpose for this section is to give a developer all of the necessary 
 %information to setup their development environment to run, test, and/or develop. 
-The Microsoft enviroment was choosen for the simplicity of the Azure Cloud hosting tools and 
-the store ties the product has to Microsoft's Hololens. Specifically, ASP.net MVC is being used in creation of the website.
-SQL server was chosen, also for it simplicity in integratign with Azure.
+Microsoft's Development environment was chosen for this project. This environment
+was chosen for the following reasons:
+
+\begin{itemize}
+    \item Azure allows for simple cloud hosting and database integration.
+
+    \item Student Licenses give certain paid feature of Azure for free.
+    
+    \item Access to Visual Studio is free through student accounts
+
+    \item Developers were comfortable working with the ASP.NET MVC framework.
+
+    \item Microsoft is the owner of the targeted device, The Hololens.
+
+    \item Unity is used for HoloLens app development which has a C-sharp backing making it necessary to us Microsoft environment.
+
+\end{itemize}
 
 \section{Development IDE and Tools}
 %Describe which IDE and provide links to installs and/or reference material. 
+Many IDE and tools are used to create this project. Below is a list of those
+tools with descriptions:
 
-The IDE of choice for the website and file conversion team is Visual Studio 2017 Enterprise Edition.
-Microsoft SQL Server Management Studio is used for the database.
-Unity Game Engine is used for Hololens App Dvelopment
-
-\paragraph{}
-The tools needed for website development are.
 \begin{itemize}
-    \item ASP.NET framework
-    
-    \item Azure Cloud Hosting Tools
 
-    \item Both tools can be aquired from the Visual Studio Installer
+    \item Website IDE and Tools
+    \begin{itemize}
+        \item Visual Studio 2017 Enterprise - Microsoft's code editor. Allows for easy Azure and database
+        integration. Also allows for easy intallation of the Unity Development Tools.
+        \item ASP.NET MVC - Microsoft's framework for creating websites.
+        \item Azure Cloud Tools - Tools that allow for easy integration with Azure, able to install in Visual Studio Installer
+    \end{itemize}
 
-\end{itemize}
+    \item File Conversion and Tools
+    \begin{itemize}
+        \item Autodesk's FBX SDK is required to export .fbx files.  It must be installed in a folder located in the project directory nmed \"FBX SDK\".  The download can be found at: 
+        \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}.
+        The Windows VS2015 version must be installed.
 
-\paragraph{}
-To compile the web conversion software two libraries are needed.
-\begin{itemize}
-    \item Autodesk's FBX SDK is required to export .fbx files.  It must be installed in a folder located in the project directory nmed \"FBX SDK\".  The download can be found at: 
-    \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}.
-    The Windows VS2015 version must be installed.
-    
-    \item Open Asset Import Library supports a wide variety of import and export file types.  The download can be found at: \url{http://assimp.org/main_downloads.html}.  Version 3.1.1 is what was used in the project. 
-\end{itemize}
+        \item Open Asset Import Library supports a wide variety of import and export file types.  The download can be found at: \url{http://assimp.org/main_downloads.html}.  Version 3.1.1 is what was used in the project.         
+    \end{itemize}
 
-\paragraph{}
-To develop the Hololens application, the following tools are needed:
-\begin{itemize}
-    \item Unity Personal: Unitiy game engine editor that is free for company use, if you make lower than 100,00 dollars per year. 
-    \item Visual Studio Tools for Unity - Can be downloaded from Visual Studio installer.
-    \item HoloToolkit-Unity Set of tools for Hololens development with unity. Free for use. Download from the GitHub page.
+    \item HoloLens Development Tools
+    \begin{itemize}
+        \item Unity Personal. Free version of Unity editor used for creating HoloLens app
+
+        \item HoloToolkit - Free Set of tools you can download from an open source GitHub Project
+
+    \end{itemize}
 \end{itemize}
 
 
@@ -240,15 +251,28 @@ I am trying to make this into a list and it is giving me an hbox overfull and ju
 \section{Dependencies}
 %Describe all dependencies associated with developing the system. 
 \paragraph{Website}
-\begin{description}
-    \item ASP.NET MVC Framework is used for front and backend.
-\end{description}
+\begin{itemize}
+    \item Visual Studio 2017 Enterprise - Microsoft's code editor. Allows for easy Azure and database
+    integration. Also allows for easy intallation of the Unity Development Tools.
+    \item ASP.NET MVC - Microsoft's framework for creating websites.
+    \item Azure Cloud Tools - Tools that allow for easy integration with Azure, able to install in Visual Studio Installer
+\end{itemize}
 
 \paragraph{File Conversion}
-\begin{description}
-    \item [FBX SDK] A library produced by Autodesk that converts from a select few file types to the .fbx file that is easily viewed on Microsoft supported software (Windows 10, Hololens).
-    \item [Open Asset Import Library] A library the reads and writes multiple file types (does not export to .fbx).
-\end{description}
+\begin{itemize}
+    \item Autodesk's FBX SDK is required to export .fbx files.  It must be installed in a folder located in the project directory nmed \"FBX SDK\".  The download can be found at: 
+    \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}.
+    The Windows VS2015 version must be installed.
+
+    \item Open Asset Import Library supports a wide variety of import and export file types.  The download can be found at: \url{http://assimp.org/main_downloads.html}.  Version 3.1.1 is what was used in the project.         
+\end{itemize}
+
+\paragraph{HoloLens App}
+\begin{itemize}
+    \item Unity Personal. Free version of Unity editor used for creating HoloLens app
+
+    \item HoloToolkit - Free Set of tools you can download from an open source GitHub Project
+\end{itemize}
 
 \section{Build  Environment}
 Azure is used to build and deploy the website. Once the tools are downloaded and an Azure account is created, 
