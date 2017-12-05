@@ -1,33 +1,89 @@
-% !TEX root = D../esignDocument.tex
+% !TEX root = ../DesignDocument.tex
 
 \section{Sprint 3 Report}
 \label{sec:Sprint3_report}
     \subsection{Sprint Backlog}
     \label{sec:Sprint3_backlog}
         \begin{itemize}
-            \item File conversion operable on the Azure cloud
-            \item Download original and converted files the ASP.NET web root
+            \item Reserve a development workspace
+            \item Familiarize with the Microsoft Hololens
+            \item Software contract - avoid conflict of interest
+            \item Get file conversion operable on the Azure cloud
+            \item Research Azure blob storage and similar options for file storage
+            \item Be able to download original and converted files the ASP.NET web root
         \end{itemize}
 
     \subsection{Successes}
     \label{sec:Sprint3_successes}
         \begin{itemize}
-            \item Able to convert files from type A to type B once on the Azure cloud
+            \item Avoid conflict of interest
+            \item Familiarize with Microsoft Hololens
+            \item Research into Azure blob storage or similar options complete
+            \item Able to minimally convert files from type A to type B once on the Azure cloud
             \item Able to download both the original and the converted files from the ASP.NET web root
         \end{itemize}
 
     \subsection{Failures}
     \label{sec:Sprint3_failures}
+        \begin{itemize}
+            \item Unable to reserve a development workspace
+            \item File conversion on the Azure cloud is not an automatic process
+        \end{itemize}
 
     \subsection{Deliverables}
     \label{sec:Sprint3_deliverables}
-    \begin{itemize}
-        \item Demonstrate that file conversion is operable on the cloud
-        \item Demonstrate the basic ability to download documents from the web root folder
-    \end{itemize}
+        \begin{itemize}
+            \item Software contract
+            \item Demonstrate that file conversion is operable on the cloud
+            \item Demonstrate the basic ability to download documents from the web root folder
+        \end{itemize}
 
     \subsection{Sprint Review}
     \label{sec:Sprint3_review}
+        \hspace{7mm}
+        A private development workspace is still yet to be reserved.\\
+
+        Conflicts with the SD Mines Buissiness Office have been resolved.  A miscommunication resulted in their
+        understanding that the development team intended to be temporarily employed by SD Mines for the duration
+        of the 2017-18 academic year to receive funds.  Following policy would then require that all IP be retained
+        by SD Mines and not \textit{InTouch L.L.C.}  A problem now arises in that Dr. McGough serves as the PI for
+        the SD Mines Mobile Computing Grant and has a percent stake ownership in \textit{InTouch L.L.C.}  Forwarding
+        any money from the Mobile Computing Grant to \textit{InTouch L.L.C.} presents itself as a conflict of interest.\\
+        
+        The Microsoft Hololens arrived and 3D files are able to be tested for AR compatibility.\\
+
+        The question of file storage space was presented.  Microsoft ImagineX student development accounts do not
+        offer space for document storage.  Research was done into the compatibility of Azure blob storage with 
+        ImagineX student development accounts and similar options.\\
+        
+        Files that are uploaded to the ASP.NET web root folder are able to be successfully converted to an alternate
+        file format.  Both the original file and the converted file are able to be downloaded from the ASP.NET web root
+        folder.  The file conversion process must currently be invoked manually.\\
 
     \subsection{Sprint Retrospective}
     \label{sec:Sprint3_retrospective}
+        \hspace{7mm}
+        The team is mostly satisfied with the progress of the sprint.  The only failing items are automatic file
+        conversion and reserving a private development workspace.\\
+
+        On the subject of finding a private development workspace, the decision remains unanimous that until one 
+        is able to be reserved, working sessions involving the AR and VR equipment that is hardware dependent 
+        will have to be scheduled with a team member who owns a laptop that meets the minimum hardware
+        specifications.\\
+
+        On the subject of conflicts of interest, the unanimous decision between Dr. McGough and the representatives
+        of \textit{InTouch L.L.C.} is that South Dakota Board of Regents policy will be followed to the letter.
+        Including a reduced stake in company ownership and leaving decisions regarding purchase orders with the SD 
+        Mines Mobile Computing Grant funds up to another SD Mines faculty member who is a signer for the grant.\\
+        
+        On the subject of file storage space, options considered were Microsoft OneDrive and Azure blob storage.
+        Microsoft OneDrive only allows interfacing via the web from business subscriptions which remain too 
+        expensive for the budget of this project and would add a large overhead cost to any future clients.
+        Azure blob storage is offered (5 GB per month) for free for a year for a standard trial subscription.
+        The unanimous decision of the development team is that when the point in the development process is reached
+        where files need to be stored and maintained, the team's Azure subscription will be changed from the 
+        ImagineX student developer subscription to the standard free subscription.\\
+        
+        On the subject of automatic file conversion, it is known that the process needs to be made synchronous
+        in order to be automatically invoked when a file is uploaded to the ASP.NET web site.  The item will be
+        presented in the backlog of the following sprint.
