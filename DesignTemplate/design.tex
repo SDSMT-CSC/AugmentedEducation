@@ -4,32 +4,26 @@
 \chapter{Design  and Implementation}
 
 \section{Systems Goals}
-Briefly describe the overall goals this system plans to achieve.
-These goals are typically provided by the stakeholders.  This is not
-intended to be a detailed requirements listing.  Keep in mind that
-this section is still part of the Overview.
+%Briefly describe the overall goals this system plans to achieve. These goals are typically provided by the stakeholders.  This is not intended to be a detailed requirements listing.  Keep in mind that this section is still part of the Overview.
+
+The goal of this system is to establish a tool chain between CAD files and AR hardware. To this affect, the system must provide a web interface for users to upload CAD files to the cloud to be converted to file types render-able by AR hardware for on-demand downloading and rendering by AR devices. 
+
 
 \section{System Overview and Description}
-Provide a more detailed description of the major system components
-without getting too detailed.  This section should contain a
-high-level block and/or flow diagram of the system highlighting the
-major components.  See Figure~\ref{systemdiagram}.  This is a floating
-figure environment.  \LaTeX\ will try to put it close to where it was
-typeset but will not allow the figure to be split if moving it can not
-happen.  Figures, tables, algorithms and many other floating
-environments are automatically numbered and placed in the appropriate
-type of table of contents.  You can move these and the numbers will
-update correctly.
+%Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components.  See Figure~\ref{systemdiagram}. This is a floating figure environment.  \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
+CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
 
-\begin{figure}[tbh]
-\begin{center}
-\includegraphics[width=0.75\textwidth]{./diagram}
-\end{center}
-\caption{A sample figure .... System Diagram \label{systemdiagram}}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{UMLSystemOverview.png}
+	\caption{System Overview Diagram} 
+	\label{UMLSystemOverview}	
 \end{figure}
 
 \subsection{Website}
-Describe briefly the role this major component plays in this system. 
+%Describe briefly the role this major component plays in this system. 
+
+This major component of the system will broker all interactions occurring across the platform. A user interface will be used to provided to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The  
 
 \subsection{File Conversion}
 The file conversion software converts files between common 3D file types.  It is designed to 
@@ -100,9 +94,13 @@ This is where you will place the overall system design and the architecture.   T
  \subsection{Classes}
  
  \subsection{UML}
- 
-    \includegraphics[width=\textwidth]{UML.png} 
-
+    
+   \begin{figure}
+   	\centering
+   	\includegraphics[width=\textwidth]{UML.png}
+   	\caption{Architecture UML Diagram} 	
+   \end{figure}
+   
  \subsection{UX}
  
  \subsection{UI}
