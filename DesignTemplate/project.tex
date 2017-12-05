@@ -100,14 +100,11 @@ Licenses for Visual Studio 2017 need not be purchased as students are already gr
 
 
 \section{Sprint  Overview}
-If the system will be implemented in phases, describe those phases/sub-phases (design, 
-implementation, testing, delivery) and the various milestones in this section. 
- This section should also contain a correlation between the phases of development 
-and the associated versioning of the system, i.e. major version, minor version, 
-revision. 
-
-All of the Agile decisions are listed here.  For example, how do you order your backlog?   
-Did you use planning poker?   
+Product development was based on a two week sprint schedule.
+Development was broken into milestones that we needed to accomplish in 
+order to create the product. The milestones into the calender in two week increments.
+The backlog was based off of what wasn't accomplished in our last sprint and 
+what we need to do to accomplish our next mile stone. 
 
 \section{Terminology and Acronyms}
 % Provide a list of terms used in the document that warrant definition.  Consider 
@@ -137,21 +134,62 @@ Did you use planning poker?
 
 
 \section{Sprint Schedule}
-The sprint schedule.  Can be tables or graphs.   This can be a list of dates with the visual 
-representation given below.
+As stated above, sprints were two weeks long. Each sprint was designed to accomplish a milestone. 
+Below is the schedule of the sprints and what was accomplished during those sprints.
+
+\begin{itemize}
+	\item 9/18/2017    - Define milestones and user stories
+	
+	\item 10/2/2017    - Base website created with file upload
+
+	\item 10/16/2017  - Wireframes, Presentation 1 Documents, Standalone file conversion
+
+	\item 10/30/2017  - File Upload/Download, File Conversion Integrated
+
+	\item 11/13/2017  - QR code generation, Standalone advanced file conversion 
+
+	\item 11/27/2017 - File Conversion Integration, Create users, Presentation 2 Documents
+
+	\item 12/4/2017   - Finish Documentation, Next semester prep
+
+
+	
+\end{itemize}
 
 \section{Timeline}
-Gantt chart or other type of visual representation of the project timeline.
+Below is the timeline of accomplished milestones.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1\textwidth]{./SprintGanattChart}
+\end{center}
+\caption{Sprint Timeline}
+\end{figure}
 
 \section{Development Environment}
 %The basic purpose for this section is to give a developer all of the necessary 
 %information to setup their development environment to run, test, and/or develop. 
-Both teams agreed to use the Microsoft ecosystem to develop the product.
+The Microsoft enviroment was choosen for the simplicity of the Azure Cloud hosting tools and 
+the store ties the product has to Microsoft's Hololens. Specifically, ASP.net MVC is being used in creation of the website.
+SQL server was chosen, also for it simplicity in integratign with Azure.
 
 \section{Development IDE and Tools}
 %Describe which IDE and provide links to installs and/or reference material. 
 
 The IDE of choice for the website and file conversion team is Visual Studio 2017 Enterprise Edition.
+Microsoft SQL Server Management Studio is used for the database.
+Unity Game Engine is used for Hololens App Dvelopment
+
+\paragraph{}
+The tools needed for website development are.
+\begin{itemize}
+    \item ASP.NET framework
+    
+    \item Azure Cloud Hosting Tools
+
+    \item Both tools can be aquired from the Visual Studio Installer
+
+\end{itemize}
 
 \paragraph{}
 To compile the web conversion software two libraries are needed.
@@ -163,13 +201,39 @@ To compile the web conversion software two libraries are needed.
     \item Open Asset Import Library supports a wide variety of import and export file types.  The download can be found at: \url{http://assimp.org/main_downloads.html}.  Version 3.1.1 is what was used in the project. 
 \end{itemize}
 
+\paragraph{}
+To develop the Hololens application, the following tools are needed:
+\begin{itemize}
+    \item Unity Personal: Unitiy game engine editor that is free for company use, if you make lower than 100,00 dollars per year. 
+    \item Visual Studio Tools for Unity - Can be downloaded from Visual Studio installer.
+    \item HoloToolkit-Unity Set of tools for Hololens development with unity. Free for use. Download from the GitHub page.
+\end{itemize}
+
+
 \section{Source  Control}
-Which source control system is/was used?  How was it setup?  How does a developer 
-connect to it? 
+Github was used to manage the source code. It was picked, because it was most well known amongst the
+developers. It was set up wth the with three branches, Master, Develop and Release. The work is done on the Develop branch
+and once it is throughly tested it is then pushed up to release.
+
+The following steps were taken to contribute to the code.
+	
+I am trying to make this into a list and it is giving me an hbox overfull and justifying the text to the right in the pdf. I simply want to put numbers on this and make a list.
+
+\begin{enumerate}
+
+\item Pull latest code from the develop branch
+\item Impliment feature
+\item Push to Develop and assign other developer for QA
+\item Once properly tested, push to Release branch.
+
+\end{enumerate}
 
 \section{Dependencies}
 %Describe all dependencies associated with developing the system. 
 \paragraph{Website}
+\begin{description}
+    \item ASP.NET MVC Framework is used for front and backend.
+\end{description}
 
 \paragraph{File Conversion}
 \begin{description}
@@ -178,14 +242,23 @@ connect to it?
 \end{description}
 
 \section{Build  Environment}
-How are the packages built?  Are there build scripts? 
-
+Azure is used to build and deploy the website. Once the tools are downloaded and an Azure account is created, 
+all that is needed is to right-click on the ASP.NET MVC project and select publish. The website is then hosted on Azure and
+can be accessed by all.
 \section{Development Machine Setup}
 
 Pull the git repository with both the Website and File Conversion code located at: \url{https://github.com/SavoySchuler/ARFE}
 
 % If warranted, provide a list of steps and details associated with setting up a 
 % machine for use by a developer. 
+
+The following are the requirement for a development machine:
+\begin{itemize}
+    \item Windows 10
+    \item Visual Studio 2017 Enterprise with ASP.NET MVC, Azure and Unity tools
+    \item Unity Personal
+    \item HoloToolkit-Unity Set of tools for Hololens development with unity. Free for use. Download from the GitHub page.
+\end{itemize}
 
 \paragraph{File Conversion}
 
