@@ -23,7 +23,7 @@ CAD software and AR hardware are assumed available for use of this platform. Thu
 \subsection{Website}
 %Describe briefly the role this major component plays in this system. 
 
-This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will QR code generation for uploaded files and create an association between an upload file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
+This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
 
 \subsection{File Conversion}
 The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
@@ -144,7 +144,7 @@ When a file is accessed by an AR device, conversion software will convert the fi
     3D viewer supports FBX files very easily.  Therefore, it was decided that the conversion software needed to export to FBX.  The best tool to do 
     so is the FBX SDK, since FBX is a propriatary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it will read and write.
     Therefore, the Open Asset Import Library is used to better support a wide array of file types.  So in using assimp and the FBX SDK together,
-    the converison software can support a wide range of both import and export file types.
+    the conversion software can support a wide range of both import and export file types.
 
     \subsection{Data Flow}
         There are four main paths data can flow.
@@ -203,7 +203,7 @@ When a file is accessed by an AR device, conversion software will convert the fi
     \hfill \break
     The parameter parsing code is in a class called ParseParameters.  ParseParameters has a constructor that takes the number of command line arguments, 
     and the command line arguments.  It will parse the values needed out into member variables that are public.  It will ignore invalid arguments,
-    and print a usage statement if the correct arguments are not supplied.  When printing the useage statement, cout is used to write to standard out.
+    and print a usage statement if the correct arguments are not supplied.  When printing the usage statement, cout is used to write to standard out.
 
     After processing the command line arguments, the member variables in the class will be set with the appropriate information.  The member variables are:
 
@@ -227,7 +227,7 @@ When a file is accessed by an AR device, conversion software will convert the fi
     \paragraph{File Conversion}
     \hfill \break
     The file conversion portion of the program is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
-    This seciton implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
+    This section implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
     library implementation classes are called AssimpConverter and FBXConverter.  A class named FileConverter contains the logic on determining which 
     library/libraries to use when converting the file.
 
