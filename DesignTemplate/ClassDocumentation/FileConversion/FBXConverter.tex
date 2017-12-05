@@ -1,0 +1,41 @@
+\hypertarget{fileconversion_fbxconverter}
+{
+    \label{fileconversion_fbxconverter}
+    \index{FileConversion@FBXConverter}
+}
+
+\subsection{FBXConverter}
+    \paragraph{}
+        Uses the FBX SDK to convert files.
+
+    \subsubsection{Member Functions}
+
+        \begin{itemize}
+            \item FBXConverter()
+            \item ~FBXConverter()
+            \item bool SupportsInputFileType(string fileType)
+            \item bool SupportsOutputFileType(string fileType)
+            \item Result ConvertFile(string inputFileName, string outputFileName)
+        \end{itemize}
+
+        \paragraph{FBXConverter()}
+            \hfill \break
+            The constructor for the class. Initializes the assimp objects.   
+        
+        \paragraph{~FBXConverter()}
+            \hfill \break
+            The destructor for the class.
+
+        \paragraph{bool SupportsInputFileType(string fileType)}
+            \hfill \break
+            Defines the method inherited from the abstract method.  The values of the supported file types are derived from the website.
+
+        \paragraph{bool SupportsOutputFileType(string fileType)}
+            \hfill \break
+            Defines the method inherited from the abstract method.  The values of the supported file types are derived from the website.
+
+        \paragraph{Result ConvertFile(string inputFileName, string outputFileName)}
+            \hfill \break
+            Converts the input file into output file.  The return is a value from the Result enum.
+        
+        
