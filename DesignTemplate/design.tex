@@ -10,7 +10,7 @@ The goal of this system is to establish a tool chain between CAD files and AR ha
 
 
 \section{System Overview and Description}
-%Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components.  See Figure~\ref{systemdiagram}. This is a floating figure environment.  \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
+%Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
 CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See Figure \ref{UMLSystemOverview}.
 
 \begin{figure}
@@ -23,11 +23,10 @@ CAD software and AR hardware are assumed available for use of this platform. Thu
 \subsection{Website}
 %Describe briefly the role this major component plays in this system. 
 
-This major component of the system will broker all interactions occurring across the platform. A user interface will be used to provided to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The  
+This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will QR code generation for uploaded files and create an association between an upload file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
 
 \subsection{File Conversion}
-The file conversion software converts files between common 3D file types.  It is designed to 
-be called from the back end of the website.
+The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
 
 Table \ref{table:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
 Models created in most common Computer Aided Design software can export to some of the input file types.
@@ -76,10 +75,10 @@ allow the table to be split.
 
 
  \section{Architecture and System Design}
-This is where you will place the overall system design and the architecture.   This section will be very detailed and should be image rich.  There is the old phrase {\it a picture is worth a thousand words}, in this class it could be worth hundreds of points (well if you sum up over the entire team).   One needs to enter the design and why a particular design has been done.   THIS IS THE CORE OF THE COURSE.    
+%This is where you will place the overall system design and the architecture.   This section will be very detailed and should be image rich.  There is the old phrase {\it a picture is worth a thousand words}, in this class it could be worth hundreds of points (well if you sum up over the entire team).   One needs to enter the design and why a particular design has been done.   THIS IS THE CORE OF THE COURSE.    
  
  
- {\it It is important for you to say why as much as what.   }
+% {\it It is important for you to say why as much as what.   }
  
    \subsection{Design Selection}
  Failed designs, design ideas, rejected designs here.
