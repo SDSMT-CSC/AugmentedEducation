@@ -16,7 +16,7 @@ namespace ARFE.Controllers
             return View();
         }
 
-        public Bitmap GetQRCode(String address)
+        public Bitmap GenerateQRCode(String address)
         {
 
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
