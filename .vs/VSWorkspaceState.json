@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Website"
+    "\\DesignTemplate\\ClassDocumentation\\FileConversion",
+    "\\DesignTemplate\\ClassDocumentation\\Website",
+    "\\Website",
+    "\\Website\\ARFE"
   ],
   "SelectedNode": "\\Website\\ARFE.sln",
   "PreviewInSolutionExplorer": false
