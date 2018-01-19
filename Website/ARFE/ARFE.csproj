@@ -153,7 +153,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DownloadController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\QRCodeController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -200,6 +199,8 @@
     <Content Include="Views\Upload\UploadFile.cshtml" />
     <Content Include="UploadedFiles\cone.fbx" />
     <Content Include="UploadedFiles\sphere.obj" />
+    <Content Include="Views\Upload\GetMessage.cshtml" />
+    <Content Include="Views\Upload\DisplayQR.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
