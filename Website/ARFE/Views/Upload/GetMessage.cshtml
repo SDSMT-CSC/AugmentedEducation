@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "DisplayQR";
+}
+
+<h2>DisplayQR</h2>
+
+@using (Html.BeginForm("DisplayQR", "Upload", FormMethod.Post))
+{
+    <br />
+    <br />
+    <br />
+    <div>
+        <input id="Message" name="Message" type="text"/> <br />
+
+        <input type="submit" value="Upload" />
+
+        @ViewBag.Message
+
+
+
+    </div>
+}
