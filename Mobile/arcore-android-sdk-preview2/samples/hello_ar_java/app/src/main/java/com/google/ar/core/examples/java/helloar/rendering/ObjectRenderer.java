@@ -15,16 +15,11 @@
 package com.google.ar.core.examples.java.helloar.rendering;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 import android.opengl.Matrix;
+
 import com.google.ar.core.examples.java.helloar.R;
-import de.javagl.obj.Obj;
-import de.javagl.obj.ObjData;
-import de.javagl.obj.ObjReader;
-import de.javagl.obj.ObjUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -32,6 +27,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+
+import de.javagl.obj.Obj;
+import de.javagl.obj.ObjData;
+import de.javagl.obj.ObjReader;
+import de.javagl.obj.ObjUtils;
 
 /**
  * Renders an object loaded from an OBJ file in OpenGL.
@@ -112,9 +112,9 @@ public class ObjectRenderer {
     public void createOnGlThread(Context context, String objAssetName,
                                  String diffuseTextureAssetName) throws IOException {
         // Read the texture.
-        Bitmap textureBitmap = BitmapFactory.decodeStream(
-            context.getAssets().open(diffuseTextureAssetName));
-
+        //Bitmap textureBitmap = BitmapFactory.decodeStream(
+        //    context.getAssets().open(diffuseTextureAssetName));
+/*
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glGenTextures(mTextures.length, mTextures, 0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
@@ -123,13 +123,15 @@ public class ObjectRenderer {
             GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
             GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
+        //GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
         GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 
-        textureBitmap.recycle();
+        //textureBitmap.recycle();
 
         ShaderUtil.checkGLError(TAG, "Texture loading");
+
+        */
 
         // Read the obj file.
         InputStream objInputStream = context.getAssets().open(objAssetName);

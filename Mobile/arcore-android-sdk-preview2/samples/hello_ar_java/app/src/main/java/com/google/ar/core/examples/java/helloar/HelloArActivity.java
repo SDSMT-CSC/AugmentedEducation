@@ -74,12 +74,25 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
     private final PlaneRenderer mPlaneRenderer = new PlaneRenderer();
     private final PointCloudRenderer mPointCloud = new PointCloudRenderer();
 
+    private float scaleFactor = .1f;
+
     // Temporary matrix allocated here to reduce number of allocations for each frame.
     private final float[] mAnchorMatrix = new float[16];
 
     // Tap handling and UI.
     private final ArrayBlockingQueue<MotionEvent> mQueuedSingleTaps = new ArrayBlockingQueue<>(16);
     private final ArrayList<Anchor> mAnchors = new ArrayList<>();
+
+    public void onLittle(View v) {
+        scaleFactor -= .025f;
+        if (scaleFactor < 0.01f) {
+            scaleFactor = 0.01f;
+        }
+    }
+
+    public void onBig(View v) {
+        scaleFactor += 0.025;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,7 +239,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
 
         // Prepare the other rendering objects.
         try {
-            mVirtualObject.createOnGlThread(/*context=*/this, "andy.obj", "andy.png");
+            mVirtualObject.createOnGlThread(/*context=*/this, "Car.obj", "Car.obj.mtl");
             mVirtualObject.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
 
             mVirtualObjectShadow.createOnGlThread(/*context=*/this,
@@ -280,7 +293,7 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
                             && ((Plane) trackable).isPoseInPolygon(hit.getHitPose())) {
                         // Cap the number of objects created. This avoids overloading both the
                         // rendering system and ARCore.
-                        if (mAnchors.size() >= 20) {
+                        if (mAnchors.size() >= 1) {
                             mAnchors.get(0).detach();
                             mAnchors.remove(0);
                         }
@@ -339,7 +352,6 @@ public class HelloArActivity extends AppCompatActivity implements GLSurfaceView.
                 mSession.getAllTrackables(Plane.class), camera.getDisplayOrientedPose(), projmtx);
 
             // Visualize anchors created by touch.
-            float scaleFactor = 1.0f;
             for (Anchor anchor : mAnchors) {
                 if (anchor.getTrackingState() != TrackingState.TRACKING) {
                     continue;
