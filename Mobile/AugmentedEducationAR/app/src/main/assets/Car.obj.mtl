@@ -1,0 +1,75 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.3.0)
+
+newmtl Black
+Kd 0 0 0
+Ka 0 0 0
+Ks 0.4000000059604645 0.4000000059604645 0.4000000059604645
+Ke 0 0 0
+d 1
+Ns 10
+illum 2
+
+newmtl Body
+Kd 1 0 0
+Ka 0 0 0
+Ks 0.5 0.5 0.5
+Ke 0 0 0
+d 1
+Ns 50
+illum 2
+
+newmtl Bottom
+Kd 0 0 0
+Ka 0 0 0
+Ks 0.4000000059604645 0.4000000059604645 0.4000000059604645
+Ke 0 0 0
+d 1
+Ns 10
+illum 2
+
+newmtl Bumpers
+Kd 0.05858900025486946 0.05858900025486946 0.05858900025486946
+Ka 0 0 0
+Ks 0.4000000059604645 0.4000000059604645 0.4000000059604645
+Ke 0 0 0
+d 1
+Ns 10
+illum 2
+
+newmtl Lights
+Kd 1 1 1
+Ka 0 0 0
+Ks 0.4000000059604645 0.4000000059604645 0.4000000059604645
+Ke 0 0 0
+d 1
+Ns 10
+illum 2
+
+newmtl Tires
+Kd 0 0 0
+Ka 0 0 0
+Ks 0.5 0.5 0.5
+Ke 0 0 0
+d 1
+Ns 50
+illum 2
+
+newmtl Wheels
+Kd 0.492141991853714 0.492141991853714 0.492141991853714
+Ka 0 0 0
+Ks 0.5 0.5 0.5
+Ke 0 0 0
+d 1
+Ns 50
+illum 2
+
+newmtl Window
+Kd 0 0 0
+Ka 0 0 0
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 50
+illum 2
+
