@@ -197,7 +197,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Upload\UploadFile.cshtml" />
-    <Content Include="UploadedFiles\cone.fbx" />
     <Content Include="UploadedFiles\sphere.obj" />
     <Content Include="Views\Upload\GetMessage.cshtml" />
     <Content Include="Views\Upload\DisplayQR.cshtml" />
