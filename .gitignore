@@ -219,6 +219,6 @@ TSWLatexianTemp*
 # expex forward references with \gathertags
 *-tags.tex
 *.synctex.gz
-.vs
-**/.vs/*
-**/.vscode
+*.suo
+.vs/*
+Website/config/*
