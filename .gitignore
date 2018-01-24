@@ -220,8 +220,11 @@ TSWLatexianTemp*
 *-tags.tex
 *.synctex.gz
 *.suo
-**\.vs\*
+**/.vs/*
 
-**\bin\*
-**\obj\*
+**/bin\/*
+**/obj/*
 
+/Website/ARFE/bin
+/Website/ARFE/obj/Debug
+/Website/.vs/ARFE/v15/Server/sqlite3
