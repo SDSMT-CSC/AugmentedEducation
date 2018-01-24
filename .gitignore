@@ -220,5 +220,8 @@ TSWLatexianTemp*
 *-tags.tex
 *.synctex.gz
 *.suo
-.vs/*
-Website/config/*
+**\.vs\*
+
+**\bin\*
+**\obj\*
+
