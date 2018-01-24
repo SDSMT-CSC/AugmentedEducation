@@ -4,4 +4,6 @@
     <string name="password">Password</string>
     <string name="rememberme">Remember Me</string>
     <string name="login">Login</string>
+    <string name="scanqrcode">Scan QR Code</string>
+    <string name="viewinar">View in AR</string>
 </resources>
