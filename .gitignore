@@ -225,3 +225,16 @@ TSWLatexianTemp*
 **\bin\*
 **\obj\*
 
+/.vs/AE/v15
+/Website/.vs/ARFE/v15/Server/sqlite3
+/Website/ARFE/bin
+/Website/ARFE/obj/Debug
+/Website/ARFE.Tests/bin/Debug
+/Website/ARFE.Tests/obj/Debug
+/Website/DBConnector/bin/Debug/netstandard2.0
+/Website/DBConnector/obj
+/Website/DBConnector.Tests/bin/Debug
+/Website/DBConnector.Tests/obj/Debug
+/Website/.vs/ARFE/v15/sqlite3/db.lock
+/Website/.vs/ARFE/v15/sqlite3/storage.ide-shm
+/Website/.vs/ARFE/v15/sqlite3/storage.ide-wal

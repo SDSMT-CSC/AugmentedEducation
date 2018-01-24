@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARFE", "ARFE\ARFE.csproj", "{75E41024-AD66-445F-9143-E2C3F7A2DE53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARFE.Tests", "ARFE.Tests\ARFE.Tests.csproj", "{F08AC202-3B56-4C2C-A3AD-5385E360CF3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBConnector", "DBConnector\DBConnector.csproj", "{29AC17E3-0754-4612-A0AF-50DFD72ECBF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBConnector.Tests", "DBConnector.Tests\DBConnector.Tests.csproj", "{CFC7BA28-5D7C-4243-ABDF-2905FAC2C3A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{F08AC202-3B56-4C2C-A3AD-5385E360CF3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F08AC202-3B56-4C2C-A3AD-5385E360CF3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F08AC202-3B56-4C2C-A3AD-5385E360CF3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29AC17E3-0754-4612-A0AF-50DFD72ECBF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29AC17E3-0754-4612-A0AF-50DFD72ECBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29AC17E3-0754-4612-A0AF-50DFD72ECBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29AC17E3-0754-4612-A0AF-50DFD72ECBF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC7BA28-5D7C-4243-ABDF-2905FAC2C3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC7BA28-5D7C-4243-ABDF-2905FAC2C3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC7BA28-5D7C-4243-ABDF-2905FAC2C3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC7BA28-5D7C-4243-ABDF-2905FAC2C3A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
