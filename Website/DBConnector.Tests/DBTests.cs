@@ -16,12 +16,22 @@ namespace DBConnector.Tests
             Assert.IsNotNull(connector);
         }
 
+
         [TestMethod]
         public void Test_Connector_Establish_Connection()
         {
             DBConnector connector = new DBConnector();
 
-            Assert.IsTrue(connector.Connection_Established());
+            Assert.IsTrue(connector.Check_Can_Conect());
+        }
+
+
+        [TestMethod]
+        public void Test_Insert_SubscriptionTypesHC()
+        {
+            DBConnector connector = new DBConnector();
+
+            Assert.IsTrue(connector.Check_Can_Conect());
         }
     }
 }

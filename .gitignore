@@ -238,3 +238,5 @@ TSWLatexianTemp*
 /Website/.vs/ARFE/v15/sqlite3/db.lock
 /Website/.vs/ARFE/v15/sqlite3/storage.ide-shm
 /Website/.vs/ARFE/v15/sqlite3/storage.ide-wal
+/Website/DBConnector/bin/Debug
+/Website/ResultReporter/obj/Debug
