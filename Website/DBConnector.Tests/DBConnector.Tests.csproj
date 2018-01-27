@@ -46,10 +46,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DBTests.cs" />
+    <Compile Include="BaseConnectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsersConnectorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -58,6 +60,10 @@
     <ProjectReference Include="..\DBConnector\DBConnector.csproj">
       <Project>{5a7827d8-d87f-4899-af87-e9a3a8a8dabd}</Project>
       <Name>DBConnector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ResultReporter\ResultReporter.csproj">
+      <Project>{A48D2583-957D-4946-A8FE-26F076DE1E28}</Project>
+      <Name>ResultReporter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

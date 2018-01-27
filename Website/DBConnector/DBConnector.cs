@@ -74,7 +74,7 @@ namespace DBConnector
                 catch (Exception ex) { throw new InvalidOperationException($"Unable to Insert: \r\n{ex.ToString()}"); }
 
                 return (rows_affected > 0);
-            });
+            }, command);
         }
 
         public ResultPackage<string> Query(SqlCommand command)
@@ -93,7 +93,9 @@ namespace DBConnector
                         {
                             for (field_index = 0; field_index < dataReader.FieldCount; field_index++)
                             {
-                                query_result.Append($"{dataReader.GetString(field_index)}, ");
+                                query_result.Append($"{dataReader.GetName(field_index)}::");
+                                query_result.Append($"{dataReader[field_index].ToString()}");
+                                if(field_index != dataReader.FieldCount - 1) { query_result.Append(", "); }
                             }
                             query_result.AppendLine();
                         }
@@ -102,7 +104,7 @@ namespace DBConnector
                 catch (Exception ex) { throw new InvalidOperationException($"Unable to Query: \r\n{ex.ToString()}"); }
 
                 return query_result.ToString();
-            });
+            }, command);
         }
 
         public ResultPackage<bool> Update(SqlCommand command)
@@ -115,7 +117,7 @@ namespace DBConnector
                 catch (Exception ex) { throw new InvalidOperationException($"Unable to Update: \r\n{ex.ToString()}"); }
 
                 return (rows_affected > 0);
-            });
+            }, command);
         }
 
         public ResultPackage<bool> Delete(SqlCommand command)
@@ -128,9 +130,8 @@ namespace DBConnector
                 catch (Exception ex) { throw new InvalidOperationException($"Unable to Delete: \r\n{ex.ToString()}"); }
 
                 return (rows_affected > 0);
-            });
+            }, command);
         }
-
 
         #endregion
 
@@ -142,7 +143,7 @@ namespace DBConnector
             return new SqlConnection(Connection_String);
         }
 
-        protected ResultPackage<T> Execute_With_Connection<T>(Func<T> command)
+        protected ResultPackage<T> Execute_With_Connection<T>(Func<T> exec, SqlCommand command)
         {
             ResultPackage<T> return_value = new ResultPackage<T>();
 
@@ -151,8 +152,8 @@ namespace DBConnector
                 using (SqlConnection conn = Get_Connection())
                 {
                     conn.Open();
-                    return_value.ReturnValue = command();
-                    conn.Close();
+                    command.Connection = conn;
+                    return_value.ReturnValue = exec();
                 }
             }
             catch(InvalidOperationException ex) { return_value.ErrorMessage = ex.ToString(); }
