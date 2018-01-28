@@ -44,8 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBConnector.cs" />
+    <Compile Include="DepartmentsConnector.cs" />
+    <Compile Include="FilesConnector.cs" />
     <Compile Include="IDBConnector.cs" />
+    <Compile Include="OrganizationsConnector.cs" />
+    <Compile Include="OrganizationUsersConnector.cs" />
+    <Compile Include="PermissionLevelsConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubscriptionTypesConnector.cs" />
     <Compile Include="UsersConnector.cs" />
   </ItemGroup>
   <ItemGroup>

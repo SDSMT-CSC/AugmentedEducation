@@ -26,6 +26,7 @@ namespace DBConnector
 
         //private 
 
+        private string _Table_Name = "Users";
         private Dictionary<FieldNames, string> _Field_Name_Lookup;
 
         #endregion
@@ -53,7 +54,7 @@ namespace DBConnector
         public ResultPackage<bool> Insert(long user_id, long organization_id, string user_name, string email, string password)
         {
             SqlCommand command = new SqlCommand(
-                "INSERT INTO Users (UserId, OrganizationId, UserName, UserPassword, Email) " +
+                $"INSERT INTO {_Table_Name} (UserId, OrganizationId, UserName, UserPassword, Email) " +
                 "VALUES(@UserId, @OrganizationId, @UserName, @UserPassword, @Email)");
 
             Add_Command_Parameter_With_Value(FieldNames.Email, email, ref command);
@@ -83,7 +84,7 @@ namespace DBConnector
             }
             else { commandText.Append("*"); }
 
-            commandText.Append(" FROM Users WHERE ");
+            commandText.Append($" FROM {_Table_Name} WHERE ");
             result = And_Values(where_values, ref command);
             if (string.IsNullOrEmpty(result.ErrorMessage)) { commandText.Append(result.ReturnValue); }
 
@@ -104,7 +105,7 @@ namespace DBConnector
             ResultPackage<bool> result = new ResultPackage<bool>();
             ResultPackage<string> anded_values = new ResultPackage<string>();
 
-            commandText.Append("UPDATE Users SET ");
+            commandText.Append($"UPDATE {_Table_Name} SET ");
             foreach (FieldNames field in set_values.Keys)
             {
                 result = Add_Command_Parameter_With_Value(field, set_values[field], ref command, $"@set{field}");
@@ -149,7 +150,7 @@ namespace DBConnector
             ResultPackage<bool> result = new ResultPackage<bool>();
             ResultPackage<string> anded_values = new ResultPackage<string>();
 
-            commandText.Append("DELETE FROM Users WHERE ");
+            commandText.Append($"DELETE FROM {_Table_Name} WHERE ");
             anded_values = And_Values(where_values, ref command);
             result.ReturnValue = string.IsNullOrEmpty(anded_values.ErrorMessage);
 

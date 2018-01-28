@@ -153,7 +153,7 @@ namespace DBConnector.Tests
 
 
         [TestMethod]
-        public void Test_Simple_Passing_Operations()
+        public void Test_Passing_All_Simple_Operations()
         {
             User user;
             List<Fields> select_fields = new List<Fields>();
