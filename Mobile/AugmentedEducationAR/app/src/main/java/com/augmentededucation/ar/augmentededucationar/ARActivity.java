@@ -146,18 +146,29 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         }
 
         // This is where the model is loaded
-        try {
-            virtualObject.createOnGlThread(this, objectFileName, materialFileName);
-            virtualObject.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to read obj file or material");
+        try
+        {
+            try
+            {
+                virtualObject.createOnGlThread(this, objectFileName, materialFileName);
+                virtualObject.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
+            } catch (IOException e)
+            {
+                Log.e(TAG, "Failed to read obj file or material");
+            }
+            try
+            {
+                planeRenderer.createOnGlThread(this, "trigrid.png");
+            } catch (IOException e)
+            {
+                Log.e(TAG, "Failed to read plane texture");
+            }
+            pointCloudRenderer.createOnGlThread(this);
         }
-        try {
-            planeRenderer.createOnGlThread(this, "trigrid.png");
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to read plane texture");
+        catch (Exception e)
+        {
+            Log.e(TAG, "Error during onSurfaceCreated");
         }
-        pointCloudRenderer.createOnGlThread(this);
     }
 
     @Override
