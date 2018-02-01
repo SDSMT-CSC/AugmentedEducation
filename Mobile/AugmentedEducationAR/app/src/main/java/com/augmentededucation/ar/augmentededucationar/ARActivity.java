@@ -226,14 +226,14 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
             planeRenderer.drawPlanes(
                     session.getAllTrackables(Plane.class), camera.getDisplayOrientedPose(), projmtx);
 
-            //if (anchor != null) {
+            if (anchor != null) {
                 if (anchor.getTrackingState() == Trackable.TrackingState.TRACKING) {
                     anchor.getPose().toMatrix(anchorMatrix, 0);
 
                     virtualObject.updateModelMatrix(anchorMatrix, scaleFactor);
                     virtualObject.draw(viewmtx, projmtx, lightIntensity);
                 }
-            //}
+            }
         } catch (Throwable t) {
             Log.e(TAG, "Exception on the OpenGL thread", t);
         }
