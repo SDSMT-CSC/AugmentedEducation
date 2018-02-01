@@ -26,6 +26,7 @@
                     <li>@Html.ActionLink("Organization", "UploadFile", "Upload")</li>
                     <li>@Html.ActionLink("Download", "Download", "Download")</li>
                 </ul>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
@@ -33,7 +34,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Augmented Education</p>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
 

@@ -91,7 +91,7 @@ namespace ARFE.Controllers
             return View();
         }
 
-       
+
 
         public Bitmap GenerateQRCode(String address)
         {
