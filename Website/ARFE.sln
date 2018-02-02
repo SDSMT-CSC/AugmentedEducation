@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARFE", "ARFE\ARFE.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARFE.Tests", "ARFE.Tests\ARFE.Tests.csproj", "{210A3139-95C1-48E0-A778-D2999C9CD77B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBConnector.Tests", "DBConnector.Tests\DBConnector.Tests.csproj", "{CFC7BA28-5D7C-4243-ABDF-2905FAC2C3A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBConnector", "DBConnector\DBConnector.csproj", "{5A7827D8-D87F-4899-AF87-E9A3A8A8DABD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultReporter", "ResultReporter\ResultReporter.csproj", "{A48D2583-957D-4946-A8FE-26F076DE1E28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
