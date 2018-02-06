@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.augmentededucation.ar.augmentededucationar.barcode.ScanQRCodeActivity;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.barcode.Barcode;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -26,5 +29,17 @@ public class HomeActivity extends AppCompatActivity
 	public void scanQRCode(View view) {
 		 Intent scanQRCodeIntent = new Intent(this, ScanQRCodeActivity.class);
 		 startActivityForResult(scanQRCodeIntent, READ_BARCODE);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Check which request we're responding to
+		if (requestCode == READ_BARCODE) {
+			// Make sure the request was successful
+			if (resultCode == CommonStatusCodes.SUCCESS) {
+				Barcode barcode = (Barcode) data.getExtras().get(ScanQRCodeActivity.BarcodeObject);
+				Toast.makeText(this, barcode.rawValue, Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 }
