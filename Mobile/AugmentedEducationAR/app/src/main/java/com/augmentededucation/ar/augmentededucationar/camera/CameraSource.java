@@ -710,6 +710,25 @@ public class CameraSource {
             default:
                 Log.e(TAG, "Bad rotation value: " + rotation);
         }
+
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraId, cameraInfo);
+
+        int angle;
+        int displayAngle;
+        if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            angle = (cameraInfo.orientation + degrees) % 360;
+            displayAngle = (360 - angle); // compensate for it being mirrored
+        } else {  // back-facing
+            angle = (cameraInfo.orientation - degrees + 360) % 360;
+            displayAngle = angle;
+        }
+
+        // This corresponds to the rotation constants in {@link Frame}.
+        mRotation = angle / 90;
+
+        camera.setDisplayOrientation(displayAngle);
+        parameters.setRotation(angle);
     }
 
     /**
