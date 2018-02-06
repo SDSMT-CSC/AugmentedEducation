@@ -150,7 +150,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         {
             try
             {
-                virtualObject.createOnGlThread(this, objectFileName, materialFileName);
+                virtualObject.createOnGlThread(this, objectFileName);
                 virtualObject.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
             } catch (IOException e)
             {
