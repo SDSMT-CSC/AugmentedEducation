@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,14 +18,46 @@ namespace DBConnector.Tests
             public Test_PermissionLevelsConnecector() { _Table_Name = $"Test_{_Table_Name}"; }
         }
 
+        #region Init/Teardown
+
+        //Init
         [ClassInitialize]
         public static void ClassInit(TestContext context)
         { BaseConnectorTests.Create_Test_Tables(); }
 
+        [TestInitialize]
+        public void TestInit()
+        //if Connector == null, create new: else it is self
+        { Connector = Connector ?? new Test_PermissionLevelsConnecector(); }
+
+
+        //Teardown
         [ClassCleanup]
         public static void ClassTeardown()
         { BaseConnectorTests.Drop_Test_Tables(); }
 
+        [TestCleanup]
+        public void TestTeardown()
+        { Connector.Delete_All(); }
+
+        #endregion
+
+
+        #region Properties
+
+        Test_PermissionLevelsConnecector Connector { get; set; }
+
+        #endregion
+
+
+        [TestMethod]
+        public void Test_Insert()
+        {
+            ResultPackage<bool> insert_result = Connector.Insert((long)1, "default");
+
+            Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
+            Assert.IsTrue(insert_result.ReturnValue);
+        }
 
         [TestMethod]
         public void Test_Passing_All_Simple_Operations()
