@@ -17,8 +17,13 @@ package com.augmentededucation.ar.augmentededucationar.arcore.rendering;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
 
@@ -33,6 +38,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.List;
 
+import de.javagl.obj.FloatTuple;
 import de.javagl.obj.Mtl;
 import de.javagl.obj.MtlReader;
 import de.javagl.obj.Obj;
@@ -329,6 +335,32 @@ public class ObjectRenderer {
 
                     textureBitmap.recycle();
 
+                }
+                else
+                {
+                    Rect rect = new Rect(0, 0, 1, 1);
+
+                    Bitmap textureBitmap = Bitmap.createBitmap(rect.width(), rect.height(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(textureBitmap);
+
+                    FloatTuple k = targetMat.getKd();
+                    int color = Color.argb(1.0f, k.getX(), k.getY(), k.getZ());
+
+                    Paint paint = new Paint();
+                    paint.setColor(color);
+                    canvas.drawRect(rect, paint);
+
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[i]);
+
+                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                            GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
+                    GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
+                            GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
+                    GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
+                    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+
+                    textureBitmap.recycle();
                 }
 
                 //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[i]);
