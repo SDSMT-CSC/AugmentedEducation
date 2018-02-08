@@ -37,7 +37,7 @@ namespace DBConnector.Tests
             ResultPackage<List<PermissionLevel>> query_result = new ResultPackage<List<PermissionLevel>>();
 
             permission = new PermissionLevel(1, "default");
-
+            //Adding a comment to see if my commits are working at all...
             //Insert user record
             bool_result = Simple_Insert(permissionConnector, permission);
             Assert.IsTrue(bool_result.ReturnValue, bool_result.ErrorMessage);
