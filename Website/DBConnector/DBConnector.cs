@@ -137,12 +137,16 @@ namespace DBConnector
         {
             return Execute_With_Connection<bool>(() =>
             {
-                int rows_affected = 0;
+                bool created = true;
 
-                try { rows_affected = command.ExecuteNonQuery(); }
-                catch (Exception ex) { throw new InvalidOperationException($"Unable to Create Table: \r\n{ex.ToString()}"); }
+                try { command.ExecuteNonQuery(); }
+                catch (Exception ex)
+                {
+                    created = false;
+                    throw new InvalidOperationException($"Unable to Create Table: \r\n{ex.ToString()}");
+                }
 
-                return (rows_affected > 0);
+                return created;
             }, command);
         }
 
@@ -150,12 +154,16 @@ namespace DBConnector
         {
             return Execute_With_Connection<bool>(() =>
             {
-                int rows_affected = 0;
+                bool dropped = true;
 
-                try { rows_affected = command.ExecuteNonQuery(); }
-                catch (Exception ex) { throw new InvalidOperationException($"Unable to Drop Table: \r\n{ex.ToString()}"); }
+                try { command.ExecuteNonQuery(); }
+                catch (Exception ex)
+                {
+                    dropped = false;
+                    throw new InvalidOperationException($"Unable to Drop Table: \r\n{ex.ToString()}");
+                }
 
-                return (rows_affected > 0);
+                return dropped;
             }, command);
         }
 

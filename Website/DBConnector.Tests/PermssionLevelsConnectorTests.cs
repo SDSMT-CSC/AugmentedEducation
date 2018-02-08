@@ -12,19 +12,12 @@ namespace DBConnector.Tests
     [TestClass]
     public class PermssionLevelsConnectorTests
     {
-        private class PermissionLevel
+        private class Test_PermissionLevelsConnecector: PermissionLevelsConnector
         {
-            public PermissionLevel() { }
-            public PermissionLevel(long id, string name)
-            {
-                PermissionLevelId = id;
-                PermissionLevelName = name;
-            }
-
-            public long PermissionLevelId { get; set; }
-            public string PermissionLevelName { get; set; }
+            public Test_PermissionLevelsConnecector() { _Table_Name = $"Test_{_Table_Name}"; }
         }
 
+        /*
         [TestMethod]
         public void Test_Passing_All_Simple_Operations()
         {
@@ -88,6 +81,7 @@ namespace DBConnector.Tests
             bool_result = Simple_Delete_By_Id(permissionConnector, 1);
             Assert.IsTrue(bool_result.ReturnValue, bool_result.ErrorMessage);
         }
+        
 
         private ResultPackage<bool> Simple_Insert(PermissionLevelsConnector connector, PermissionLevel permission)
         {
@@ -172,5 +166,6 @@ namespace DBConnector.Tests
 
             return connector.Delete(where_values);
         }
+        */
     }
 }
