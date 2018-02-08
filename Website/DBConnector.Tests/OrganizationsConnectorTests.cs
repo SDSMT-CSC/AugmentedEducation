@@ -138,11 +138,11 @@ namespace DBConnector.Tests
 
             parsed_query = Parse_Query(query_result.ReturnValue);
             Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
-            Assert.IsTrue(parsed_query.ReturnValue.Count == 2);
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 3);
 
             foreach (Tuple<Fields, object> item in parsed_query.ReturnValue)
             {
-                if (item.Item1 == Fields.SubscriptionTypeId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
+                if (item.Item1 == Fields.OrganizationId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
                 else if (item.Item1 == Fields.OrganizationName) { Assert.IsTrue(item.Item2.Equals("Organization"));}
                 else if (item.Item1 == Fields.SubscriptionTypeId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
                 else { Assert.IsTrue(false); }
@@ -160,51 +160,48 @@ namespace DBConnector.Tests
         }
 
         [TestMethod]
-        public void Test_Delete_And_Query()
-        {/*
+        public void Test_Delete_And_Query_By_OrganizationId()
+        {
             ResultPackage<bool> delete_result;
             ResultPackage<string> query_result;
-            Dictionary<Fields, object> delete_where, find_where;
-
-            //DELETE FROM Test_subscription... WHERE subscriptionId = 1;
-            delete_where = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, (long)1 }, };
+            Dictionary<Fields, object> find_where;
 
             //Insert Value for 1 to ensure we can delete
-            Connector.Insert(1, "default");
-            delete_result = Connector.Delete(delete_where);
+            Insert_Test_Value();
+            delete_result = Delete_Test_Value();
 
             Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
             Assert.IsTrue(delete_result.ReturnValue);
 
-            find_where = delete_where;
+            find_where = new Dictionary<Fields, object>
+            { { Fields.OrganizationId, (long)1 }, };
 
-            // SELECT * From Test_subscriptions WHERE id = 1...
+            // SELECT * From Test_Organizations WHERE id = 1...
             query_result = Connector.Query(find_where, new List<Fields>());
             //No error for empty result but also no return value
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ReturnValue));
-        */}
+        }
 
         [TestMethod]
         public void Test_Update()
-        {/*
+        {
             ResultPackage<bool> update_result;
             Dictionary<Fields, object> set_values, where_values;
 
             set_values = new Dictionary<Fields, object>
-            { {Fields.SubscriptionTypeId, (long)2}, };
+            { {Fields.OrganizationId, (long)2}, };
             //set id = 2 where id = 1;
             where_values = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, (long)1 }, };
+            { { Fields.OrganizationId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Connector.Insert(1, "default");
+            Insert_Test_Value();
             update_result = Connector.Update(set_values, where_values);
 
             Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
             Assert.IsTrue(update_result.ReturnValue);
-        */}
+        }
 
         [TestMethod]
         public void Test_Update_And_Query()
