@@ -12,120 +12,238 @@ namespace DBConnector.Tests
     [TestClass]
     public class SubscriptionTypesConnectorTests
     {
-        private class SubscriptionType
+        private class Test_SubscriptionTypesConnecector : SubscriptionTypesConnector
         {
-            public SubscriptionType() { }
-            public SubscriptionType(long id, string name)
-            {
-                SubscriptionTypeId = id;
-                SubscriptionTypeName = name;
-            }
+            public Test_SubscriptionTypesConnecector() { _Table_Name = $"Test_{_Table_Name}"; }
+        }
 
-            public long SubscriptionTypeId { get; set; }
-            public string SubscriptionTypeName { get; set; }
+        #region Init/Teardown
+
+        //Init
+        [ClassInitialize]
+        public static void ClassInit(TestContext context)
+        { BaseConnectorTests.Create_Test_Tables(); }
+
+        [TestInitialize]
+        public void TestInit()
+        //if Connector == null, create new: else it is self
+        { Connector = Connector ?? new Test_SubscriptionTypesConnecector(); }
+
+
+        //Teardown
+        [ClassCleanup]
+        public static void ClassTeardown()
+        { BaseConnectorTests.Drop_Test_Tables(); }
+
+        [TestCleanup]
+        public void TestTeardown()
+        { Connector.Delete_All(); }
+
+        #endregion
+
+
+        #region Properties
+
+        Test_SubscriptionTypesConnecector Connector { get; set; }
+
+        #endregion
+
+
+        [TestMethod]
+        public void Test_Insert()
+        {
+            ResultPackage<bool> insert_result = Connector.Insert((long)1, "default");
+
+            Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
+            Assert.IsTrue(insert_result.ReturnValue);
         }
 
         [TestMethod]
-        public void Test_Passing_All_Simple_Operations()
+        public void Test_Insert_And_Query()
         {
-            SubscriptionType subscription, from_query;
-            List<Fields> select_fields = new List<Fields>();
-            ResultPackage<bool> bool_result = new ResultPackage<bool>();
-            ResultPackage<string> string_result = new ResultPackage<string>();
-            Dictionary<Fields, object> set_fields = new Dictionary<Fields, object>();
-            SubscriptionTypesConnector subscriptionConnector = new SubscriptionTypesConnector();
-            ResultPackage<List<SubscriptionType>> query_result = new ResultPackage<List<SubscriptionType>>();
+            ResultPackage<string> query_result;
+            Dictionary<Fields, object> find_where;
+            ResultPackage<List<Tuple<Fields, object>>> parsed_query;
+            ResultPackage<bool> insert_result = Connector.Insert(1, "default");
 
-            subscription = new SubscriptionType(1, "default");
+            Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
+            Assert.IsTrue(insert_result.ReturnValue);
 
-            //Insert user record
-            bool_result = Simple_Insert(subscriptionConnector, subscription);
-            Assert.IsTrue(bool_result.ReturnValue, bool_result.ErrorMessage);
+            find_where = new Dictionary<Fields, object>
+            { { Fields.SubscriptionTypeId, (long)1 }, };
 
-
-            //Query for insert
-            string_result = Simple_Query_By_Id(subscriptionConnector, 1, new List<Fields>());
-            Assert.IsTrue(string.IsNullOrEmpty(string_result.ErrorMessage));
-            //Parse query and verify insert
-            query_result = Parse_Query(string_result.ReturnValue);
+            // SELECT SubscriptionTypeID From Test_subscriptions WHERE id = 1...
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.SubscriptionTypeId });
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
-            Assert.IsTrue(query_result.ReturnValue.Count == 1);
-            from_query = query_result.ReturnValue[0];
-            Assert.IsTrue(subscription.SubscriptionTypeId == from_query.SubscriptionTypeId);
-            Assert.IsTrue(subscription.SubscriptionTypeName == from_query.SubscriptionTypeName);
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.SubscriptionTypeId);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)1));
 
 
-
-            bool_result = Simple_Update_By_Id(subscriptionConnector, 1, 2);
-            Assert.IsTrue(bool_result.ReturnValue);
-
-
-            //Query for original value to show it's not there
-            string_result = Simple_Query_By_Id(subscriptionConnector, 1, new List<Fields>());
-            //No error, but also no result
-            Assert.IsTrue(string.IsNullOrEmpty(string_result.ErrorMessage));
-            Assert.IsTrue(string.IsNullOrEmpty(string_result.ReturnValue));
-
-
-            //Update Id back to 1
-            bool_result = Simple_Update_By_Id(subscriptionConnector, 2, 1);
-            Assert.IsTrue(bool_result.ReturnValue);
-
-
-            //Query for update
-            string_result = Simple_Query_By_Id(subscriptionConnector, 1, new List<Fields>());
-            Assert.IsTrue(string.IsNullOrEmpty(string_result.ErrorMessage));
-            //Parse query and verify it matches original
-            query_result = Parse_Query(string_result.ReturnValue);
+            // SELECT SubscriptionTypeName From Test_subscriptions WHERE id = 1 ...
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.SubscriptionTypeName });
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
-            Assert.IsTrue(query_result.ReturnValue.Count == 1);
-            from_query = query_result.ReturnValue[0];
-            Assert.IsTrue(subscription.SubscriptionTypeId == from_query.SubscriptionTypeId);
-            Assert.IsTrue(subscription.SubscriptionTypeName == from_query.SubscriptionTypeName);
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.SubscriptionTypeName);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals("default"));
 
 
-            //Delete test record
-            bool_result = Simple_Delete_By_Id(subscriptionConnector, 1);
-            Assert.IsTrue(bool_result.ReturnValue, bool_result.ErrorMessage);
-        }
+            // SELECT * From Test_subscriptions WHERE id = 1 ...
+            query_result = Connector.Query(find_where, new List<Fields>());
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
 
-        private ResultPackage<bool> Simple_Insert(SubscriptionTypesConnector connector, SubscriptionType subscription)
-        {
-            return connector.Insert(subscription.SubscriptionTypeId, subscription.SubscriptionTypeName);
-        }
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 2);
 
-        private ResultPackage<string> Simple_Query_By_Id(SubscriptionTypesConnector connector, long id, List<Fields> select_fields)
-        {
-            Dictionary<Fields, object> where_dict = new Dictionary<Fields, object>()
+            foreach (Tuple<Fields, object> item in parsed_query.ReturnValue)
             {
-                { Fields.SubscriptionTypeId, id },
-            };
-
-            return connector.Query(where_dict, select_fields);
+                if (item.Item1 == Fields.SubscriptionTypeId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
+                else if (item.Item1 == Fields.SubscriptionTypeName) { Assert.IsTrue(item.Item2.Equals("default")); }
+                else { Assert.IsTrue(false); }
+            }
         }
 
-        private ResultPackage<List<SubscriptionType>> Parse_Query(string query_result)
+        [TestMethod]
+        public void Test_Delete()
         {
-            long long_out;
-            string trimmed_value;
+            ResultPackage<bool> delete_result;
+            Dictionary<Fields, object> delete_where;
+
+            //DELETE FROM Test_subscription... WHERE subscriptionId = 1;
+            delete_where = new Dictionary<Fields, object>
+            { { Fields.SubscriptionTypeId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            delete_result = Connector.Delete(delete_where);
+
+            Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
+            Assert.IsTrue(delete_result.ReturnValue);
+        }
+
+        [TestMethod]
+        public void Test_Delete_And_Query()
+        {
+            ResultPackage<bool> delete_result;
+            ResultPackage<string> query_result;
+            Dictionary<Fields, object> delete_where, find_where;
+
+            //DELETE FROM Test_subscription... WHERE subscriptionId = 1;
+            delete_where = new Dictionary<Fields, object>
+            { { Fields.SubscriptionTypeId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            delete_result = Connector.Delete(delete_where);
+
+            Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
+            Assert.IsTrue(delete_result.ReturnValue);
+
+            find_where = delete_where;
+
+            // SELECT * From Test_subscriptions WHERE id = 1...
+            query_result = Connector.Query(find_where, new List<Fields>());
+            //No error for empty result but also no return value
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ReturnValue));
+        }
+
+        [TestMethod]
+        public void Test_Update()
+        {
+            ResultPackage<bool> update_result;
+            Dictionary<Fields, object> set_values, where_values;
+
+            set_values = new Dictionary<Fields, object>
+            { {Fields.SubscriptionTypeId, (long)2}, };
+            //set id = 2 where id = 1;
+            where_values = new Dictionary<Fields, object>
+            { { Fields.SubscriptionTypeId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            update_result = Connector.Update(set_values, where_values);
+
+            Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
+            Assert.IsTrue(update_result.ReturnValue);
+        }
+
+        [TestMethod]
+        public void Test_Update_And_Query()
+        {
+            ResultPackage<bool> update_result;
+            ResultPackage<string> query_result;
+            ResultPackage<List<Tuple<Fields, object>>> parsed_query;
+            Dictionary<Fields, object> find_where, set_values, where_values;
+
+            set_values = new Dictionary<Fields, object>
+            { {Fields.SubscriptionTypeId, (long)2}, };
+            //set id = 2 where id = 1;
+            where_values = new Dictionary<Fields, object>
+            { { Fields.SubscriptionTypeId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            update_result = Connector.Update(set_values, where_values);
+
+            Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
+            Assert.IsTrue(update_result.ReturnValue);
+
+            //Try to query original value should fail
+            find_where = where_values;
+
+            // SELECT * From Test_subscriptions WHERE id = 1...
+            query_result = Connector.Query(find_where, new List<Fields>());
+            //No error for empty result but also no return value
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            //Try to query updated values should succeed
+            find_where = set_values;
+
+            // SELECT SubscriptionTypeID From Test_subscriptions WHERE id = 2...
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.SubscriptionTypeId });
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.SubscriptionTypeId);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)2));
+        }
+
+        private ResultPackage<List<Tuple<Fields, object>>> Parse_Query(string query_result)
+        {
             List<string> rows = new List<string>();
             char[] delimit_fields = new char[] { ',' };
             string[] delimit_rows = new string[] { "\r\n" };
-            List<SubscriptionType> query_subscriptions_list = new List<SubscriptionType>();
-            ResultPackage<List<SubscriptionType>> result = new ResultPackage<List<SubscriptionType>>();
+            List<Tuple<Fields, object>> query_subscription_list = new List<Tuple<Fields, object>>();
+            ResultPackage<List<Tuple<Fields, object>>> result = new ResultPackage<List<Tuple<Fields, object>>>();
 
             rows = query_result.Split(delimit_rows, StringSplitOptions.RemoveEmptyEntries).ToList();
             foreach (string row in rows)
             {
-                SubscriptionType subscription = new SubscriptionType();
                 List<string> field_values = row.Split(delimit_fields).ToList();
 
                 foreach (string field_value in field_values)
                 {
                     if (field_value.Contains("SubscriptionTypeId::"))
                     {
-                        trimmed_value = field_value.Replace("SubscriptionTypeId::", "");
-                        if (long.TryParse(trimmed_value, out long_out)) { subscription.SubscriptionTypeId = long_out; }
+                        if (long.TryParse(field_value.Replace("SubscriptionTypeId::", ""), out long long_out))
+                        {
+                            query_subscription_list.Add(new Tuple<Fields, object>(Fields.SubscriptionTypeId, long_out));
+                        }
                         else
                         {
                             result.ErrorMessage = "Unable to parse SubscriptionTypeId";
@@ -134,44 +252,22 @@ namespace DBConnector.Tests
                     }
                     else if (field_value.Contains("SubscriptionTypeName::"))
                     {
-                        subscription.SubscriptionTypeName = field_value.Replace("SubscriptionTypeName::", "").Trim();
+                        string value = field_value.Replace("SubscriptionTypeName::", "").Trim();
+                        query_subscription_list.Add(new Tuple<Fields, object>(Fields.SubscriptionTypeName, value));
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "Unable to parse Field";
+                        break;
                     }
                 }
 
-                if (!string.IsNullOrEmpty(result.ErrorMessage))
-                    break;
-
-                query_subscriptions_list.Add(subscription);
+                if (!string.IsNullOrEmpty(result.ErrorMessage)) { break; }
             }
 
-            result.ReturnValue = query_subscriptions_list;
+            result.ReturnValue = query_subscription_list;
 
             return result;
         }
-
-        private ResultPackage<bool> Simple_Update_By_Id(SubscriptionTypesConnector connector, long old_id, long new_id)
-        {
-            Dictionary<Fields, object> set_values;
-            Dictionary<Fields, object> where_values;
-
-            set_values = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, new_id } };
-
-            where_values = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, old_id } };
-
-            return connector.Update(set_values, where_values);
-        }
-
-        private ResultPackage<bool> Simple_Delete_By_Id(SubscriptionTypesConnector connector, long id)
-        {
-            Dictionary<Fields, object> where_values;
-
-            where_values = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, id } };
-
-            return connector.Delete(where_values);
-        }
-
     }
 }

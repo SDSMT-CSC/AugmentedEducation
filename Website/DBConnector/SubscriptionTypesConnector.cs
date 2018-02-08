@@ -13,7 +13,6 @@ namespace DBConnector
         #region Members
 
         //public 
-
         public enum FieldNames
         {
             SubscriptionTypeId = 0,
@@ -21,9 +20,10 @@ namespace DBConnector
         }
 
         //private 
-
-        private string _Table_Name = "SubscriptionTypesHC";
         private Dictionary<FieldNames, string> _Field_Name_Lookup;
+
+        //protected
+        protected string _Table_Name = "SubscriptionTypesHC";
 
         #endregion
 
@@ -155,6 +155,14 @@ namespace DBConnector
 
             return result;
         }
+
+        public ResultPackage<bool> Delete_All()
+        {
+            SqlCommand command = new SqlCommand() { CommandText = $"DELETE FROM {_Table_Name};" };
+
+            return Delete(command);
+        }
+
 
         #endregion
 
