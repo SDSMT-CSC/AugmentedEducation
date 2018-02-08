@@ -60,6 +60,24 @@ namespace DBConnector.Tests
         }
 
         [TestMethod]
+        public void Test_Delete()
+        {
+            ResultPackage<bool> delete_result;
+            Dictionary<Fields, object> delete_where;
+
+            //DELETE FROM Test_Permission... WHERE PermissionId = 1;
+            delete_where = new Dictionary<Fields, object>
+            { { Fields.PermissionLevelId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            delete_result = Connector.Delete(delete_where);
+
+            Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
+            Assert.IsTrue(delete_result.ReturnValue);
+        }
+
+        [TestMethod]
         public void Test_Passing_All_Simple_Operations()
         {
             
