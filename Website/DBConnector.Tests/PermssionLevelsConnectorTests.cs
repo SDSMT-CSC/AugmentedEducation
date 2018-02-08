@@ -60,6 +60,61 @@ namespace DBConnector.Tests
         }
 
         [TestMethod]
+        public void Test_Insert_And_Query()
+        {
+            ResultPackage<string> query_result;
+            Dictionary<Fields, object> find_where;
+            ResultPackage<List<Tuple<Fields, object>>> parsed_query;
+            ResultPackage<bool> insert_result = Connector.Insert(1, "default");
+
+            Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
+            Assert.IsTrue(insert_result.ReturnValue);
+
+            find_where = new Dictionary<Fields, object>
+            { { Fields.PermissionLevelId, (long)1 }, };
+
+            // SELECT PermissionLevelID From Test_Permissions WHERE id = 1...
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.PermissionLevelId });
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.PermissionLevelId);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)1));
+
+
+            // SELECT PermissionLevelName From Test_Permissions WHERE id = 1 ...
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.PermissionLevelName });
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.PermissionLevelName);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals("default"));
+
+
+            // SELECT * From Test_Permissions WHERE id = 1 ...
+            query_result = Connector.Query(find_where, new List<Fields> ());
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 2);
+
+            foreach(Tuple<Fields, object> item in parsed_query.ReturnValue)
+            {
+                if(item.Item1 == Fields.PermissionLevelId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
+                else if (item.Item1 == Fields.PermissionLevelName) { Assert.IsTrue(item.Item2.Equals("default")); }
+                else { Assert.IsTrue(false); }
+            }
+        }
+
+        [TestMethod]
         public void Test_Delete()
         {
             ResultPackage<bool> delete_result;
@@ -93,51 +148,53 @@ namespace DBConnector.Tests
 
             return connector.Query(where_dict, select_fields);
         }
-        
-        //private ResultPackage<List<PermissionLevel>> Parse_Query(string query_result)
-        //{
-        //    long long_out;
-        //    string trimmed_value;
-        //    List<string> rows = new List<string>();
-        //    char[] delimit_fields = new char[] { ',' };
-        //    string[] delimit_rows = new string[] { "\r\n" };
-        //    List<PermissionLevel> query_permission_list = new List<PermissionLevel>();
-        //    ResultPackage<List<PermissionLevel>> result = new ResultPackage<List<PermissionLevel>>();
 
-        //    rows = query_result.Split(delimit_rows, StringSplitOptions.RemoveEmptyEntries).ToList();
-        //    foreach (string row in rows)
-        //    {
-        //        PermissionLevel permission = new PermissionLevel();
-        //        List<string> field_values = row.Split(delimit_fields).ToList();
+        private ResultPackage<List<Tuple<Fields, object>>> Parse_Query(string query_result)
+        {
+            List<string> rows = new List<string>();
+            char[] delimit_fields = new char[] { ',' };
+            string[] delimit_rows = new string[] { "\r\n" };
+            List<Tuple<Fields, object>> query_permission_list = new List<Tuple<Fields, object>>();
+            ResultPackage<List<Tuple<Fields, object>>> result = new ResultPackage<List<Tuple<Fields, object>>>();
 
-        //        foreach (string field_value in field_values)
-        //        {
-        //            if (field_value.Contains("PermissionLevelId::"))
-        //            {
-        //                trimmed_value = field_value.Replace("PermissionLevelId::", "");
-        //                if (long.TryParse(trimmed_value, out long_out)) { permission.PermissionLevelId = long_out; }
-        //                else
-        //                {
-        //                    result.ErrorMessage = "Unable to parse PermissionLevelId";
-        //                    break;
-        //                }
-        //            }
-        //            else if (field_value.Contains("PermissionLevelName::"))
-        //            {
-        //                permission.PermissionLevelName = field_value.Replace("PermissionLevelName::", "").Trim();
-        //            }
-        //        }
+            rows = query_result.Split(delimit_rows, StringSplitOptions.RemoveEmptyEntries).ToList();
+            foreach (string row in rows)
+            {
+                List<string> field_values = row.Split(delimit_fields).ToList();
 
-        //        if (!string.IsNullOrEmpty(result.ErrorMessage))
-        //            break;
+                foreach (string field_value in field_values)
+                {
+                    if (field_value.Contains("PermissionLevelId::"))
+                    {
+                        if (long.TryParse(field_value.Replace("PermissionLevelId::", ""), out long long_out))
+                        {
+                            query_permission_list.Add(new Tuple<Fields, object>(Fields.PermissionLevelId, long_out));
+                        }
+                        else
+                        {
+                            result.ErrorMessage = "Unable to parse PermissionLevelId";
+                            break;
+                        }
+                    }
+                    else if (field_value.Contains("PermissionLevelName::"))
+                    {
+                        string value = field_value.Replace("PermissionLevelName::", "").Trim();
+                        query_permission_list.Add(new Tuple<Fields, object>(Fields.PermissionLevelName, value));
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "Unable to parse PermissionLevelId";
+                        break;
+                    }
+                }
 
-        //        query_permission_list.Add(permission);
-        //    }
+                if (!string.IsNullOrEmpty(result.ErrorMessage)) { break; }
+            }
 
-        //    result.ReturnValue = query_permission_list;
+            result.ReturnValue = query_permission_list;
 
-        //    return result;
-        //}
+            return result;
+        }
 
         private ResultPackage<bool> Simple_Update_By_Id(PermissionLevelsConnector connector, long old_id, long new_id)
         {
