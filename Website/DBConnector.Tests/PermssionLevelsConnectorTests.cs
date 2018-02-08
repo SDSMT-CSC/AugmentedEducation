@@ -133,20 +133,95 @@ namespace DBConnector.Tests
         }
 
         [TestMethod]
-        public void Test_Passing_All_Simple_Operations()
+        public void Test_Delete_And_Query()
         {
-            
+            ResultPackage<bool> delete_result;
+            ResultPackage<string> query_result;
+            Dictionary<Fields, object> delete_where, find_where;
+
+            //DELETE FROM Test_Permission... WHERE PermissionId = 1;
+            delete_where = new Dictionary<Fields, object>
+            { { Fields.PermissionLevelId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            delete_result = Connector.Delete(delete_where);
+
+            Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
+            Assert.IsTrue(delete_result.ReturnValue);
+
+            find_where = delete_where;
+
+            // SELECT * From Test_Permissions WHERE id = 1...
+            query_result = Connector.Query(find_where, new List<Fields>());
+            //No error for empty result but also no return value
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ReturnValue));
         }
-        
 
-        private ResultPackage<string> Simple_Query_By_Id(PermissionLevelsConnector connector, long id, List<Fields> select_fields)
+        [TestMethod]
+        public void Test_Update()
         {
-            Dictionary<Fields, object> where_dict = new Dictionary<Fields, object>()
-            {
-                { Fields.PermissionLevelId, id },
-            };
+            ResultPackage<bool> update_result;
+            Dictionary<Fields, object> set_values, where_values;
 
-            return connector.Query(where_dict, select_fields);
+            set_values = new Dictionary<Fields, object>
+            { {Fields.PermissionLevelId, (long)2}, };
+            //set id = 2 where id = 1;
+            where_values = new Dictionary<Fields, object>
+            { { Fields.PermissionLevelId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            update_result = Connector.Update(set_values, where_values);
+
+            Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
+            Assert.IsTrue(update_result.ReturnValue);
+        }
+
+        [TestMethod]
+        public void Test_Update_And_Query()
+        {
+            ResultPackage<bool> update_result;
+            ResultPackage<string> query_result;
+            ResultPackage<List<Tuple<Fields, object>>> parsed_query;
+            Dictionary<Fields, object> find_where, set_values, where_values;
+
+            set_values = new Dictionary<Fields, object>
+            { {Fields.PermissionLevelId, (long)2}, };
+            //set id = 2 where id = 1;
+            where_values = new Dictionary<Fields, object>
+            { { Fields.PermissionLevelId, (long)1 }, };
+
+            //Insert Value for 1 to ensure we can delete
+            Connector.Insert(1, "default");
+            update_result = Connector.Update(set_values, where_values);
+
+            Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
+            Assert.IsTrue(update_result.ReturnValue);
+
+            //Try to query original value should fail
+            find_where = where_values;
+
+            // SELECT * From Test_Permissions WHERE id = 1...
+            query_result = Connector.Query(find_where, new List<Fields>());
+            //No error for empty result but also no return value
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            //Try to query updated values should succeed
+            find_where = set_values;
+
+            // SELECT PermissionLevelID From Test_Permissions WHERE id = 2...
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.PermissionLevelId });
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.PermissionLevelId);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)2));
         }
 
         private ResultPackage<List<Tuple<Fields, object>>> Parse_Query(string query_result)
@@ -194,30 +269,6 @@ namespace DBConnector.Tests
             result.ReturnValue = query_permission_list;
 
             return result;
-        }
-
-        private ResultPackage<bool> Simple_Update_By_Id(PermissionLevelsConnector connector, long old_id, long new_id)
-        {
-            Dictionary<Fields, object> set_values;
-            Dictionary<Fields, object> where_values;
-
-            set_values = new Dictionary<Fields, object>
-            { { Fields.PermissionLevelId, new_id } };
-
-            where_values = new Dictionary<Fields, object>
-            { { Fields.PermissionLevelId, old_id } };
-
-            return connector.Update(set_values, where_values);
-        }
-
-        private ResultPackage<bool> Simple_Delete_By_Id(PermissionLevelsConnector connector, long id)
-        {
-            Dictionary<Fields, object> where_values;
-
-            where_values = new Dictionary<Fields, object>
-            { { Fields.PermissionLevelId, id } };
-
-            return connector.Delete(where_values);
         }
     }
 }
