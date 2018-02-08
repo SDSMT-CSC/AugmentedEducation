@@ -64,19 +64,47 @@ namespace DBConnector.Tests
         }
 
         [TestMethod]
-        public void Test_Insert_And_Query()
-        {/*
+        public void Test_Insert_Missing_Dependency()
+        {
+            //remove dependency added in ClassInit()
+            SubscriptionTypesConnectorTests.Delete_Test_Value();
+
+            ResultPackage<bool> insert_result = Insert_Test_Value();
+            Assert.IsFalse(string.IsNullOrEmpty(insert_result.ErrorMessage));
+            Assert.IsFalse(insert_result.ReturnValue);
+
+            //re-add dependency for following tests
+            SubscriptionTypesConnectorTests.Insert_Test_Value();
+        }
+
+        [TestMethod]
+        public void Test_Insert_And_Query_By_OrganizationId()
+        {
             ResultPackage<string> query_result;
             Dictionary<Fields, object> find_where;
             ResultPackage<List<Tuple<Fields, object>>> parsed_query;
-            ResultPackage<bool> insert_result = Connector.Insert(1, "default");
+            ResultPackage<bool> insert_result = Insert_Test_Value();
 
             Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
             Assert.IsTrue(insert_result.ReturnValue);
 
             find_where = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, (long)1 }, };
+            { { Fields.OrganizationId, (long)1 }, };
 
+            //
+            // SELECT SubscriptionTypeID From Test_subscriptions WHERE id = 1...
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.OrganizationId });
+            Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
+            Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
+
+            parsed_query = Parse_Query(query_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
+            Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.OrganizationId);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)1));
+
+
+            //
             // SELECT SubscriptionTypeID From Test_subscriptions WHERE id = 1...
             query_result = Connector.Query(find_where, new List<Fields> { Fields.SubscriptionTypeId });
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
@@ -89,18 +117,20 @@ namespace DBConnector.Tests
             Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)1));
 
 
+            //
             // SELECT SubscriptionTypeName From Test_subscriptions WHERE id = 1 ...
-            query_result = Connector.Query(find_where, new List<Fields> { Fields.SubscriptionTypeName });
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.OrganizationName });
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
             Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
 
             parsed_query = Parse_Query(query_result.ReturnValue);
             Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
             Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
-            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.SubscriptionTypeName);
-            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals("default"));
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.OrganizationName);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals("Organization"));
 
 
+            //
             // SELECT * From Test_subscriptions WHERE id = 1 ...
             query_result = Connector.Query(find_where, new List<Fields>());
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
@@ -113,10 +143,11 @@ namespace DBConnector.Tests
             foreach (Tuple<Fields, object> item in parsed_query.ReturnValue)
             {
                 if (item.Item1 == Fields.SubscriptionTypeId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
-                else if (item.Item1 == Fields.SubscriptionTypeName) { Assert.IsTrue(item.Item2.Equals("default")); }
+                else if (item.Item1 == Fields.OrganizationName) { Assert.IsTrue(item.Item2.Equals("Organization"));}
+                else if (item.Item1 == Fields.SubscriptionTypeId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
                 else { Assert.IsTrue(false); }
             }
-        */}
+        }
 
         [TestMethod]
         public void Test_Delete()
@@ -243,8 +274,6 @@ namespace DBConnector.Tests
 
         private ResultPackage<List<Tuple<Fields, object>>> Parse_Query(string query_result)
         {
-            return new ResultPackage<List<Tuple<Fields, object>>>();
-            /*
             List<string> rows = new List<string>();
             char[] delimit_fields = new char[] { ',' };
             string[] delimit_rows = new string[] { "\r\n" };
@@ -270,10 +299,22 @@ namespace DBConnector.Tests
                             break;
                         }
                     }
-                    else if (field_value.Contains("SubscriptionTypeName::"))
+                    else if (field_value.Contains("OrganizationId::"))
                     {
-                        string value = field_value.Replace("SubscriptionTypeName::", "").Trim();
-                        query_subscription_list.Add(new Tuple<Fields, object>(Fields.SubscriptionTypeName, value));
+                        if (long.TryParse(field_value.Replace("OrganizationId::", ""), out long long_out))
+                        {
+                            query_subscription_list.Add(new Tuple<Fields, object>(Fields.OrganizationId, long_out));
+                        }
+                        else
+                        {
+                            result.ErrorMessage = "Unable to parse OrganizationId";
+                            break;
+                        }
+                    }
+                    else if (field_value.Contains("OrganizationName::"))
+                    {
+                        string value = field_value.Replace("OrganizationName::", "").Trim();
+                        query_subscription_list.Add(new Tuple<Fields, object>(Fields.OrganizationName, value));
                     }
                     else
                     {
@@ -288,7 +329,7 @@ namespace DBConnector.Tests
             result.ReturnValue = query_subscription_list;
 
             return result;
-        */}
+        }
 
         #endregion
     }
