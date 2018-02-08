@@ -13,7 +13,7 @@ namespace DBConnector.Tests
     [TestClass]
     public class PermssionLevelsConnectorTests
     {
-        private class Test_PermissionLevelsConnecector: PermissionLevelsConnector
+        private class Test_PermissionLevelsConnecector : PermissionLevelsConnector
         {
             public Test_PermissionLevelsConnecector() { _Table_Name = $"Test_{_Table_Name}"; }
         }
@@ -45,15 +45,17 @@ namespace DBConnector.Tests
 
         #region Properties
 
-        Test_PermissionLevelsConnecector Connector { get; set; }
+        private static Test_PermissionLevelsConnecector Connector { get; set; }
 
         #endregion
 
 
+        #region Tests
+
         [TestMethod]
         public void Test_Insert()
         {
-            ResultPackage<bool> insert_result = Connector.Insert((long)1, "default");
+            ResultPackage<bool> insert_result = Insert_Test_Value();
 
             Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
             Assert.IsTrue(insert_result.ReturnValue);
@@ -65,7 +67,7 @@ namespace DBConnector.Tests
             ResultPackage<string> query_result;
             Dictionary<Fields, object> find_where;
             ResultPackage<List<Tuple<Fields, object>>> parsed_query;
-            ResultPackage<bool> insert_result = Connector.Insert(1, "default");
+            ResultPackage<bool> insert_result = Insert_Test_Value();
 
             Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
             Assert.IsTrue(insert_result.ReturnValue);
@@ -98,7 +100,7 @@ namespace DBConnector.Tests
 
 
             // SELECT * From Test_Permissions WHERE id = 1 ...
-            query_result = Connector.Query(find_where, new List<Fields> ());
+            query_result = Connector.Query(find_where, new List<Fields>());
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
             Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
 
@@ -106,9 +108,9 @@ namespace DBConnector.Tests
             Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
             Assert.IsTrue(parsed_query.ReturnValue.Count == 2);
 
-            foreach(Tuple<Fields, object> item in parsed_query.ReturnValue)
+            foreach (Tuple<Fields, object> item in parsed_query.ReturnValue)
             {
-                if(item.Item1 == Fields.PermissionLevelId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
+                if (item.Item1 == Fields.PermissionLevelId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
                 else if (item.Item1 == Fields.PermissionLevelName) { Assert.IsTrue(item.Item2.Equals("default")); }
                 else { Assert.IsTrue(false); }
             }
@@ -118,15 +120,10 @@ namespace DBConnector.Tests
         public void Test_Delete()
         {
             ResultPackage<bool> delete_result;
-            Dictionary<Fields, object> delete_where;
-
-            //DELETE FROM Test_Permission... WHERE PermissionId = 1;
-            delete_where = new Dictionary<Fields, object>
-            { { Fields.PermissionLevelId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Connector.Insert(1, "default");
-            delete_result = Connector.Delete(delete_where);
+            Insert_Test_Value();
+            delete_result = Delete_Test_Value();
 
             Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
             Assert.IsTrue(delete_result.ReturnValue);
@@ -137,21 +134,17 @@ namespace DBConnector.Tests
         {
             ResultPackage<bool> delete_result;
             ResultPackage<string> query_result;
-            Dictionary<Fields, object> delete_where, find_where;
-
-            //DELETE FROM Test_Permission... WHERE PermissionId = 1;
-            delete_where = new Dictionary<Fields, object>
-            { { Fields.PermissionLevelId, (long)1 }, };
+            Dictionary<Fields, object> find_where;
 
             //Insert Value for 1 to ensure we can delete
-            Connector.Insert(1, "default");
-            delete_result = Connector.Delete(delete_where);
+            Insert_Test_Value();
+            delete_result = Delete_Test_Value();
 
             Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
             Assert.IsTrue(delete_result.ReturnValue);
 
-            find_where = delete_where;
-
+            find_where = new Dictionary<Fields, object>
+            { { Fields.PermissionLevelId, (long)1 }, };
             // SELECT * From Test_Permissions WHERE id = 1...
             query_result = Connector.Query(find_where, new List<Fields>());
             //No error for empty result but also no return value
@@ -172,7 +165,7 @@ namespace DBConnector.Tests
             { { Fields.PermissionLevelId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Connector.Insert(1, "default");
+            Insert_Test_Value();
             update_result = Connector.Update(set_values, where_values);
 
             Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
@@ -194,7 +187,7 @@ namespace DBConnector.Tests
             { { Fields.PermissionLevelId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Connector.Insert(1, "default");
+            Insert_Test_Value();
             update_result = Connector.Update(set_values, where_values);
 
             Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
@@ -222,6 +215,25 @@ namespace DBConnector.Tests
             Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
             Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.PermissionLevelId);
             Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)2));
+        }
+
+        #endregion
+
+
+        #region Helper methods
+
+        public static ResultPackage<bool> Insert_Test_Value()
+        {
+            return Connector.Insert(1, "default");
+        }
+
+        public static ResultPackage<bool> Delete_Test_Value()
+        {
+            //Delete from subscriptionTypesHC where subscriptionTypeId = 1
+            Dictionary<Fields, object> delete_where = new Dictionary<Fields, object>
+            { { Fields.PermissionLevelId, (long)1 }, };
+
+            return Connector.Delete(delete_where);
         }
 
         private ResultPackage<List<Tuple<Fields, object>>> Parse_Query(string query_result)
@@ -270,5 +282,7 @@ namespace DBConnector.Tests
 
             return result;
         }
+
+        #endregion
     }
 }

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseConnectorTests.cs" />
+    <Compile Include="OrganizationsConnectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PermssionLevelsConnectorTests.cs" />
     <Compile Include="SubscriptionTypesConnectorTests.cs" />

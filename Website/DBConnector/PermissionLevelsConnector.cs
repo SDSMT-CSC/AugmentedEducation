@@ -163,9 +163,7 @@ namespace DBConnector
 
         public ResultPackage<bool> Delete_All()
         {
-            SqlCommand command = new SqlCommand() { CommandText = $"DELETE FROM {_Table_Name};" };
-
-            return Delete(command);
+            return Delete(new SqlCommand() { CommandText = $"DELETE FROM {_Table_Name};" });
         }
 
         #endregion

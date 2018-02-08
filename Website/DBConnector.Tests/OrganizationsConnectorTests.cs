@@ -5,29 +5,33 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using ResultReporter;
 
-using Fields = DBConnector.SubscriptionTypesConnector.FieldNames;
+using Fields = DBConnector.OrganizationsConnector.FieldNames;
 
 namespace DBConnector.Tests
 {
     [TestClass]
-    public class SubscriptionTypesConnectorTests
+    public class OrganizationsConnectorTests
     {
-        private class Test_SubscriptionTypesConnecector : SubscriptionTypesConnector
+        private class Test_OrganizationsConnector : OrganizationsConnector
         {
-            public Test_SubscriptionTypesConnecector() { _Table_Name = $"Test_{_Table_Name}"; }
+            public Test_OrganizationsConnector() { _Table_Name = $"Test_{_Table_Name}"; }
         }
+
 
         #region Init/Teardown
 
         //Init
         [ClassInitialize]
         public static void ClassInit(TestContext context)
-        { BaseConnectorTests.Create_Test_Tables(); }
+        {
+            BaseConnectorTests.Create_Test_Tables();
+            SubscriptionTypesConnectorTests.Insert_Test_Value();
+        }
 
         [TestInitialize]
         public void TestInit()
         //if Connector == null, create new: else it is self
-        { Connector = Connector ?? new Test_SubscriptionTypesConnecector(); }
+        { Connector = Connector ?? new Test_OrganizationsConnector(); }
 
 
         //Teardown
@@ -44,7 +48,7 @@ namespace DBConnector.Tests
 
         #region Properties
 
-        private static Test_SubscriptionTypesConnecector Connector { get; set; }
+        private static Test_OrganizationsConnector Connector { get; set; }
 
         #endregion
 
@@ -55,18 +59,17 @@ namespace DBConnector.Tests
         public void Test_Insert()
         {
             ResultPackage<bool> insert_result = Insert_Test_Value();
-
             Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
             Assert.IsTrue(insert_result.ReturnValue);
         }
 
         [TestMethod]
         public void Test_Insert_And_Query()
-        {
+        {/*
             ResultPackage<string> query_result;
             Dictionary<Fields, object> find_where;
             ResultPackage<List<Tuple<Fields, object>>> parsed_query;
-            ResultPackage<bool> insert_result = Insert_Test_Value();
+            ResultPackage<bool> insert_result = Connector.Insert(1, "default");
 
             Assert.IsTrue(string.IsNullOrEmpty(insert_result.ErrorMessage));
             Assert.IsTrue(insert_result.ReturnValue);
@@ -113,48 +116,48 @@ namespace DBConnector.Tests
                 else if (item.Item1 == Fields.SubscriptionTypeName) { Assert.IsTrue(item.Item2.Equals("default")); }
                 else { Assert.IsTrue(false); }
             }
-        }
+        */}
 
         [TestMethod]
         public void Test_Delete()
         {
-            ResultPackage<bool> delete_result;
-
-            //Insert Value for 1 to ensure we can delete
             Insert_Test_Value();
-            delete_result = Delete_Test_Value();
+            ResultPackage<bool> delete_result = Delete_Test_Value();
 
-            Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
             Assert.IsTrue(delete_result.ReturnValue);
+            Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
         }
 
         [TestMethod]
         public void Test_Delete_And_Query()
-        {
+        {/*
             ResultPackage<bool> delete_result;
             ResultPackage<string> query_result;
-            Dictionary<Fields, object> find_where;
+            Dictionary<Fields, object> delete_where, find_where;
+
+            //DELETE FROM Test_subscription... WHERE subscriptionId = 1;
+            delete_where = new Dictionary<Fields, object>
+            { { Fields.SubscriptionTypeId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Insert_Test_Value();
-            delete_result = Delete_Test_Value();
+            Connector.Insert(1, "default");
+            delete_result = Connector.Delete(delete_where);
 
             Assert.IsTrue(string.IsNullOrEmpty(delete_result.ErrorMessage));
             Assert.IsTrue(delete_result.ReturnValue);
 
-            find_where = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, (long)1 }, };
+            find_where = delete_where;
 
             // SELECT * From Test_subscriptions WHERE id = 1...
             query_result = Connector.Query(find_where, new List<Fields>());
             //No error for empty result but also no return value
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ReturnValue));
-        }
+        */}
 
         [TestMethod]
         public void Test_Update()
-        {
+        {/*
             ResultPackage<bool> update_result;
             Dictionary<Fields, object> set_values, where_values;
 
@@ -165,16 +168,16 @@ namespace DBConnector.Tests
             { { Fields.SubscriptionTypeId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Insert_Test_Value();
+            Connector.Insert(1, "default");
             update_result = Connector.Update(set_values, where_values);
 
             Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
             Assert.IsTrue(update_result.ReturnValue);
-        }
+        */}
 
         [TestMethod]
         public void Test_Update_And_Query()
-        {
+        {/*
             ResultPackage<bool> update_result;
             ResultPackage<string> query_result;
             ResultPackage<List<Tuple<Fields, object>>> parsed_query;
@@ -187,7 +190,7 @@ namespace DBConnector.Tests
             { { Fields.SubscriptionTypeId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Insert_Test_Value();
+            Connector.Insert(1, "default");
             update_result = Connector.Update(set_values, where_values);
 
             Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
@@ -215,32 +218,33 @@ namespace DBConnector.Tests
             Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
             Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.SubscriptionTypeId);
             Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)2));
-        }
+        */}
 
         #endregion
 
 
         #region Helper methods
 
-        public static ResultPackage<bool> Insert_Test_Value()
+        private static ResultPackage<bool> Insert_Test_Value()
         {
-            Connector = Connector ?? new Test_SubscriptionTypesConnecector();
-            return Connector.Insert(1, "default");
+            Connector = Connector ?? new Test_OrganizationsConnector();
+            return Connector.Insert(1, 1, "Organization");
         }
 
-        public static ResultPackage<bool> Delete_Test_Value()
+        private static ResultPackage<bool> Delete_Test_Value()
         {
-            //Delete from subscriptionTypesHC where subscriptionTypeId = 1
             Dictionary<Fields, object> delete_where = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, (long)1 }, };
+            { {Fields.OrganizationId, (long)1}, };
 
-            Connector = Connector ?? new Test_SubscriptionTypesConnecector();
+            Connector = Connector ?? new Test_OrganizationsConnector();
 
             return Connector.Delete(delete_where);
         }
 
         private ResultPackage<List<Tuple<Fields, object>>> Parse_Query(string query_result)
         {
+            return new ResultPackage<List<Tuple<Fields, object>>>();
+            /*
             List<string> rows = new List<string>();
             char[] delimit_fields = new char[] { ',' };
             string[] delimit_rows = new string[] { "\r\n" };
@@ -284,7 +288,7 @@ namespace DBConnector.Tests
             result.ReturnValue = query_subscription_list;
 
             return result;
-        }
+        */}
 
         #endregion
     }

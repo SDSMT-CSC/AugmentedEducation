@@ -109,6 +109,7 @@ namespace DBConnector.Tests
             return dropped;
         }
 
+        #region Create table methods
 
         public static bool Create_Test_Files_Table()
         {
@@ -237,6 +238,8 @@ namespace DBConnector.Tests
 
             return (connector.Create(command)).ReturnValue;
         }
+
+        #endregion
 
         #endregion
     }
