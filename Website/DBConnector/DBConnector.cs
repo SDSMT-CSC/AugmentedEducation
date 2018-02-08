@@ -95,7 +95,7 @@ namespace DBConnector
                             {
                                 query_result.Append($"{dataReader.GetName(field_index)}::");
                                 query_result.Append($"{dataReader[field_index].ToString()}");
-                                if(field_index != dataReader.FieldCount - 1) { query_result.Append(", "); }
+                                if (field_index != dataReader.FieldCount - 1) { query_result.Append(", "); }
                             }
                             query_result.AppendLine();
                         }
@@ -133,6 +133,32 @@ namespace DBConnector
             }, command);
         }
 
+        public ResultPackage<bool> Create(SqlCommand command)
+        {
+            return Execute_With_Connection<bool>(() =>
+            {
+                int rows_affected = 0;
+
+                try { rows_affected = command.ExecuteNonQuery(); }
+                catch (Exception ex) { throw new InvalidOperationException($"Unable to Create Table: \r\n{ex.ToString()}"); }
+
+                return (rows_affected > 0);
+            }, command);
+        }
+
+        public ResultPackage<bool> Drop(SqlCommand command)
+        {
+            return Execute_With_Connection<bool>(() =>
+            {
+                int rows_affected = 0;
+
+                try { rows_affected = command.ExecuteNonQuery(); }
+                catch (Exception ex) { throw new InvalidOperationException($"Unable to Drop Table: \r\n{ex.ToString()}"); }
+
+                return (rows_affected > 0);
+            }, command);
+        }
+
         #endregion
 
 
@@ -156,7 +182,7 @@ namespace DBConnector
                     return_value.ReturnValue = exec();
                 }
             }
-            catch(InvalidOperationException ex) { return_value.ErrorMessage = ex.ToString(); }
+            catch (InvalidOperationException ex) { return_value.ErrorMessage = ex.ToString(); }
             catch (Exception e) { return_value.ErrorMessage = $"Unexpected Error: \r\n{e.ToString()}"; }
 
             return return_value;
