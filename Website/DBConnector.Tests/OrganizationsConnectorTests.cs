@@ -205,20 +205,20 @@ namespace DBConnector.Tests
 
         [TestMethod]
         public void Test_Update_And_Query()
-        {/*
+        {
             ResultPackage<bool> update_result;
             ResultPackage<string> query_result;
             ResultPackage<List<Tuple<Fields, object>>> parsed_query;
             Dictionary<Fields, object> find_where, set_values, where_values;
 
             set_values = new Dictionary<Fields, object>
-            { {Fields.SubscriptionTypeId, (long)2}, };
+            { {Fields.OrganizationId, (long)2}, };
             //set id = 2 where id = 1;
             where_values = new Dictionary<Fields, object>
-            { { Fields.SubscriptionTypeId, (long)1 }, };
+            { { Fields.OrganizationId, (long)1 }, };
 
             //Insert Value for 1 to ensure we can delete
-            Connector.Insert(1, "default");
+            Insert_Test_Value();
             update_result = Connector.Update(set_values, where_values);
 
             Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
@@ -237,16 +237,16 @@ namespace DBConnector.Tests
             find_where = set_values;
 
             // SELECT SubscriptionTypeID From Test_subscriptions WHERE id = 2...
-            query_result = Connector.Query(find_where, new List<Fields> { Fields.SubscriptionTypeId });
+            query_result = Connector.Query(find_where, new List<Fields> { Fields.OrganizationId });
             Assert.IsTrue(string.IsNullOrEmpty(query_result.ErrorMessage));
             Assert.IsFalse(string.IsNullOrEmpty(query_result.ReturnValue));
 
             parsed_query = Parse_Query(query_result.ReturnValue);
             Assert.IsTrue(string.IsNullOrEmpty(parsed_query.ErrorMessage));
             Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
-            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.SubscriptionTypeId);
+            Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.OrganizationId);
             Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)2));
-        */}
+        }
 
         #endregion
 
