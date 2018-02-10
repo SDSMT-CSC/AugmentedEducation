@@ -66,6 +66,7 @@ namespace DBConnector.Tests
         [TestMethod]
         public void Test_Insert_Missing_Dependency()
         {
+            Connector.Delete_All();
             //remove dependency added in ClassInit()
             SubscriptionTypesConnectorTests.Delete_Test_Value();
 
@@ -73,7 +74,6 @@ namespace DBConnector.Tests
             Assert.IsFalse(string.IsNullOrEmpty(insert_result.ErrorMessage));
             Assert.IsFalse(insert_result.ReturnValue);
 
-            //re-add dependency for following tests
             SubscriptionTypesConnectorTests.Insert_Test_Value();
         }
 
@@ -147,6 +147,8 @@ namespace DBConnector.Tests
                 else if (item.Item1 == Fields.SubscriptionTypeId) { Assert.IsTrue(item.Item2.Equals((long)1)); }
                 else { Assert.IsTrue(false); }
             }
+
+
         }
 
         [TestMethod]
@@ -201,6 +203,9 @@ namespace DBConnector.Tests
 
             Assert.IsTrue(string.IsNullOrEmpty(update_result.ErrorMessage));
             Assert.IsTrue(update_result.ReturnValue);
+
+            //Undo the update for later tests
+            Connector.Update(where_values, set_values);
         }
 
         [TestMethod]
@@ -246,6 +251,9 @@ namespace DBConnector.Tests
             Assert.IsTrue(parsed_query.ReturnValue.Count == 1);
             Assert.IsTrue(parsed_query.ReturnValue[0].Item1 == Fields.OrganizationId);
             Assert.IsTrue(parsed_query.ReturnValue[0].Item2.Equals((long)2));
+
+            //Undo the update for later tests
+            Connector.Update(where_values, set_values);
         }
 
         #endregion
