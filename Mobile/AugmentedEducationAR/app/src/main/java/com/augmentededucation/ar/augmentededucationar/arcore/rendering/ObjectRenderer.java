@@ -117,6 +117,12 @@ public class ObjectRenderer {
     private float mSpecular = 1.0f;
     private float mSpecularPower = 6.0f;
 
+    private Rect mrect = new Rect(0, 0, 1, 1);
+    private Bitmap mtextureBitmap = Bitmap.createBitmap(mrect.width(), mrect.height(), Bitmap.Config.ARGB_8888);
+    private Canvas canvas = new Canvas(mtextureBitmap);
+    private Paint paint = new Paint();
+
+
     public ObjectRenderer() {
     }
 
@@ -129,28 +135,6 @@ public class ObjectRenderer {
      */
     public void createOnGlThread(Context context, String objAssetName,
                                  String diffuseTextureAssetName) throws IOException {
-        // Read the texture.
-        //Bitmap textureBitmap = BitmapFactory.decodeStream(
-        //    context.getAssets().open(diffuseTextureAssetName));
-/*
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glGenTextures(mTextures.length, mTextures, 0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0]);
-
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        //GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
-        GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-
-        //textureBitmap.recycle();
-
-        ShaderUtil.checkGLError(TAG, "Texture loading");
-
-        */
-
         // Read the obj file.
         InputStream objInputStream = context.getAssets().open(objAssetName);
         Obj obj = ObjReader.read(objInputStream);
@@ -318,10 +302,10 @@ public class ObjectRenderer {
                     // Read the texture.
                     Bitmap textureBitmap;
                     if (targetMat.getMapKd().contains("tga")) {
-                        textureBitmap = readTgaToBitmap(context, parentDirectory + targetMat.getMapKd());
+                        textureBitmap = readTgaToBitmap(context, targetMat.getMapKd());
                     } else {
                         textureBitmap = BitmapFactory.decodeStream(
-                                context.getAssets().open(parentDirectory + targetMat.getMapKd()));
+                                context.getAssets().open(targetMat.getMapKd()));
                     }
 
                     GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[i]);
@@ -338,17 +322,11 @@ public class ObjectRenderer {
                 }
                 else
                 {
-                    Rect rect = new Rect(0, 0, 1, 1);
-
-                    Bitmap textureBitmap = Bitmap.createBitmap(rect.width(), rect.height(), Bitmap.Config.ARGB_8888);
-                    Canvas canvas = new Canvas(textureBitmap);
-
                     FloatTuple k = targetMat.getKd();
-                    int color = Color.argb(1.0f, k.getX(), k.getY(), k.getZ());
+                    int color = Color.rgb((int) (255 * k.getX()), (int) (255 * k.getY()), (int) (255 * k.getZ()));
 
-                    Paint paint = new Paint();
                     paint.setColor(color);
-                    canvas.drawRect(rect, paint);
+                    canvas.drawRect(mrect, paint);
 
                     GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[i]);
 
@@ -356,17 +334,10 @@ public class ObjectRenderer {
                             GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
                     GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
                             GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
+                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mtextureBitmap, 0);
                     GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
                     GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-
-                    textureBitmap.recycle();
                 }
-
-                //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[i]);
-                //GLES20.glTexParameterfv(GLES20.GL_TEXTURE_2D, GLES20.GL_RGB, new float[] {1.0f, 0.0f, 0.0f, 1.0f}, 0);
-                //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-
 
                 ShaderUtil.checkGLError(TAG, "Texture loading");
             }
