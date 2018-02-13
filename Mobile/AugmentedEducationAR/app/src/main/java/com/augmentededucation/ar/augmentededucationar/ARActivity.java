@@ -1,13 +1,17 @@
 package com.augmentededucation.ar.augmentededucationar;
 
+import android.content.Intent;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.augmentededucation.ar.augmentededucationar.arcore.CameraPermissionHelper;
@@ -36,6 +40,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class ARActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
+    public static final String FILENAME_TAG = "filename_tag";
+
     private static final String TAG = ARActivity.class.getSimpleName();
 
 
@@ -53,11 +59,11 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
     private final float[] anchorMatrix = new float[16];
 
     private float scaleFactor = .1f;
+    private float scaleFactorDiff = 0.025f;
 
     private final ArrayBlockingQueue<MotionEvent> queuedSingleTaps = new ArrayBlockingQueue<MotionEvent>(16);
 
     private String objectFileName;
-    private String materialFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,29 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         setContentView(R.layout.activity_ar);
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(this);
+
+        Intent intent = getIntent();
+
+        EditText editText = findViewById(R.id.scale_factor);
+        editText.setText(String.valueOf(scaleFactorDiff));
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() != 0) {
+                    scaleFactorDiff = Float.parseFloat(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         // TODO: Add tap listener
         gestureDetector= new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
@@ -127,8 +156,10 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         session.configure(config);
 
         // TODO remove default file names
-        objectFileName = "Car.obj";
-        materialFileName = "Car.obj.mtl";
+        objectFileName = intent.getStringExtra(FILENAME_TAG);
+        if (objectFileName == null) {
+            objectFileName = "cone2.obj";
+        }
     }
 
     private void onSingleTap(MotionEvent e) {
@@ -265,11 +296,11 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
     }
 
     public void onBig(View v) {
-        scaleFactor += 0.025;
+        scaleFactor += scaleFactorDiff;
     }
 
     public void onLittle(View v) {
-        scaleFactor -= .025f;
+        scaleFactor -= scaleFactorDiff;
         if (scaleFactor < 0.01f) {
             scaleFactor = 0.01f;
         }

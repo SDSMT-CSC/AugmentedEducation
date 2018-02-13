@@ -595,9 +595,9 @@ public class ObjectRenderer {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         }
 
-        //GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mIndexBufferId);
-        //GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndexCount, GLES20.GL_UNSIGNED_SHORT, 0);
-       // GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mIndexBufferId);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndexCount, GLES20.GL_UNSIGNED_SHORT, 0);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
 
         if (mBlendMode != null) {
             GLES20.glDisable(GLES20.GL_BLEND);
@@ -605,11 +605,11 @@ public class ObjectRenderer {
         }
 
         // Disable vertex arrays
-       // GLES20.glDisableVertexAttribArray(mPositionAttribute);
-        //GLES20.glDisableVertexAttribArray(mNormalAttribute);
-       // GLES20.glDisableVertexAttribArray(mTexCoordAttribute);
+        GLES20.glDisableVertexAttribArray(mPositionAttribute);
+        GLES20.glDisableVertexAttribArray(mNormalAttribute);
+        GLES20.glDisableVertexAttribArray(mTexCoordAttribute);
 
-        //GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 
         ShaderUtil.checkGLError(TAG, "After draw");
     }

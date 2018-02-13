@@ -16,6 +16,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 public class HomeActivity extends AppCompatActivity {
 	private static final String LOG_TAG = MainActivity.class.getSimpleName();
 	private static final int READ_BARCODE = 1;
+	private String fileName = "cone2.obj";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class HomeActivity extends AppCompatActivity {
 
 	public void ViewInAR(View view) {
 		Intent intent = new Intent(this, ARActivity.class);
+		intent.putExtra(ARActivity.FILENAME_TAG, fileName);
 		startActivity(intent);
 	}
 
@@ -43,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
 					Barcode barcode = (Barcode) data.getExtras().get(ScanQRCodeActivity.BarcodeObject);
 					Toast.makeText(this, barcode.rawValue, Toast.LENGTH_LONG).show();
 					Point[] p = barcode.cornerPoints;
+					fileName = barcode.rawValue;
 				} else Toast.makeText(this, R.string.no_barcode_captured, Toast.LENGTH_LONG).show();
 			} else Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format),
 					CommonStatusCodes.getStatusCodeString(resultCode)));
