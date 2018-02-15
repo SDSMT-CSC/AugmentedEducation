@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.augmentededucation.ar.augmentededucationar.arcore.CameraPermissionHelper;
@@ -34,6 +36,7 @@ import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -216,6 +219,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
             return;
         }
 
+
         displayRotationHelper.updateSessionIfNeeded(session);
 
         try {
@@ -236,6 +240,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
             backgroundRenderer.draw(frame);
 
             if (camera.getTrackingState() == Trackable.TrackingState.PAUSED) {
+                Log.e("CAMERAISSUES", "HERE");
                 return;
             }
 
@@ -274,7 +279,8 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
     protected void onResume() {
         super.onResume();
 
-        if (CameraPermissionHelper.hasCameraPermission(this)) {
+        if (CameraPermissionHelper.hasCameraPermission(this))
+        {
             if (session != null) {
                 session.resume();
             }

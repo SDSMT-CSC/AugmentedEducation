@@ -6,11 +6,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.augmentededucation.ar.augmentededucationar.barcode.ScanQRCodeActivity;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+
+import java.util.ArrayList;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -18,10 +23,49 @@ public class HomeActivity extends AppCompatActivity {
 	private static final int READ_BARCODE = 1;
 	private String fileName = "cone2.obj";
 
+	private ListView modelsList;
+	private String[] models;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+
+		if (modelsList == null){
+			modelsList = findViewById(R.id.modelsList);
+		}
+
+		try
+		{
+			String[] assets = getAssets().list("");
+			ArrayList<String> tempModelList = new ArrayList<>();
+			for (String asset : assets)
+			{
+				if (asset.contains(".obj") && !asset.contains(".mtl"))
+				{
+					tempModelList.add(asset);
+				}
+			}
+
+			models = new String[tempModelList.size()];
+			tempModelList.toArray(models);
+			ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, models);
+			modelsList.setAdapter(adapter);
+
+			modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+				{
+					fileName = models[i];
+					ViewInAR(view);
+				}
+			});
+		}
+		catch (Exception e){
+			Log.e("ASSETS", "Unable to read assets");
+		}
+
 	}
 
 	public void ViewInAR(View view) {
