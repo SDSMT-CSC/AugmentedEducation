@@ -240,8 +240,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
             backgroundRenderer.draw(frame);
 
             if (camera.getTrackingState() == Trackable.TrackingState.PAUSED) {
-                Log.e("CAMERAISSUES", "HERE");
-                return;
+                    return;
             }
 
             float[] projmtx = new float[16];

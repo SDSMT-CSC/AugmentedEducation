@@ -43,7 +43,7 @@ public class HomeActivity extends AppCompatActivity {
 			{
 				if (asset.contains(".obj") && !asset.contains(".mtl"))
 				{
-					tempModelList.add(asset);
+					tempModelList.add(asset.substring(0, asset.indexOf(".obj")));
 				}
 			}
 
@@ -57,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
 				@Override
 				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
 				{
-					fileName = models[i];
+					fileName = models[i] + ".obj";
 					ViewInAR(view);
 				}
 			});
