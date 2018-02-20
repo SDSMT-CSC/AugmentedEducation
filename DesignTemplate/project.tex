@@ -18,7 +18,7 @@ Product development is divided into two teams:
             \item Brady Shimp (Scrum Master)
             \item Savoy Schuler
         \end{itemize}
-    \item Conversion Software Team:
+    \item Conversion Software and Mobile Application Team:
         \begin{itemize}
             \item Aaron Alphonsus
             \item Cheldon Coughlen (Team Lead)
@@ -29,7 +29,7 @@ Product development is divided into two teams:
 The website team shares the responsibility for developing the website, file upload and download abilities, an API for connecting the website to the conversion software, user log in protected profile functionality, user abilities to manage files, social/collaborative features, file permissions and cloud hosting abilities.  
 
 
-The conversion software shares the responsibility for developing software to convert uploaded file types into file types render-able by AR devices and applications needed by devices for reading and rendering files from QR codes.
+The conversion software shares the responsibility for developing software to convert uploaded file types into file types render-able by AR devices and applications needed by devices for reading and rendering files from QR codes.  Additionally,  this sub-team is responsible for producing a mobile application that interfaces with the website to provide AR visualization.
 
 
 As Team Lead, Cheldon Coughlen acts as the team representative to the sponsor and client and brokers communication between these parties and the development team. 
@@ -220,10 +220,16 @@ tools with descriptions:
 
     \item HoloLens Development Tools
     \begin{itemize}
-        \item Unity Personal. Free version of Unity editor used for creating HoloLens app
+        \item Unity Personal - Free version of Unity editor used for creating HoloLens app
 
         \item HoloToolkit - Free Set of tools you can download from an open source GitHub Project
 
+    \end{itemize}
+
+    \item Android Development Tools
+    \begin{itemize}
+        \item Android Studio
+        \item ARCore Preview
     \end{itemize}
 \end{itemize}
 
@@ -281,9 +287,19 @@ Figure \ref{Contributions} shows a snapshot of repository activity and developer
 
 \paragraph{HoloLens App}
 \begin{itemize}
-    \item Unity Personal. Free version of Unity editor used for creating HoloLens app
+    \item Unity Personal - Free version of Unity editor used for creating HoloLens app
 
     \item HoloToolkit - Free Set of tools you can download from an open source GitHub Project
+\end{itemize}
+
+\paragraph{Android App}
+\begin{itemize}
+    \item Android Studio - IDE for Android development
+    \item ARCore - Support for AR on Anroid devices (currently in preview)
+    \begin{itemize}
+        \item Only works on specific devices (as of 2/20/2018)
+    \end{itemize}
+    \item OBJ PARSER
 \end{itemize}
 
 \section{Build  Environment}
@@ -340,4 +356,26 @@ There are two libraries that need to be installed: Assimp and FBX SDK.
     \end{itemize}
 
     \item Copy FileConverion/Assimp/bin/x86/assimp-vc140-mt.dll to the same directory as the source code.
+\end{enumerate}
+
+\paragraph{Android Development}
+
+\subparagraph{PC Setup}
+\begin{enumerate}
+    \item Install Android Studio
+    \begin{itemize}
+        \item \url{https://developer.android.com/studio/index.html}
+    \end{itemize}
+
+\end{enumerate}
+
+\subparagraph{Mobile Device Setup}
+\begin{enumerate}
+    \item Enable developer mode
+    \begin{itemize}
+        \item \url{https://developer.android.com/studio/debug/dev-options.html}
+        \item Make sure to enable remote debugging from the developer settings on the device
+    \end{itemize}
+
+    \item Install ARCore from the Play Store
 \end{enumerate}
