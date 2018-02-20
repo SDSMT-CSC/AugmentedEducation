@@ -1,0 +1,123 @@
+\section{User Stories}
+
+
+User stories are collected through conversations with the stakeholders and
+regularly displaying what we have accomplished. Our senior design team has
+weekly meetings with our client to review progress on the project. We meet
+with other faculty related to the project as necessary in order to receive
+specific feedback.
+
+The starting point for the requirements and user stories for this project comes
+from the original grant proposal by Dr. McGough and other SD Mines faculty
+which can be found in ~\autoref{ch:support}. Over the course of several
+meetings and conversations with the professors on the grant, we refined the
+requirements for our product.
+
+An example user story from the grant, which is a close representation of the
+use case we are trying to support with our MVP, is as follows: "As a Calc III
+professor, I would like to provide visualizations of 3D objects so that
+students can find the volume of an object by being able to view the object
+from different angles, and being able to slice the object's volume"
+
+Some base requirements we have identified for our platform include:
+\begin{itemize}
+	\item Must have a website to manage files
+	\item Must support Maplesoft generated 3D files
+	\item Must automatically convert files to AR device compatible format
+	\item Must render files on the Microsoft HoloLens
+\end{itemize}
+
+At the advice of our faculty advisor, we grouped our user stories into three 
+development rounds. For each user story we discuss the testability of the 
+feature, and include the test if it is. More detail on tests can be found in the testing section, chapter \ref{ch:testing}.
+
+% This section can really be seen as the guts of the document.  This section
+% should be the result of discussions with the stakeholders with regard to the
+% actual functional requirements of the software.  It is the user stories that
+% will be used in the work breakdown structure to build tasks to fill the
+% product backlog for implementation through the sprints.
+
+% This section should contain sub-sections to define and potentially provide a
+% breakdown of larger user stories into smaller user stories. Each component
+% must have a test identified, meaning you need to know how you plan to test 
+% it. If a requirement is not testable, then some justification needs to be 
+% made on why the requirement has been included. The results of the tests 
+% should go in the testing chapter.
+
+\subsection{Round One}
+
+User Stories:
+\begin{itemize}
+	\item As an SD Mines faculty member, I want:
+		\begin{itemize}
+			\item To upload a Maple 3D file to a cloud server.
+			\item Have the Maple 3D file to be automatically converted to an AR 
+			Tag.
+			\item Download the AR Tag for my model from the cloud server.
+		\end{itemize}
+\end{itemize}
+Tests:
+\begin{itemize}
+	\item Test conversion of multiple types of 3D models.
+	\item Test viewing and manipulating the models on the HoloLens.
+	\item Test generation of a unique AR tag for each model.
+	\item Test the upload and download process for a 3D model.
+\end{itemize}
+
+\subsection{Round Two}
+
+User Stories:
+\begin{itemize}
+	\item As a faculty member, I want:
+	\begin{itemize}
+		\item A Maple file to be automatically converted into an AR Tag on a 
+		cloud server.
+		\item To log in to my secure account on the cloud server and view my 
+		uploaded files.
+		\item To choose my files to be private, shared with some, or public.
+	\end{itemize}
+	\item As a user, I want:
+	\begin{itemize}
+		\item To be able to view surface materials.
+		\item To be able to detect an AR tag through a Microsoft HoloLens and 
+		have the 3D model rendered.
+	\end{itemize}
+\end{itemize}
+Tests:
+\begin{itemize}
+	\item Upload a file and verify that the AR tag received links to the correct
+	model.
+	\item Testing the security of an account may be out of the scope of this 
+	project. We will strive to research and maintain best practices while 
+	implementing features.
+	\item Test privacy rules and visibility for files by creating multiple 
+	profiles with different privacy settings.
+	\item Gather 3D models of multiple file types and test the rendering of 
+	textures and surface materials.
+\end{itemize}
+
+\subsection{Round Three}
+
+User Stories:
+\begin{itemize}
+	\item As a faculty member, I want:
+	\begin{itemize}
+		\item To browse and download files that are public or shared with me.
+		\item To be able to build models for a ‘time lapse layered’ 
+		presentation. Swipe right for more detail, left for less
+	\end{itemize}
+	\item As a user, I want: 
+	\begin{itemize}
+		\item To be able to slice a 3D model and view a section of the model.
+		\item To be able to be able to switch between models quickly in the AR 
+		device.
+	\end{itemize}
+\end{itemize}
+Tests:
+\begin{itemize}
+	\item Verify that privacy settings work and users are able to download files
+	according to permissions on those files.
+	\item Test gesture control in the HoloLens application.
+	\item Use multiple 3D models and multiple examples of slicing to create 
+	sections.
+\end{itemize}
