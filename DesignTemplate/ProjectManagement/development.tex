@@ -1,0 +1,206 @@
+\section{Development Environment}
+%The basic purpose for this section is to give a developer all of the necessary 
+%information to setup their development environment to run, test, and/or develop. 
+Microsoft's Development environment was chosen for this project. This environment
+was chosen for the following reasons:
+
+\begin{itemize}
+    \item Azure allows for simple cloud hosting and database integration.
+
+    \item Student Licenses give certain paid feature of Azure for free.
+    
+    \item Access to Visual Studio is free through student accounts
+
+    \item Developers were comfortable working with the ASP.NET MVC framework.
+
+    \item Microsoft is the owner of the targeted device, The Hololens.
+
+    \item Unity is used for HoloLens app development which has a C\# backing making it necessary to us Microsoft environment.
+
+\end{itemize}
+
+\section{Development IDE and Tools}
+%Describe which IDE and provide links to installs and/or reference material. 
+Many IDE and tools are used to create this project. Below is a list of those
+tools with descriptions:
+
+\begin{itemize}
+
+    \item Website IDE and Tools
+    \begin{itemize}
+        \item Visual Studio 2017 Enterprise - Microsoft's code editor. Allows for easy Azure and database
+        integration. Also allows for easy intallation of the Unity Development Tools.
+        \item ASP.NET MVC - Microsoft's framework for creating websites.
+        \item Azure Cloud Tools - Tools that allow for easy integration with Azure, able to install in Visual Studio Installer
+    \end{itemize}
+
+    \item File Conversion and Tools
+    \begin{itemize}
+        \item Autodesk's FBX SDK is required to export .fbx files.  It must be installed in a folder located in the project directory named \"FBX SDK\".  The download can be found at: 
+        \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}.
+        The Windows VS2015 version must be installed.
+
+        \item Open Asset Import Library supports a wide variety of import and export file types.  The download can be found at: \url{http://assimp.org/main_downloads.html}.  Version 3.1.1 is what was used in the project.         
+    \end{itemize}
+
+    \item HoloLens Development Tools
+    \begin{itemize}
+        \item Unity Personal - Free version of Unity editor used for creating HoloLens app
+
+        \item HoloToolkit - Free Set of tools you can download from an open source GitHub Project
+
+    \end{itemize}
+
+    \item Android Development Tools
+    \begin{itemize}
+        \item Android Studio
+        \item ARCore Preview
+    \end{itemize}
+\end{itemize}
+
+
+\section{Source  Control}
+\subsection{Source Control Tool}
+GitHub was used to provide source control and a private repository. This tool was chosen over others available as it is unanimously familiar to all developers. 
+
+\subsection{Source Control Architecture}
+The repository was created with the following three branches: Master, Develop and Release. 
+Develop is used for work in progress. After features have been verified through thorough testing, they will be merged into the Release branch for beta usage. Once verified in Release, features are merged into the Master branch is reserved for the final deliverable. 
+
+
+\subsection{Source Control Etiquette}
+The following steps represent the code flow process: 
+
+\begin{enumerate}
+\item Pull latest code from the develop branch
+\item Implement feature
+\item Push to Develop and assign other developer for QA
+\item Once properly tested, merge feature into Release branch
+\item Once feature verified in Release, merge feature into Master
+\end{enumerate}
+
+\subsection{Developer Contributions}
+Figure \ref{Contributions} shows a snapshot of repository activity and developer contributions:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{Contributions.png}
+	\caption{Developer Contributions} 
+	\label{Contributions}	
+\end{figure}
+
+
+
+\section{Dependencies}
+%Describe all dependencies associated with developing the system. 
+\paragraph{Website}
+\begin{itemize}
+    \item Visual Studio 2017 Enterprise - Microsoft's code editor. Allows for easy Azure and database
+    integration. Also allows for easy intallation of the Unity Development Tools.
+    \item ASP.NET MVC - Microsoft's framework for creating websites.
+    \item Azure Cloud Tools - Tools that allow for easy integration with Azure, able to install in Visual Studio Installer
+\end{itemize}
+
+\paragraph{File Conversion}
+\begin{itemize}
+    \item Autodesk's FBX SDK is required to export .fbx files.  It must be installed in a folder located in the project directory named \"FBX SDK\".  The download can be found at: 
+    \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}.
+    The Windows VS2015 version must be installed.
+
+    \item Open Asset Import Library supports a wide variety of import and export file types.  The download can be found at: \url{http://assimp.org/main_downloads.html}.  Version 3.1.1 is what was used in the project.         
+\end{itemize}
+
+\paragraph{HoloLens App}
+\begin{itemize}
+    \item Unity Personal - Free version of Unity editor used for creating HoloLens app
+
+    \item HoloToolkit - Free Set of tools you can download from an open source GitHub Project
+\end{itemize}
+
+\paragraph{Android App}
+\begin{itemize}
+    \item Android Studio - IDE for Android development
+    \item ARCore - Support for AR on Anroid devices (currently in preview)
+    \begin{itemize}
+        \item Only works on specific devices (as of 2/20/2018)
+    \end{itemize}
+    \item OBJ PARSER
+\end{itemize}
+
+\section{Build  Environment}
+Azure is used to build and deploy the website. Once the tools are downloaded and an Azure account is created, 
+all that is needed is to right-click on the ASP.NET MVC project and select publish. The website is then hosted on Azure and
+can be accessed by all.
+\section{Development Machine Setup}
+
+Pull the git repository with both the Website and File Conversion code located at: \url{https://github.com/SavoySchuler/ARFE}
+
+% If warranted, provide a list of steps and details associated with setting up a 
+% machine for use by a developer. 
+
+The following are the requirement for a development machine:
+\begin{itemize}
+    \item Windows 10
+    \item Visual Studio 2017 Enterprise with ASP.NET MVC, Azure and Unity tools
+    \item Unity Personal
+    \item HoloToolkit-Unity Set of tools for Hololens development with unity. Free for use. Download from the GitHub page.
+\end{itemize}
+
+\paragraph{File Conversion}
+
+There are two libraries that need to be installed: Assimp and FBX SDK.
+
+\subparagraph{FBX SDK}
+
+\begin{enumerate}
+    \item Go to the following link and install the FBX SDK.
+    \begin{itemize}
+        \item \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}
+        \item Use the installer under: Windows / FBX SDK 2018.0 VS2015
+    \end{itemize}
+
+    \item Copy the FBX SDK folder to the directory with the source code (the deepest FileConverion folder)
+    \begin{itemize}
+        \item At the location of the installiation, the file structure should be: Autodesk/FBX/FBX SDK/
+        \item Copy the FBX SDK folder to the source code directory.
+    \end{itemize}
+\end{enumerate}
+
+\subparagraph{Assimp}
+
+\begin{enumerate}
+    \item Go to the following link and install the Assimp software.
+    \begin{itemize}
+        \item \url{http://assimp.org/main_downloads.html}
+        \item Version 3.1.1 is what was used during development.
+    \end{itemize}
+
+    \item From the installiation location, copy the \"Assimp\" folder into the deeper FileConversion directory.
+    \begin{itemize}
+        \item Paste the folder into the same folder as the source code of the File Conversion.
+    \end{itemize}
+
+    \item Copy FileConverion/Assimp/bin/x86/assimp-vc140-mt.dll to the same directory as the source code.
+\end{enumerate}
+
+\paragraph{Android Development}
+
+\subparagraph{PC Setup}
+\begin{enumerate}
+    \item Install Android Studio
+    \begin{itemize}
+        \item \url{https://developer.android.com/studio/index.html}
+    \end{itemize}
+
+\end{enumerate}
+
+\subparagraph{Mobile Device Setup}
+\begin{enumerate}
+    \item Enable developer mode
+    \begin{itemize}
+        \item \url{https://developer.android.com/studio/debug/dev-options.html}
+        \item Make sure to enable remote debugging from the developer settings on the device
+    \end{itemize}
+
+    \item Install ARCore from the Play Store
+\end{enumerate}
