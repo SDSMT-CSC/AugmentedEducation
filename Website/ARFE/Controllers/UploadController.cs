@@ -70,7 +70,7 @@ namespace ARFE.Controllers
                 ViewBag.Message = "File Uploaded Successfully!!";
                 return View();
             }
-            catch
+            catch(Exception ex)
             {
                 ViewBag.Message = "File upload failed!!";
                 return View();
