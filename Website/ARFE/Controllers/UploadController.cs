@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Web;
+using System.Linq;
+using System.Drawing;
 using System.Web.Mvc;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Collections.Generic;
+
 using QRCoder;
 
 namespace ARFE.Controllers
@@ -18,6 +19,7 @@ namespace ARFE.Controllers
         {
             return View();
         }
+
         [HttpGet]
         public ActionResult UploadFile()
         {
@@ -56,16 +58,6 @@ namespace ARFE.Controllers
 #warning remove this line - just for testing download functionality
                     return blobsController.DownloadBlobFromContainer(User.Identity.Name, fbxExtension);
 
-                    //String FilePath = AppDomain.CurrentDomain.BaseDirectory + "\\UploadedFiles\\" + fbxExtension;
-                    //System.Web.HttpResponse response = System.Web.HttpContext.Current.Response;
-                    //response.ClearContent();
-                    //response.Clear();
-                    //response.ContentType = "application/octet-stream";
-                    //response.AddHeader("Content-Disposition", "attachment; filename=" + fbxExtension + ";");
-                    //response.TransmitFile(FilePath);
-                    //response.Flush();
-                    //response.End();
-
                 }
                 ViewBag.Message = "File Uploaded Successfully!!";
                 return View();
@@ -77,11 +69,11 @@ namespace ARFE.Controllers
             }
         }
 
-
         public ActionResult GetMessage()
         {
             return View();
         }
+
         public ActionResult DisplayQR(string Message)
         {
 
@@ -99,8 +91,6 @@ namespace ARFE.Controllers
             return View();
         }
 
-
-
         public Bitmap GenerateQRCode(String address)
         {
 
@@ -111,6 +101,5 @@ namespace ARFE.Controllers
             return qrCodeImage;
 
         }
-
     }
 }
