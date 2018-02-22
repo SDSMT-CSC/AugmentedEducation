@@ -319,7 +319,7 @@ namespace ARFE.Controllers
 
         //
         // GET: /Account/ExternalLoginCallback
-        [AllowAnonymous]
+        /*[AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
@@ -345,11 +345,11 @@ namespace ARFE.Controllers
                     ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
                     return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
-        }
+        }*/
 
         //
         // POST: /Account/ExternalLoginConfirmation
-        [HttpPost]
+       /* [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
@@ -383,7 +383,7 @@ namespace ARFE.Controllers
 
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
-        }
+        }*/
 
         //
         // POST: /Account/LogOff
