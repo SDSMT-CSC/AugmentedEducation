@@ -8,12 +8,11 @@ using System.Collections.Generic;
 
 namespace DBConnector
 {
-    class OrganizationsConnector : DBConnector
+    public class OrganizationsConnector : DBConnector
     {
         #region Members
 
         //public 
-
         public enum FieldNames
         {
             OrganizationId = 0,
@@ -22,9 +21,10 @@ namespace DBConnector
         }
 
         //private 
-
-        private string _Table_Name = "Organizations";
         private Dictionary<FieldNames, string> _Field_Name_Lookup;
+
+        //protected
+        protected string _Table_Name = "Organizations";
 
         #endregion
 
@@ -157,6 +157,11 @@ namespace DBConnector
             }
 
             return result;
+        }
+
+        public ResultPackage<bool> Delete_All()
+        {
+            return Delete(new SqlCommand { CommandText = $"DELETE FROM ${_Table_Name};" });
         }
 
         #endregion

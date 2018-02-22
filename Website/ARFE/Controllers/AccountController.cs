@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web;
+using System.Linq;
 using System.Web.Mvc;
+using System.Globalization;
+using System.Threading.Tasks;
+using System.Security.Claims;
+
+using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
+
 using ARFE.Models;
 
 namespace ARFE.Controllers

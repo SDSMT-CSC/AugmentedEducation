@@ -1,0 +1,111 @@
+% !TEX root = DesignDocument.tex
+
+\chapter{Design  and Implementation}
+
+\section{Systems Goals}
+The goal of this system is to establish a tool chain between CAD files and AR hardware. To this effect, the system must provide a web interface for users to upload CAD files to the cloud to be converted to file types render-able by AR hardware for on-demand downloading and rendering by AR devices.  
+
+\section{System Overview and Description}
+%Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
+CAD software and AR hardware are assumed available for use of this platform. Thus the two primary components of this platform are a website and conversion software. The website is intended to drive both streams of a data flow.The first will be between the user and the cloud. The second will be between the cloud and AR devices calling files by QR code or download link to be rendered.  Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. A secondary component to the website is a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. See \ref{fig:UMLSystemOverview}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{UMLSystemOverview.png}
+	\caption{System Overview Diagram} 
+	\label{fig:UMLSystemOverview}	
+\end{figure}
+
+\subsection{Website}
+%Describe briefly the role this major component plays in this system. 
+This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
+
+
+\subsection{File Conversion}
+The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
+
+Table \ref{tab:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
+Models created in most common Computer Aided Design software can export to some of the input file types.
+
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{| c | c |}
+        \hline
+        Input file type & Output file type \\
+        \hline
+        .fbx & .fbx \\
+        .dae & .dae \\
+        .blend & .obj \\ 
+        .obj & .stl \\
+        .stl & .ply \\
+        .ply & \\
+        \hline
+    \end{tabular}
+    \caption{Supported File Types}
+    \label{tab:suportedfiletypes}
+\end{table}
+
+ \section{Architecture and System Design}
+%This is where you will place the overall system design and the architecture.   This section will be very detailed and should be image rich.  There is the old phrase {\it a picture is worth a thousand words}, in this class it could be worth hundreds of points (well if you sum up over the entire team).   One needs to enter the design and why a particular design has been done.   THIS IS THE CORE OF THE COURSE.    
+ 
+ 
+% {\it It is important for you to say why as much as what.   }
+ 
+   \subsection{Design Selection}
+   \paragraph{}
+ Many design tools and coding stacks were considered at the beginning of this project.
+ The main decisions we had to make were was our development environment and the cloud services.
+ 
+ \paragraph{}
+ The first thing that was decided on was the hosting tools.
+ We decided on using the Azure cloud hosting tools for the following reasons.
+
+ \begin{itemize}
+    \item Allows for simple database and web hosting.
+    \item Paid features are offered free to students.
+ \end{itemize}
+
+ We also debated on the coding stack to use for the website.
+ We went with ASP.NET MVC for the following reasons:
+\begin{itemize}
+    \item A majority of the developers were familiar with C\# and Visual Studio.
+    \item The decision to use Azure made ASP.NET MVC a natural choice, since they are both part of the Microsoft stack.
+\end{itemize}
+
+\paragraph{}
+The other options we explored were Amazon Web Service for cloud hosting and linux development environment using Python and Django for the backend logic.
+We didn't persue these because negative feedback from our own developers as other professional reviews.
+
+ \subsection{Data Flow}
+The web interface for users creates a data upstream exists between a web browser and a cloud server. Users may upload, update, and delete remotely hosted files.
+
+Data downstream exists between the cloud server and AR hardware. Data downstream is initiated by users calling file download through QR codes or direct download links. 
+
+When a file us upload, a QR code generator plugin will be activated to generate and deliver a unique QR code to the web interface to be downloaded by the user and stored on the cloud server in association with the related file. 
+
+When a file is accessed by an AR device, conversion software will convert the file to the appropriate AR compatible file type before delivery. This converted file will be stored on the cloud server for a limited time to streamline repeated and multi-user access.
+  
+\subsection{UML}
+ 
+	\begin{figure}[H]
+	 	\centering
+		\includegraphics[width=\textwidth]{UML.png}
+		\caption{System UML Diagram} 
+	 	\label{fig:SystemUML}	
+	\end{figure}
+    
+\subsection{UX}
+
+Upon delivery of the MVP, user experience testing will be conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing will include inspection of the elements including, but not limited to, the following:
+
+\begin{itemize}
+	\item Appearance
+	\item Ease of use
+	\item Help and guidance features
+	\item Ease of locating control features and elements of interest
+	\item Speed of content delivery 
+\end{itemize}
+
+
+\input{Design/web.tex}
+\input{Design/fileConversion.tex}

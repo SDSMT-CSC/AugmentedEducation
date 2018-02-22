@@ -241,3 +241,6 @@ TSWLatexianTemp*
 /Website/DBConnector/bin/Debug
 /Website/ResultReporter/obj/Debug
 /Website/ResultReporter/bin/Debug
+/Website/packages
+/Website/App_Data/*
+/Website/UploadedFiles/*

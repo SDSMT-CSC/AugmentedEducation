@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Web;
+using System.Linq;
+using System.Drawing;
 using System.Web.Mvc;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Collections.Generic;
+
 using QRCoder;
 
 namespace ARFE.Controllers
@@ -18,6 +19,7 @@ namespace ARFE.Controllers
         {
             return View();
         }
+
         [HttpGet]
         public ActionResult UploadFile()
         {
@@ -39,41 +41,39 @@ namespace ARFE.Controllers
                     string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
                     file.SaveAs(_path);
 
-                    Process process = new System.Diagnostics.Process();
+                    Process process = new Process();
                     process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     process.StartInfo.FileName = Server.MapPath("~/Content/FileConversion.exe");
                     process.StartInfo.Arguments = Server.MapPath("~/UploadedFiles/" + _FileName);
                     process.Start();
                     process.Close();
 
-                    System.Threading.Thread.Sleep(5000);
+                    BlobsController blobsController = new BlobsController();
+                    blobsController.UploadBlobToContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
 
-                    String FilePath = AppDomain.CurrentDomain.BaseDirectory + "\\UploadedFiles\\" + fbxExtension;
-                    System.Web.HttpResponse response = System.Web.HttpContext.Current.Response;
-                    response.ClearContent();
-                    response.Clear();
-                    response.ContentType = "application/octet-stream";
-                    response.AddHeader("Content-Disposition", "attachment; filename=" + fbxExtension + ";");
-                    response.TransmitFile(FilePath);
-                    response.Flush();
-                    response.End();
+                    System.Threading.Thread.Sleep(2000);
+
+                    var l = blobsController.ListBlobNamesInContainer(User.Identity.Name);
+
+#warning remove this line - just for testing download functionality
+                    return blobsController.DownloadBlobFromContainer(User.Identity.Name, fbxExtension);
 
                 }
                 ViewBag.Message = "File Uploaded Successfully!!";
                 return View();
             }
-            catch
+            catch(Exception ex)
             {
                 ViewBag.Message = "File upload failed!!";
                 return View();
             }
         }
 
-
         public ActionResult GetMessage()
         {
             return View();
         }
+
         public ActionResult DisplayQR(string Message)
         {
 
@@ -91,8 +91,6 @@ namespace ARFE.Controllers
             return View();
         }
 
-
-
         public Bitmap GenerateQRCode(String address)
         {
 
@@ -103,6 +101,5 @@ namespace ARFE.Controllers
             return qrCodeImage;
 
         }
-
     }
 }
