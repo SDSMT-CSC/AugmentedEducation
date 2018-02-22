@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
+using System.Collections.Generic;
 
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
@@ -15,12 +14,13 @@ namespace ARFE.Controllers
     {
         #region Public
 
-        // GET: Blobs
-        public ActionResult Index()
-        {
-            return View();
-        }
 
+        /// <summary>
+        /// Given the current Identity logged in user name, get a reference to the users
+        /// associated blob container, or create a container if none exists.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public CloudBlobContainer GetOrCreateBlobContainer(string userName)
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
@@ -30,6 +30,15 @@ namespace ARFE.Controllers
             return container;
         }
 
+        /// <summary>
+        /// Given the current Identity logged in user name and the name of the file to upload,
+        /// and the local path to the file, upload the file to the users blob container as a 
+        /// new blob.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="fileName"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public ActionResult UploadBlobToContainer(string userName, string fileName, string filePath)
         {
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
@@ -41,6 +50,13 @@ namespace ARFE.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Given the current Identity logged in user name and the name of the file to download,
+        /// return a redirect to allow download of the file.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public ActionResult DownloadBlobFromContainer(string userName, string fileName)
         {
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
@@ -57,12 +73,56 @@ namespace ARFE.Controllers
         }
 
 
+        /// <summary>
+        /// Get a list of blob names within the blob container for a given 
+        /// Identity user name
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public List<string> ListBlobNamesInContainer(string userName)
+        {
 #warning This is roughly where you would be looking for content
-        public List<Uri> ListBlobsInContainer(string userName)
+            List<string> blobNames = new List<string>();
+
+            foreach (Uri u in ListBlobUrisInContainer(userName))
+            {
+                blobNames.Add(GetBlobNameFromUri(u));
+            }
+
+            return blobNames;
+        }
+
+        /// <summary>
+        /// Get a list of blob Uris within the blob container for a given 
+        /// Identity user name
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public List<Uri> ListBlobUrisInContainer(string userName)
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
 
-            return (container.ListBlobs().Select(blob => blob.Uri).ToList());
+            return container.ListBlobs().Select(blob => blob.Uri).ToList();
+        }
+
+        /// <summary>
+        /// Get a list of associations of blob names to Uris within
+        /// a given container.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public List<Tuple<string, Uri>> ListBlobNamesToUris(string userName)
+        {
+            List<Tuple<string, Uri>> names_to_uris = new List<Tuple<string, Uri>>();
+            List<Uri> blob_uris = ListBlobUrisInContainer(userName);
+
+            foreach(Uri u in blob_uris)
+            {
+                string name = GetBlobNameFromUri(u);
+                names_to_uris.Add(new Tuple<string, Uri>(name, u));
+            }
+
+            return names_to_uris;
         }
 
         #endregion
@@ -70,7 +130,12 @@ namespace ARFE.Controllers
 
         #region Private
 
-
+        /// <summary>
+        /// Given the signed in Identity username, get or create the associated Blob Container
+        /// for that user.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         private CloudBlobContainer GetCloudBlobContainer(string userName)
         {
             //Found in Web.config
@@ -102,6 +167,20 @@ namespace ARFE.Controllers
                 formattedName.Remove(formattedName.Length - 1);
 
             return formattedName;
+        }
+
+        /// <summary>
+        /// Given the Uri for a blob within a container, extract the 
+        /// name from after the last '/'
+        /// </summary>
+        /// <param name="blobUri"></param>
+        /// <returns></returns>
+        private string GetBlobNameFromUri(Uri blobUri)
+        {
+            string uri_string = blobUri.ToString();
+            string[] sp = uri_string.Split('/');
+
+            return sp[sp.Length - 1];
         }
 
         #endregion

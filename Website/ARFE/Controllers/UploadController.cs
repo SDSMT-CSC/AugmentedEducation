@@ -51,6 +51,8 @@ namespace ARFE.Controllers
 
                     System.Threading.Thread.Sleep(2000);
 
+                    var l = blobsController.ListBlobNamesInContainer(User.Identity.Name);
+
 #warning remove this line - just for testing download functionality
                     return blobsController.DownloadBlobFromContainer(User.Identity.Name, fbxExtension);
 
