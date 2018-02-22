@@ -1,0 +1,155 @@
+
+ \section{Website}
+
+ \subsection{Overview}
+ \paragraph{}
+ A major tool in the project is the website interface for hosting the 3D models that users generate.
+ The website is where a user will be able to upload their 3D models
+ and get the reference tag for that model.
+ 
+ \paragraph{}
+ The website is intended to be a full user experience, where they can
+ can sign in to view and manage their own content. In the long term view
+ this will be a service similar to GitHub, where users can collaberate and share
+ their material with friends and co-workers.
+
+\paragraph{}
+This website will be making use of Microsoft's ASP.NET stack along with
+Azure services for database and website hosting. A more indepth look into 
+these tool will be offered below.
+
+\subsection{User Interface}
+The user interface is made to be very simple. The final product
+UI was decided to be made of five main windows. 
+\begin{itemize}
+    \item Home Screen
+    \begin{itemize}
+        \item Here the user will be able to navigate to the different sections of the website.
+        \item The user will need to be logged in to navigate to their pages.
+        \item It has a link link to the sign in and sign up.
+        \item If the user tries to navigate to a page without signing in
+        they will be taken to the login page.
+    \end{itemize}
+
+    \item Upload Screen
+    \begin{itemize}
+        \item This is a very simple page where the user can upload their files
+        \item Once the file is uploaded a QR code will be showing for a reference to the file.
+    \end{itemize}
+
+    \item User, Organization and All Screens
+    \begin{itemize}
+        \item These screens will all be very similar.
+        \item They will allow for the user to search through all
+        available models associatated to the section they are in.
+    \end{itemize}
+\end{itemize}
+
+The wireframes of all of these pages can be found in prototypes and demos section of this document.
+You can find refeneces to the wireframes below.
+\begin{itemize}
+    \item Home Page ~\ref{fig:proto_web_home}
+    \item User Page ~\ref{fig:proto_web_user_page}
+    \item Organization Page ~\ref{fig:proto_web_organization_home}
+    \item Browse All Page ~\ref{fig:proto_web_browse_all_files}
+    \item Upload Page ~\ref{fig:proto_web_upload}
+\end{itemize}
+
+\subsection{Technologies Used}
+
+    As stated earlier in this document, this product is making use
+    of the Microsoft environment for its tools. Below is an indepth 
+    break down of the tools currently being used:
+
+    \begin{itemize}
+    \item ASP.NET MVC
+    \begin{itemize}
+        \item An MVC web architecture, where the backend logic is writen in controller classes
+        that send and recieve data from the client.
+        \item It allows for dynamic html pages using a Razor synatax. Razor allows
+        you to embed C\# Code into the html and execute logic.
+    \end{itemize}
+    
+    \item Azure
+        \begin{itemize}
+            \item Microsoft cloud hosting services.
+            \item Allows for simple database and web hosting.
+            \item Paid features are offered free to students.
+        \end{itemize}
+    \end{itemize}
+
+    These tools make up the core development of this website. The website is also
+    making use of other smaller packages to handles user authentication and database management.
+
+    The website also impliments the file conversion software that is described later.
+    The file conversion was written in C++, so it couldn't be compiled with the website.
+    The work around was that was used, was the file conversion was compiled into a executable.
+    The executable was used through a system command to convert the file.
+
+
+    \subsection{Data Flow}
+    The data flow happens in two main places. It is set up into a Upload controller
+    and a Download Controller.
+
+    \begin{itemize}
+        \item Upload Controller
+        \begin{itemize}
+            \item The user browses through the their file system and uploads
+            the 3D model that selected.
+            \item Once the file is on the server side it is then converted to an
+            .fbx and stored for download.
+            \item A tag to reference the model is returned to the client.
+        \end{itemize}
+        
+        \item Download Controller
+        \begin{itemize}
+            \item The client sends the reference tag was given when it was uploaded to the server.
+            \item The server takes that tag and finds the assoicated model.
+            \item Using the httpresponse datastructure to create the response and send
+            the model back to the user.
+        \end{itemize}
+    \end{itemize}
+
+
+\subsection{Design Details}
+
+    \subsubsection{Overview}
+
+    The website is written in C\# with the ASP.NET MVC framework. The main logic
+    of the website is contained in two controllers
+    \begin{itemize}
+        \item Upload Controller
+        \begin{itemize}
+            \item Handles upload from client to the server.
+            \item Uses File Conversion executable to convert to .fbx
+            \item Stores file on the web.
+        \end{itemize}
+        \item Download
+        \begin{itemize}
+            \item Uploads Model tag from client to server.
+            \item Finds associated store model.
+            \item Returns model to the client.
+        \end{itemize}
+    \end{itemize}
+
+    \subsubsection{Code Structure}
+    As stated before the website is using ASP.NET MVC framework. 
+    The logic happens in the controllers and is split up into the upload and download controller.
+    
+    \paragraph{Parameter Passing}
+    \hfill \break
+    The main functions that are being used are the upload and download function.
+    
+    \begin{itemize}
+        \item Upload Function
+        \begin{itemize}
+           \item HttpPostedFileBase - http message sent from client to server containing the file
+           \item The message is parsed to retrieve the file and save to the web.
+        \end{itemize}
+
+        \item Download Function
+        \begin{itemize}
+            \item input string ModelTag - string containing the reference tag to the model.
+            \item output httpresponse - http message sent from server to client containing the file. 
+        \end{itemize}
+    \end{itemize}
