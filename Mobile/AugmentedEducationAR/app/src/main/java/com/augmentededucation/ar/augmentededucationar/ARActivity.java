@@ -62,7 +62,8 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
     private final float[] anchorMatrix = new float[16];
 
     private float scaleFactor = .1f;
-    private float scaleFactorDiff = 0.025f;
+    private float defaultScaleFactorDiff = 1f;
+    private float scaleFactorDiff = defaultScaleFactorDiff;
 
     private final ArrayBlockingQueue<MotionEvent> queuedSingleTaps = new ArrayBlockingQueue<MotionEvent>(16);
 
@@ -88,7 +89,12 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0) {
-                    scaleFactorDiff = Float.parseFloat(s.toString());
+                    try{
+                        scaleFactorDiff = Float.parseFloat(s.toString());
+                    }
+                    catch (Exception e){
+                        scaleFactorDiff = defaultScaleFactorDiff;
+                    }
                 }
             }
 
