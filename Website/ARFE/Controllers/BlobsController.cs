@@ -56,6 +56,15 @@ namespace ARFE.Controllers
             return Redirect($"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}");
         }
 
+
+#warning This is roughly where you would be looking for content
+        public List<Uri> ListBlobsInContainer(string userName)
+        {
+            CloudBlobContainer container = GetCloudBlobContainer(userName);
+
+            return (container.ListBlobs().Select(blob => blob.Uri).ToList());
+        }
+
         #endregion
 
 
