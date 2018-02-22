@@ -14,7 +14,6 @@ namespace ARFE.Controllers
     {
         #region Public
 
-
         /// <summary>
         /// Given the current Identity logged in user name, get a reference to the users
         /// associated blob container, or create a container if none exists.
@@ -71,7 +70,6 @@ namespace ARFE.Controllers
 
             return Redirect($"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}");
         }
-
 
         /// <summary>
         /// Get a list of blob names within the blob container for a given 
