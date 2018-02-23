@@ -10,8 +10,8 @@ namespace ARFE
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            Controllers.BlobsController blobsController = new Controllers.BlobsController();
-            blobsController.GetOrCreateBlobContainer("public");
+            BlobManager blobManager = new BlobManager();
+            blobManager.GetOrCreateBlobContainer("public");
         }
     }
 }

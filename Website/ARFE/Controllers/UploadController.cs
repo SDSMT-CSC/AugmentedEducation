@@ -48,15 +48,11 @@ namespace ARFE.Controllers
                     process.Start();
                     process.Close();
 
-                    BlobsController blobsController = new BlobsController();
-                    blobsController.UploadBlobToContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
+                    BlobManager blobManager = new BlobManager();
+                    blobManager.UploadBlobToUserContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
 
                     System.Threading.Thread.Sleep(2000);
 
-                    var l = blobsController.ListBlobNamesInContainer(User.Identity.Name);
-
-#warning remove this line - just for testing download functionality
-                    return blobsController.DownloadBlobFromContainer(User.Identity.Name, fbxExtension);
 
                 }
                 ViewBag.Message = "File Uploaded Successfully!!";

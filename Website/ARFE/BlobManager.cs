@@ -1,16 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Web.Mvc;
 using System.Collections.Generic;
 
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace ARFE.Controllers
+namespace ARFE
 {
-    public class BlobsController : Controller
+    public class BlobManager
     {
         #region Public
 
@@ -19,15 +18,25 @@ namespace ARFE.Controllers
         /// associated blob container, or create a container if none exists.
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// *The blob container if able to reference or create it.
+        /// *Null if unable to reference or create the container.
+        /// </returns>
         public CloudBlobContainer GetOrCreateBlobContainer(string userName)
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
-            ViewBag.Success = container.CreateIfNotExists();
-            ViewBag.BlobContainerName = container.Name;
+
+            if(!container.CreateIfNotExists())
+            {
+                container = null;
+            }
 
             return container;
         }
+
+
+        #region privately owned containers
+
 
         /// <summary>
         /// Given the current Identity logged in user name and the name of the file to upload,
@@ -38,15 +47,25 @@ namespace ARFE.Controllers
         /// <param name="fileName"></param>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public ActionResult UploadBlobToContainer(string userName, string fileName, string filePath)
+        public bool UploadBlobToUserContainer(string userName, string fileName, string filePath)
         {
+            bool uploaded = true;
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
 
+            if (blob.Exists())
+            {
 #warning warn user about overwrite file if already exists
-            blob.UploadFromFile(Path.Combine(filePath, fileName));
+                //display prompt - possibly set uploaded false
+            }
 
-            return View();
+            if (uploaded)
+            {
+                blob.Metadata.Add(new KeyValuePair<string, string>("Owner Name", userName));
+                blob.UploadFromFile(Path.Combine(filePath, fileName));
+            }
+
+            return uploaded;
         }
 
         /// <summary>
@@ -56,7 +75,7 @@ namespace ARFE.Controllers
         /// <param name="userName"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public ActionResult DownloadBlobFromContainer(string userName, string fileName)
+        public string DownloadBlobFromUserContainer(string userName, string fileName)
         {
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
@@ -68,7 +87,7 @@ namespace ARFE.Controllers
             SharedAccessBlobHeaders headers = new SharedAccessBlobHeaders()
             { ContentDisposition = $"attachment;filename={blob.Name}" };
 
-            return Redirect($"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}");
+            return "{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
         }
 
         /// <summary>
@@ -77,12 +96,12 @@ namespace ARFE.Controllers
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public List<string> ListBlobNamesInContainer(string userName)
+        public List<string> ListBlobNamesInUserContainer(string userName)
         {
 #warning This is roughly where you would be looking for content
             List<string> blobNames = new List<string>();
 
-            foreach (Uri u in ListBlobUrisInContainer(userName))
+            foreach (Uri u in ListBlobUrisInUserContainer(userName))
             {
                 blobNames.Add(GetBlobNameFromUri(u));
             }
@@ -96,7 +115,7 @@ namespace ARFE.Controllers
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public List<Uri> ListBlobUrisInContainer(string userName)
+        public List<Uri> ListBlobUrisInUserContainer(string userName)
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
 
@@ -109,12 +128,12 @@ namespace ARFE.Controllers
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public List<Tuple<string, Uri>> ListBlobNamesToUris(string userName)
+        public List<Tuple<string, Uri>> ListBlobNamesToUrisInUserContainer(string userName)
         {
             List<Tuple<string, Uri>> names_to_uris = new List<Tuple<string, Uri>>();
-            List<Uri> blob_uris = ListBlobUrisInContainer(userName);
+            List<Uri> blob_uris = ListBlobUrisInUserContainer(userName);
 
-            foreach(Uri u in blob_uris)
+            foreach (Uri u in blob_uris)
             {
                 string name = GetBlobNameFromUri(u);
                 names_to_uris.Add(new Tuple<string, Uri>(name, u));
@@ -122,6 +141,114 @@ namespace ARFE.Controllers
 
             return names_to_uris;
         }
+
+        #endregion
+
+
+        #region public container
+
+
+        /// <summary>
+        /// Given the current Identity logged in user name and the name of the file to upload,
+        /// and the local path to the file, upload the file to the users blob container as a 
+        /// new blob.
+        /// </summary>
+        /// <param name="userName">Name of the owner</param>
+        /// <param name="fileName">Name of the file</param>
+        /// <param name="filePath">Path to the file</param>
+        /// <returns></returns>
+        public bool UploadBlobToPublicContainer(string userName, string fileName, string filePath)
+        {
+            bool uploaded = true;
+            CloudBlobContainer container = GetOrCreateBlobContainer("public");
+            CloudBlockBlob blob = container.GetBlockBlobReference($"{userName}-{fileName}");
+
+            if (blob.Exists())
+            {
+#warning warn user about overwrite file if already exists
+                //display prompt - possibly set uploaded false
+            }
+
+            if (uploaded)
+            {
+                blob.Metadata.Add(new KeyValuePair<string, string>("Owner Name", userName));
+                blob.UploadFromFile(Path.Combine(filePath, fileName));
+            }
+
+            return uploaded;
+        }
+
+        /// <summary>
+        /// Return a redirect to allow download of the file in the public container.
+        /// </summary>
+        /// <param name="fileName">Name of the file to download from the public container</param>
+        /// <returns>URL to download the blob file</returns>
+        public string DownloadBlobFromPublicContainer(string fileName)
+        {
+            CloudBlobContainer container = GetOrCreateBlobContainer("public");
+            CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
+            SharedAccessBlobPolicy sharingPolicy = new SharedAccessBlobPolicy()
+            {   //can read, allow up to 1 hour to download
+                Permissions = SharedAccessBlobPermissions.Read,
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(1)
+            };
+            SharedAccessBlobHeaders headers = new SharedAccessBlobHeaders()
+            { ContentDisposition = $"attachment;filename={blob.Name}" };
+
+            return $"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
+        }
+
+        /// <summary>
+        /// Get a list of blob names within the public blob container
+        /// </summary>
+        /// <returns>A list of blob names from the public container</returns>
+        public List<string> ListBlobNamesInPublicContainer()
+        {
+            List<string> blobNames = new List<string>();
+
+            foreach (Uri u in ListBlobUrisInUserContainer("public"))
+            {
+                blobNames.Add(GetBlobNameFromUri(u));
+            }
+
+            return blobNames;
+        }
+
+        /// <summary>
+        /// Get a list of blob Uris within the public blob container
+        /// </summary>
+        /// <returns>A list of Uris to the blobs in the public container</returns>
+        public List<Uri> ListBlobUrisInPublicContainer()
+        {
+            CloudBlobContainer container = GetCloudBlobContainer("public");
+
+            return container.ListBlobs().Select(blob => blob.Uri).ToList();
+        }
+
+        /// <summary>
+        /// Get a list of associations of blob names to Uris within the public container
+        /// </summary>
+        /// <returns>
+        /// A list of tuples of blob names and their associated Uris from the 
+        /// public container
+        /// </returns>
+        public List<Tuple<string, Uri>> ListBlobNamesToUrisInPublicContainer()
+        {
+            List<Tuple<string, Uri>> names_to_uris = new List<Tuple<string, Uri>>();
+            List<Uri> blob_uris = ListBlobUrisInUserContainer("public");
+
+            foreach (Uri u in blob_uris)
+            {
+                string name = GetBlobNameFromUri(u);
+                names_to_uris.Add(new Tuple<string, Uri>(name, u));
+            }
+
+            return names_to_uris;
+        }
+
+
+        #endregion
+
 
         #endregion
 
