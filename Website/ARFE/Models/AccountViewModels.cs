@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ARFE.Models
 {
-    public class ExternalLoginConfirmationViewModel
+    /*public class ExternalLoginConfirmationViewModel
     {
         [Required]
         [Display(Name = "Email")]
@@ -13,7 +13,7 @@ namespace ARFE.Models
     public class ExternalLoginListViewModel
     {
         public string ReturnUrl { get; set; }
-    }
+    }*/ 
 
     public class SendCodeViewModel
     {
@@ -68,9 +68,17 @@ namespace ARFE.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+ 
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
@@ -89,7 +97,7 @@ namespace ARFE.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 4)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
