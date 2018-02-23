@@ -23,9 +23,9 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:onClick="onLittle"
-        android:text="Little"
+        android:text="@string/minus"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <Button
         android:id="@+id/button2"
@@ -34,9 +34,9 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:onClick="onBig"
-        android:text="Big"
+        android:text="@string/plus"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
         android:id="@+id/scale_factor"
