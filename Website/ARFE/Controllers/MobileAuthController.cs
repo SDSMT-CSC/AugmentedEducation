@@ -107,7 +107,7 @@ namespace ARFE.Controllers
             return token;
         }
 
-        //waiting on requirements
+        [HttpGet]
         public string ViewFiles(string authToken, int descriptor)
         {
             //waiting on requirements
