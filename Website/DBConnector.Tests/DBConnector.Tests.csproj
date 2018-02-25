@@ -59,16 +59,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DBConnector\DBConnector.csproj">
-      <Project>{5a7827d8-d87f-4899-af87-e9a3a8a8dabd}</Project>
-      <Name>DBConnector</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ResultReporter\ResultReporter.csproj">
-      <Project>{A48D2583-957D-4946-A8FE-26F076DE1E28}</Project>
-      <Name>ResultReporter</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

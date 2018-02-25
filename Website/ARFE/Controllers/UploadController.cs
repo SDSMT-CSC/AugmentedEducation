@@ -52,8 +52,6 @@ namespace ARFE.Controllers
                     blobManager.UploadBlobToUserContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
 
                     System.Threading.Thread.Sleep(2000);
-
-
                 }
                 ViewBag.Message = "File Uploaded Successfully!!";
                 return View();
