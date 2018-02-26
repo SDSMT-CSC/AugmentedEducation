@@ -1,14 +1,22 @@
-﻿using AuthenticationTokenCache;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System;
+using System.IO;
 using System.Web;
+using System.Linq;
 using System.Web.Mvc;
+using System.Net.Http;
+using System.Collections;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
+using AuthenticationTokenCache;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+
+using Newtonsoft.Json.Linq;
 
 namespace ARFE.Controllers
 {
+    [Route("[controller]/[action]")]
     public class MobileAuthController : Controller
     {
         #region Members
@@ -36,9 +44,16 @@ namespace ARFE.Controllers
         #endregion
 
 
+        #region Properties
+
+        public ApplicationUserManager UserManager => HttpContext.GetOwinContext().Get<ApplicationUserManager>();
+        public ApplicationSignInManager SignInManager => HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+        #endregion
+
+
         #region Public Methods
 
-        /*
+        /* Waiting until SSL can be ensured
         public string CreateAccount(string userName, string password, string verifyPassword)
         {
             Models.LoginViewModel loginVM;
@@ -72,39 +87,61 @@ namespace ARFE.Controllers
 
 
         [HttpPost]
-        [Route("/MobileAuth/GetToken/")]
-        public string RequestAuthToken()
+        public async Task<string> RequestAuthToken()
         {
             string token = string.Empty;
-            Models.LoginViewModel loginVM;
-            string password = string.Empty;
+            string reason = string.Empty;
+            string success = string.Empty;
             string userName = string.Empty;
-            AccountController accountController;
+            string password = string.Empty;
+            Stream bodyStream = Request.InputStream;
+            JObject requestJson = JObject.Parse(new StreamReader(bodyStream).ReadToEnd());
 
-            HttpRequestMessage httpRequest = new HttpRequestMessage();
-            var headers = httpRequest.Headers;
-
-            if (headers.Contains("UserName")) { userName = headers.GetValues("UserName").First(); }
-            if (headers.Contains("Password")) { password = headers.GetValues("Password").First(); }
+            foreach(JToken t in requestJson.Children())
+            {
+                //Get Json values out from keys
+                if(t.Path == "userName") { userName = requestJson["userName"].ToString(); }
+                else if (t.Path == "password") { password = requestJson["password"].ToString(); }
+            }
 
             if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
             {
-                accountController = new AccountController();
-                loginVM = new Models.LoginViewModel()
+                //lookup user from Owin Context by UserName
+                Models.ApplicationUser appUser = await HttpContext.GetOwinContext()
+                                                                    .Get<ApplicationUserManager>()
+                                                                    .FindByNameAsync(userName);
+                //user found from lookup
+                if (appUser != null)
                 {
-                    Password = password,
-                    Email = userName,
-                };
+                    //Compare password provided from Http Request to stored hash using EF
+                    PasswordVerificationResult verified = UserManager.PasswordHasher.VerifyHashedPassword(appUser.PasswordHash, password);
+                    if (verified == PasswordVerificationResult.Success)
+                    {
+                        //Try to sign that user in
+                        try { SignInManager.SignIn(appUser, false, false); }
+                        catch { /* Do nothing - let it fail and return empty token */ }
 
-                accountController.Login(loginVM, "").Wait();
-
-                if (accountController.User.Identity.IsAuthenticated)
-                {
-                    token = _TokenCache.GenerateToken(userName, password);
+                        //if login successful - credentials were valid
+                        if (User.Identity.IsAuthenticated && User.Identity.Name == userName)
+                        {
+                            //return token generated for user
+                            token = _TokenCache.GenerateToken(userName, appUser.PasswordHash);
+                        }
+                        else { reason = "User authentication failed."; }
+                    }
+                    else { reason = "Password authentication failed."; }
                 }
+                else { reason = "User information not found."; }
             }
+            else { reason = "'userName' and 'password' fields are required."; }
 
-            return token;
+            //bool.TrueString or bool.FalseString
+            success = (token != string.Empty).ToString();
+            if(success == bool.TrueString) { reason = "SUCCESS"; }
+
+            //string -> JObject -> string provides formatted Json
+            //Quotes needed around everything that isn't a numeric value
+            return (JObject.Parse($"{{ \"success\" : \"{success}\", \"reason\" : \"{reason}\", \"token\" : \"{token}\" }}")).ToString();
         }
 
         [HttpGet]

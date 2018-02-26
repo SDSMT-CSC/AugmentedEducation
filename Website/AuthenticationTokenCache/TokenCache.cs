@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace AuthenticationTokenCache
@@ -10,8 +9,8 @@ namespace AuthenticationTokenCache
         #region Members
 
         private static TokenCache s_Instance = null;
+        private Dictionary<string, string> _TokenToUser;
         private Dictionary<string, DateTime> _TokenToExpirationTime;
-        private Dictionary<string, Tuple<string, string>> _TokenToUser;
 
         #endregion
 
@@ -31,8 +30,8 @@ namespace AuthenticationTokenCache
         private TokenCache()
         {
             //If service/site goes down, destroy all active tokens
+            _TokenToUser = new Dictionary<string, string>();
             _TokenToExpirationTime = new Dictionary<string, DateTime>();
-            _TokenToUser = new Dictionary<string, Tuple<string, string>>();
         }
 
         #endregion
@@ -59,31 +58,28 @@ namespace AuthenticationTokenCache
                 token = Convert.ToBase64String(timeStamp.Concat(key).ToArray());
             } while (_TokenToUser.ContainsKey(token));
 
-            _TokenToUser.Add(token, new Tuple<string, string>(userName, password));
+            _TokenToUser.Add(token, userName);
             _TokenToExpirationTime.Add(token, DateTime.UtcNow.AddHours(2));
             ClearExpiredTokens();
 
             return token;
         }
 
-        public bool ValidateToken(string token)
+        public string ValidateToken(string token)
         {
-            bool validated = false;
-            DateTime expirationTime;
-            string userName, password;
-            Tuple<string, string> userValues;
+            string userName = string.Empty;
+            DateTime expirationTime = DateTime.UtcNow.AddDays(-1);
 
-            if(_TokenToUser.TryGetValue(token, out userValues))
+            if (_TokenToUser.TryGetValue(token, out userName))
             {
-                userName = userValues.Item1;
-                password = userValues.Item2;
                 expirationTime = _TokenToExpirationTime[token];
-                validated = (expirationTime < DateTime.UtcNow);
             }
 
             ClearExpiredTokens();
 
-            return validated;
+            //hasn't expired yet
+            return DateTime.UtcNow < expirationTime
+                ? userName : string.Empty;
         }
 
 
@@ -100,7 +96,7 @@ namespace AuthenticationTokenCache
                 .Select(t => t.Key)
                 .ToList();
 
-            foreach(string token in expiredTokens)
+            foreach (string token in expiredTokens)
             {
                 _TokenToUser.Remove(token);
                 _TokenToExpirationTime.Remove(token);
