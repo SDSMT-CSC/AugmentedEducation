@@ -97,47 +97,29 @@ namespace ARFE.Controllers
             Stream bodyStream = Request.InputStream;
             JObject requestJson = JObject.Parse(new StreamReader(bodyStream).ReadToEnd());
 
-            foreach(JToken t in requestJson.Children())
+            foreach (JToken t in requestJson.Children())
             {
                 //Get Json values out from keys
-                if(t.Path == "userName") { userName = requestJson["userName"].ToString(); }
+                if (t.Path == "userName") { userName = requestJson["userName"].ToString(); }
                 else if (t.Path == "password") { password = requestJson["password"].ToString(); }
             }
 
             if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
             {
-                //lookup user from Owin Context by UserName
-                Models.ApplicationUser appUser = await HttpContext.GetOwinContext()
-                                                                    .Get<ApplicationUserManager>()
-                                                                    .FindByNameAsync(userName);
-                //user found from lookup
-                if (appUser != null)
-                {
-                    //Compare password provided from Http Request to stored hash using EF
-                    PasswordVerificationResult verified = UserManager.PasswordHasher.VerifyHashedPassword(appUser.PasswordHash, password);
-                    if (verified == PasswordVerificationResult.Success)
-                    {
-                        //Try to sign that user in
-                        try { SignInManager.SignIn(appUser, false, false); }
-                        catch { /* Do nothing - let it fail and return empty token */ }
+                userName = userName.ToLower();
+                reason = await UserSignIn(userName, password);
 
-                        //if login successful - credentials were valid
-                        if (User.Identity.IsAuthenticated && User.Identity.Name == userName)
-                        {
-                            //return token generated for user
-                            token = _TokenCache.GenerateToken(userName, appUser.PasswordHash);
-                        }
-                        else { reason = "User authentication failed."; }
-                    }
-                    else { reason = "Password authentication failed."; }
+                if (string.IsNullOrEmpty(reason))
+                {
+                    //return token generated for user
+                    token = _TokenCache.GenerateToken(userName, password);
                 }
-                else { reason = "User information not found."; }
             }
             else { reason = "'userName' and 'password' fields are required."; }
 
             //bool.TrueString or bool.FalseString
             success = (token != string.Empty).ToString();
-            if(success == bool.TrueString) { reason = "SUCCESS"; }
+            if (success == bool.TrueString) { reason = "SUCCESS"; }
 
             //string -> JObject -> string provides formatted Json
             //Quotes needed around everything that isn't a numeric value
@@ -145,46 +127,62 @@ namespace ARFE.Controllers
         }
 
         [HttpGet]
-        public string ViewFiles(string authToken, int descriptor)
+        public async Task<string> ListFiles(int descriptor, int? pageNumber)
         {
-            //waiting on requirements
+            string token = string.Empty;
+            string reason = string.Empty;
+            string userName = string.Empty;
+            Tuple<string, string> userInfo;
+            string[] httpHeaders = Request.Headers.AllKeys;
 
-            string responseString = string.Empty;
+            if (httpHeaders.Contains("token")) { token = Request.Headers["token"].ToString(); }
 
-            //User = AuthTokenLookup(authToken)
-            if (!User.Identity.IsAuthenticated)
-            { responseString = "bad token"; }
-            else
+            if (token != string.Empty)
             {
-                BlobManager blobManager = new BlobManager();
-                List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
-
-                switch (descriptor)
+                userInfo = _TokenCache.ValidateToken(token);
+                if (userInfo != null)
                 {
-                    case ((int)FileDescriptor.ALL):
-                        fileList = blobManager.ListBlobNamesToUrisInUserContainer(User.Identity.Name);
-                        fileList.AddRange(blobManager.ListBlobNamesToUrisInPublicContainer());
-                        break;
-                    case ((int)FileDescriptor.OWNED_ALL):
-                        //fileList = blobsController.ListBlobNamesToUris(User.Identity.Name);
-                        break;
-                    case ((int)FileDescriptor.OWNED_PRIVATE):
-                        fileList = blobManager.ListBlobNamesToUrisInUserContainer(User.Identity.Name);
-                        break;
-                    case ((int)FileDescriptor.OWNED_PUBLIC):
-                        //fileList = blobsController.ListBlobNamesToUris(User.Identity.Name);
-                        break;
-                    case ((int)FileDescriptor.NOT_OWNED_PUBLIC):
-                        //fileList = blobsController.ListBlobNamesToUris(User.Identity.Name);
-                        break;
-                    default:
-                        break;
+                    reason = await UserSignIn(userInfo.Item1, userInfo.Item2);
+                    if (string.IsNullOrEmpty(reason))
+                    {
+                        BlobManager blobManager = new BlobManager();
+                        List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
+
+                        switch (descriptor)
+                        {
+                            case ((int)FileDescriptor.ALL):
+                                fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
+                                fileList.AddRange(blobManager.ListBlobNamesToUrisInPublicContainer());
+                                break;
+                            case ((int)FileDescriptor.OWNED_ALL):
+                                fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
+                                fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
+                                break;
+                            case ((int)FileDescriptor.OWNED_PRIVATE):
+                                fileList = blobManager.ListBlobNamesToUrisInUserContainer(User.Identity.Name);
+                                break;
+                            case ((int)FileDescriptor.OWNED_PUBLIC):
+                                fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
+                                break;
+                            case ((int)FileDescriptor.NOT_OWNED_PUBLIC):
+                                //List of all public files
+                                fileList = blobManager.ListBlobNamesToUrisInPublicContainer();
+                                //remove the ones owned by user
+                                foreach(Tuple<string, Uri> file in blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName))
+                                {
+                                    fileList.Remove(file);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
-
-                //Convert to JSON in responseString??
+                else { reason = "Token not found."; }
             }
+            else { reason = "User access token required."; }
 
-            return responseString;
+            return "";
         }
 
         //Definitely not void - waiting on requirements
@@ -194,6 +192,43 @@ namespace ARFE.Controllers
         //Definitely not void - waiting on requirements
         public void DownloadFileQR(string authToken, string fileName) //possibly Uri
         { }
+
+        #endregion
+
+
+        #region Private Methods
+
+        private async Task<string> UserSignIn(string userName, string password)
+        {
+            string reason = string.Empty;
+
+            //lookup user from Owin Context by UserName
+            Models.ApplicationUser appUser = await HttpContext.GetOwinContext()
+                                                                .Get<ApplicationUserManager>()
+                                                                .FindByNameAsync(userName);
+            //user found from lookup
+            if (appUser != null)
+            {
+                //Compare password provided from Http Request to stored hash using EF
+                PasswordVerificationResult verified = UserManager.PasswordHasher.VerifyHashedPassword(appUser.PasswordHash, password);
+                if (verified == PasswordVerificationResult.Success)
+                {
+                    //Try to sign that user in
+                    try { SignInManager.SignIn(appUser, false, false); }
+                    catch { /* Do nothing - let it fail and return empty token */ }
+
+                    //if login successful - credentials were valid
+                    if (!User.Identity.IsAuthenticated || User.Identity.Name != userName)
+                    {
+                        reason = "User authentication failed.";
+                    }
+                }
+                else { reason = "Password authentication failed."; }
+            }
+            else { reason = "User information not found."; }
+
+            return reason;
+        }
 
         #endregion
     }

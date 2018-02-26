@@ -9,7 +9,7 @@ namespace AuthenticationTokenCache
         #region Members
 
         private static TokenCache s_Instance = null;
-        private Dictionary<string, string> _TokenToUser;
+        private Dictionary<string, Tuple<string,string>> _TokenToUser;
         private Dictionary<string, DateTime> _TokenToExpirationTime;
 
         #endregion
@@ -30,7 +30,7 @@ namespace AuthenticationTokenCache
         private TokenCache()
         {
             //If service/site goes down, destroy all active tokens
-            _TokenToUser = new Dictionary<string, string>();
+            _TokenToUser = new Dictionary<string, Tuple<string, string>>();
             _TokenToExpirationTime = new Dictionary<string, DateTime>();
         }
 
@@ -58,19 +58,20 @@ namespace AuthenticationTokenCache
                 token = Convert.ToBase64String(timeStamp.Concat(key).ToArray());
             } while (_TokenToUser.ContainsKey(token));
 
-            _TokenToUser.Add(token, userName);
+            _TokenToUser.Add(token, new Tuple<string, string>(userName, password));
             _TokenToExpirationTime.Add(token, DateTime.UtcNow.AddHours(2));
             ClearExpiredTokens();
 
             return token;
         }
 
-        public string ValidateToken(string token)
+        public Tuple<string, string> ValidateToken(string token)
         {
             string userName = string.Empty;
             DateTime expirationTime = DateTime.UtcNow.AddDays(-1);
+            Tuple<string, string> userInfo;
 
-            if (_TokenToUser.TryGetValue(token, out userName))
+            if (_TokenToUser.TryGetValue(token, out userInfo))
             {
                 expirationTime = _TokenToExpirationTime[token];
             }
@@ -79,7 +80,7 @@ namespace AuthenticationTokenCache
 
             //hasn't expired yet
             return DateTime.UtcNow < expirationTime
-                ? userName : string.Empty;
+                ? userInfo : null;
         }
 
 
