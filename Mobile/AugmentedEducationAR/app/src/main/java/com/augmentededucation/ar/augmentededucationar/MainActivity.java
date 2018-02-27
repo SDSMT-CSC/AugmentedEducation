@@ -1,9 +1,12 @@
 package com.augmentededucation.ar.augmentededucationar;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,9 +18,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String USERNAME = "USERNAME";
+    private static final String PASSWORD = "PASSWORD";
     private TextView username;
     private TextView password;
+    private String username_string = "";
+    private String password_string = "";
 
     private WebAccessor accessor;
 
@@ -37,9 +43,35 @@ public class MainActivity extends AppCompatActivity {
         if (accessor == null) {
             accessor = new WebAccessor(this);
         }
+
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        username_string = sharedPreferences.getString(USERNAME, "");
+        password_string = sharedPreferences.getString(PASSWORD, "");
+        if ("".equals(username_string)) {
+            password_string = "";
+            ((CheckBox)findViewById(R.id.rememberMeBox)).setChecked(false);
+        } else {
+            ((CheckBox)findViewById(R.id.rememberMeBox)).setChecked(true);
+        }
+
+        username.setText(username_string);
+        password.setText(password_string);
     }
 
     public void onNext(View v) {
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        username_string = username.getText().toString();
+        password_string = password.getText().toString();
+        if (((CheckBox)findViewById(R.id.rememberMeBox)).isChecked()) {
+            editor.putString(USERNAME, username_string);
+            editor.putString(PASSWORD, password_string);
+        } else {
+            editor.putString(USERNAME, "");
+            editor.putString(PASSWORD, "");
+        }
+        editor.apply();
+
         accessor.authenticate(username.getText().toString(), password.getText().toString(),
                 new Response.Listener<JSONObject>() {
                     @Override
