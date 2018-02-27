@@ -26,7 +26,7 @@ namespace ARFE
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
 
-            if(!container.CreateIfNotExists())
+            if(container == null && !container.CreateIfNotExists())
             {
                 container = null;
             }
@@ -68,6 +68,7 @@ namespace ARFE
             return uploaded;
         }
 
+
         /// <summary>
         /// Given the current Identity logged in user name and the name of the file to download,
         /// return a redirect to allow download of the file.
@@ -90,6 +91,7 @@ namespace ARFE
             return "{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
         }
 
+
         /// <summary>
         /// Get a list of blob names within the blob container for a given 
         /// Identity user name
@@ -98,7 +100,6 @@ namespace ARFE
         /// <returns></returns>
         public List<string> ListBlobNamesInUserContainer(string userName)
         {
-#warning This is roughly where you would be looking for content
             List<string> blobNames = new List<string>();
 
             foreach (Uri u in ListBlobUrisInUserContainer(userName))
@@ -108,6 +109,7 @@ namespace ARFE
 
             return blobNames;
         }
+
 
         /// <summary>
         /// Get a list of blob Uris within the blob container for a given 
@@ -121,6 +123,7 @@ namespace ARFE
 
             return container.ListBlobs().Select(blob => blob.Uri).ToList();
         }
+
 
         /// <summary>
         /// Get a list of associations of blob names to Uris within
@@ -161,7 +164,7 @@ namespace ARFE
         {
             bool uploaded = true;
             CloudBlobContainer container = GetOrCreateBlobContainer("public");
-            CloudBlockBlob blob = container.GetBlockBlobReference($"{userName}-{fileName}");
+            CloudBlockBlob blob = container.GetBlockBlobReference($"{FormatBlobContainerName(userName)}-{fileName}");
 
             if (blob.Exists())
             {
@@ -171,12 +174,14 @@ namespace ARFE
 
             if (uploaded)
             {
-                blob.Metadata.Add(new KeyValuePair<string, string>("Owner Name", userName));
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
+                blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
+                blob.SetMetadata();
             }
 
             return uploaded;
         }
+
 
         /// <summary>
         /// Return a redirect to allow download of the file in the public container.
@@ -198,6 +203,7 @@ namespace ARFE
             return $"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
         }
 
+
         /// <summary>
         /// Get a list of blob names within the public blob container
         /// </summary>
@@ -214,6 +220,7 @@ namespace ARFE
             return blobNames;
         }
 
+
         /// <summary>
         /// Get a list of blob Uris within the public blob container
         /// </summary>
@@ -224,6 +231,7 @@ namespace ARFE
 
             return container.ListBlobs().Select(blob => blob.Uri).ToList();
         }
+
 
         /// <summary>
         /// Get a list of associations of blob names to Uris within the public container
@@ -246,6 +254,55 @@ namespace ARFE
             return names_to_uris;
         }
 
+
+
+
+
+
+
+        public List<string> ListBlobNamesInPublicContainerOwnedBy(string userName)
+        {
+            List<string> blobList = new List<string>();
+
+            foreach(Uri u in ListBlobUrisInPublicContainerOwnedBy(userName))
+            {
+                blobList.Add(GetBlobNameFromUri(u));
+            }
+
+            return blobList;
+        }
+
+
+        public List<Uri> ListBlobUrisInPublicContainerOwnedBy(string userName)
+        {
+            CloudBlobContainer container = GetCloudBlobContainer("public");
+            List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
+            List<Uri> blobUriList = new List<Uri>();
+
+            foreach (IListBlobItem blobItem in blobList)
+            {
+                CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                if (blob.Metadata["OwnerName"] == userName)
+                    blobUriList.Add(blob.Uri);
+            }
+
+            return blobUriList;
+        }
+
+
+        public List<Tuple<string, Uri>> ListBlobNamesToUrisInPublicContainerOwnedBy(string userName)
+        {
+            List<Tuple<string, Uri>> names_to_uris = new List<Tuple<string, Uri>>();
+            List<Uri> blob_uris = ListBlobUrisInPublicContainerOwnedBy(userName);
+
+            foreach (Uri u in blob_uris)
+            {
+                string name = GetBlobNameFromUri(u);
+                names_to_uris.Add(new Tuple<string, Uri>(name, u));
+            }
+
+            return names_to_uris;
+        }
 
         #endregion
 
