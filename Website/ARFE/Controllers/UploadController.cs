@@ -41,9 +41,10 @@ namespace ARFE.Controllers
                     string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
                     file.SaveAs(_path);
 
-                    FileConversionController x = new FileConversionController();
+                    FileConverter x = new FileConverter();
 
-                    string output = x.ConvertToFBX(_FileName);
+                    bool output = x.ConvertToFBX(_FileName);
+
 
 
                     BlobManager blobManager = new BlobManager();
