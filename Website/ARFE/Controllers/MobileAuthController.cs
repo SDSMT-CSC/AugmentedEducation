@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace ARFE.Controllers
 {
@@ -91,7 +92,6 @@ namespace ARFE.Controllers
         {
             string token = string.Empty;
             string reason = string.Empty;
-            string success = string.Empty;
             string userName = string.Empty;
             string password = string.Empty;
             Stream bodyStream = Request.InputStream;
@@ -117,25 +117,25 @@ namespace ARFE.Controllers
             }
             else { reason = "'userName' and 'password' fields are required."; }
 
-            //bool.TrueString or bool.FalseString
-            success = (token != string.Empty).ToString();
-            if (success == bool.TrueString) { reason = "SUCCESS"; }
-
             //string -> JObject -> string provides formatted Json
-            //Quotes needed around everything that isn't a numeric value
-            return (JObject.Parse($"{{ \"success\" : \"{success}\", \"reason\" : \"{reason}\", \"token\" : \"{token}\" }}")).ToString();
+            return (JObject.Parse(FormatRequestAuthTokenResult(reason, token))).ToString();
         }
 
         [HttpGet]
         public async Task<string> ListFiles(int descriptor, int? pageNumber)
         {
+            int totalPages = 0;
+            int currentPage = 0;
             string token = string.Empty;
             string reason = string.Empty;
             string userName = string.Empty;
             Tuple<string, string> userInfo;
-            string[] httpHeaders = Request.Headers.AllKeys;
+            List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
+            List<List<Tuple<string, Uri>>> pageFiles = new List<List<Tuple<string, Uri>>>();
 
-            if (httpHeaders.Contains("token")) { token = Request.Headers["token"].ToString(); }
+            //token should be passed in HttpRequest headers as Json:
+            //{ "token" : "xxxxxxxxxxxx" }
+            if (Request.Headers.AllKeys.Contains("token")) { token = Request.Headers["token"].ToString(); }
 
             if (token != string.Empty)
             {
@@ -145,30 +145,30 @@ namespace ARFE.Controllers
                     reason = await UserSignIn(userInfo.Item1, userInfo.Item2);
                     if (string.IsNullOrEmpty(reason))
                     {
+                        userName = userInfo.Item1;
                         BlobManager blobManager = new BlobManager();
-                        List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
 
                         switch (descriptor)
                         {
-                            case ((int)FileDescriptor.ALL):
+                            case ((int)FileDescriptor.ALL): //0
                                 fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
                                 fileList.AddRange(blobManager.ListBlobNamesToUrisInPublicContainer());
                                 break;
-                            case ((int)FileDescriptor.OWNED_ALL):
+                            case ((int)FileDescriptor.OWNED_ALL): //1
                                 fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
                                 fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
                                 break;
-                            case ((int)FileDescriptor.OWNED_PRIVATE):
+                            case ((int)FileDescriptor.OWNED_PRIVATE): //2
                                 fileList = blobManager.ListBlobNamesToUrisInUserContainer(User.Identity.Name);
                                 break;
-                            case ((int)FileDescriptor.OWNED_PUBLIC):
+                            case ((int)FileDescriptor.OWNED_PUBLIC): //3
                                 fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
                                 break;
-                            case ((int)FileDescriptor.NOT_OWNED_PUBLIC):
+                            case ((int)FileDescriptor.NOT_OWNED_PUBLIC): //4
                                 //List of all public files
                                 fileList = blobManager.ListBlobNamesToUrisInPublicContainer();
                                 //remove the ones owned by user
-                                foreach(Tuple<string, Uri> file in blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName))
+                                foreach (Tuple<string, Uri> file in blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName))
                                 {
                                     fileList.Remove(file);
                                 }
@@ -176,13 +176,34 @@ namespace ARFE.Controllers
                             default:
                                 break;
                         }
+
+                        //if requesting page and there is content
+                        if (pageNumber.HasValue && fileList.Count > 0)
+                        {
+                            //if requesting valid page
+                            if (pageNumber.Value > 0)
+                            {
+                                pageFiles = PaginateFiles(fileList);
+                                //if requested page is in range of real pages
+                                if (pageNumber.Value <= pageFiles.Count)
+                                {
+                                    totalPages = pageFiles.Count;
+                                    currentPage = pageNumber.Value;
+                                    fileList = pageFiles[pageNumber.Value - 1];
+                                }
+                                else { reason = "Page number out of bounds."; }
+                            }
+                            else { reason = "Page number must be greater than 0."; }
+                        }
                     }
                 }
                 else { reason = "Token not found."; }
             }
             else { reason = "User access token required."; }
 
-            return "";
+            //string -> JObject -> string provides formatted Json
+            //Quotes needed around everything that isn't a numeric value
+            return (JObject.Parse(FormatListFilesResult(fileList, reason, currentPage, totalPages))).ToString();
         }
 
         //Definitely not void - waiting on requirements
@@ -228,6 +249,99 @@ namespace ARFE.Controllers
             else { reason = "User information not found."; }
 
             return reason;
+        }
+
+        private string FormatRequestAuthTokenResult(string reason, string token)
+        {
+            string quote = "\"";
+            //bool.TrueString or bool.FalseString
+            string success = (string.IsNullOrEmpty(reason)).ToString();
+            if (success == bool.TrueString) { reason = "SUCCESS"; }
+
+            StringBuilder jsonString = new StringBuilder("{ ");
+            jsonString.Append($"{quote}success{quote} : {quote}{success}{quote}, ");
+            jsonString.Append($"{quote}reason{quote} : {quote}{reason}{quote}, ");
+            jsonString.Append($"{quote}token{quote} : {quote}{token}{quote}");
+            jsonString.Append(" }");
+
+            //Quotes needed around everything that isn't a numeric value
+            return jsonString.ToString();
+        }
+
+        private string FormatListFilesResult(List<Tuple<string, Uri>> fileList, string reason, int currentPage, int totalPages)
+        {
+            string quote = "\"";
+            //bool.TrueString or bool.FalseString
+            string success = (string.IsNullOrEmpty(reason)).ToString();
+            if (success == bool.TrueString) { reason = "SUCCESS"; }
+            StringBuilder jsonString = new StringBuilder("{ ");
+
+            jsonString.Append($"{quote}success{quote} : {quote}{success}{quote}, ");
+            jsonString.Append($"{quote}reason{quote} : {quote}{reason}{quote}, ");
+            //Open "result" : { ... }
+            // '{{' required when using $"" interpolation
+            jsonString.Append($"{quote}result{quote} : {{ ");
+
+            //don't list the files if error response
+            if (success == bool.TrueString)
+            {
+                //Open "files" : [ ... ]
+                jsonString.Append($"{quote}files{quote} : [");
+
+                foreach (Tuple<string, Uri> fileItem in fileList)
+                {
+                    //Open each file result Json Object
+                    jsonString.Append("{ ");
+                    jsonString.Append($"{quote}name{quote} : {quote}{fileItem.Item1}{quote},");
+                    jsonString.Append($"{quote}uri{quote} : {quote}{fileItem.Item2}{quote}");
+                    //Close each file result Json Object
+                    jsonString.Append(" }");
+                    if (fileItem != fileList.Last())
+                    {   //Append comma if more to come
+                        jsonString.Append(",");
+                    }
+                }
+
+                //Close "files" : [ ... ]
+                jsonString.Append(" ], ");
+                //"result" : { } info that isn't file objects
+                jsonString.Append($"{quote}totalCount{quote} : {fileList.Count}, ");
+                jsonString.Append($"{quote}totalPages{quote} : {totalPages}, ");
+                jsonString.Append($"{quote}currentPage{quote} : {currentPage} ");
+            }
+
+            jsonString.Append("} ");
+            //Close whole json result
+            jsonString.Append("}");
+
+            return jsonString.ToString();
+        }
+
+        private List<List<Tuple<string, Uri>>> PaginateFiles(List<Tuple<string, Uri>> fileList)
+        {
+            int idx = 0;
+            List<Tuple<string, Uri>> tempList = null;
+            List<List<Tuple<string, Uri>>> pageFiles = new List<List<Tuple<string, Uri>>>();
+
+            //loop over every file read
+            while (idx < fileList.Count)
+            {
+                //if at an even 10 index
+                if (idx % 10 == 0)
+                {
+                    //if not just entering loop - add tempList as page
+                    if (tempList != null) { pageFiles.Add(tempList); }
+                    //new tempList for next range of values
+                    tempList = new List<Tuple<string, Uri>>();
+                }
+                //add value and incriment position
+                tempList.Add(fileList[idx++]);
+            }
+
+            //broke out of while mid-page
+            if (tempList.Count > 0) { pageFiles.Add(tempList); }
+
+            return pageFiles;
         }
 
         #endregion

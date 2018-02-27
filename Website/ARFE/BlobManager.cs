@@ -26,7 +26,7 @@ namespace ARFE
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
 
-            if(!container.CreateIfNotExists())
+            if(container == null && !container.CreateIfNotExists())
             {
                 container = null;
             }
@@ -164,7 +164,7 @@ namespace ARFE
         {
             bool uploaded = true;
             CloudBlobContainer container = GetOrCreateBlobContainer("public");
-            CloudBlockBlob blob = container.GetBlockBlobReference($"{userName}-{fileName}");
+            CloudBlockBlob blob = container.GetBlockBlobReference($"{FormatBlobContainerName(userName)}-{fileName}");
 
             if (blob.Exists())
             {
@@ -174,8 +174,9 @@ namespace ARFE
 
             if (uploaded)
             {
-                blob.Metadata.Add(new KeyValuePair<string, string>("Owner Name", userName));
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
+                blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
+                blob.SetMetadata();
             }
 
             return uploaded;
@@ -275,12 +276,13 @@ namespace ARFE
         public List<Uri> ListBlobUrisInPublicContainerOwnedBy(string userName)
         {
             CloudBlobContainer container = GetCloudBlobContainer("public");
-            List<IListBlobItem> blobList = container.ListBlobs().ToList();
+            List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
             List<Uri> blobUriList = new List<Uri>();
 
-            foreach (IListBlobItem blob in blobList)
+            foreach (IListBlobItem blobItem in blobList)
             {
-                if (blob.Container.Metadata["Owner Name"] == userName)
+                CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                if (blob.Metadata["OwnerName"] == userName)
                     blobUriList.Add(blob.Uri);
             }
 

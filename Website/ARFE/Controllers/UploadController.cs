@@ -49,7 +49,8 @@ namespace ARFE.Controllers
                     process.Close();
 
                     BlobManager blobManager = new BlobManager();
-                    blobManager.UploadBlobToUserContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
+//                    blobManager.UploadBlobToUserContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
+                    blobManager.UploadBlobToPublicContainer(User.Identity.Name, _FileName, Server.MapPath("~/UploadedFiles"));
 
                     System.Threading.Thread.Sleep(2000);
                 }
