@@ -26,12 +26,36 @@ namespace ARFE
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
 
-            if(container == null && !container.CreateIfNotExists())
+            if (container == null && !container.CreateIfNotExists())
             {
                 container = null;
             }
 
             return container;
+        }
+
+
+        /// <summary>
+        /// Azure Blob Containers have a rigid rule set on Container name format.
+        /// Only lowercase letters, numbers, and dashes are allowed.
+        /// Only one consecutive dash allowed.
+        /// Dash must be surrounded by numers or letters.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public string FormatBlobContainerName(string userName)
+        {
+            string formattedName = userName.ToLower();
+
+            formattedName = formattedName.Replace('@', '-');
+            formattedName = formattedName.Replace('.', '-');
+            formattedName = formattedName.Replace("--", "-");
+            if (formattedName[0] == '-')
+                formattedName.Remove(0, 1);
+            if (formattedName[(formattedName.Length - 1)] == '-')
+                formattedName.Remove(formattedName.Length - 1);
+
+            return formattedName;
         }
 
 
@@ -61,8 +85,9 @@ namespace ARFE
 
             if (uploaded)
             {
-                blob.Metadata.Add(new KeyValuePair<string, string>("Owner Name", userName));
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
+                blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
+                blob.SetMetadata();
             }
 
             return uploaded;
@@ -80,15 +105,49 @@ namespace ARFE
         {
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
-            SharedAccessBlobPolicy sharingPolicy = new SharedAccessBlobPolicy()
-            {   //can read, allow up to 1 hour to download
-                Permissions = SharedAccessBlobPermissions.Read,
-                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(1)
-            };
-            SharedAccessBlobHeaders headers = new SharedAccessBlobHeaders()
-            { ContentDisposition = $"attachment;filename={blob.Name}" };
 
-            return "{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
+            return blob.Exists()
+                ? GetBlobDownloadLink(blob)
+                : $"Error: {fileName} not found.";
+        }
+
+
+        /// <summary>
+        /// Given the current Identity logged in user name and the name of the file to download,
+        /// return a redirect to allow download of the file.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public string ConvertAndDownloadBlobFromUserContainer(string userName, string fileName, string requestExtension, string intermediatePath)
+        {
+            CloudBlobContainer container;
+            CloudBlockBlob blob, newBlob;
+
+            container = GetOrCreateBlobContainer(userName);
+            blob = container.GetBlockBlobReference(fileName);
+
+            if (blob.Exists())
+            {
+                if (fileName.EndsWith(requestExtension))
+                {
+                    return GetBlobDownloadLink(blob);
+                }
+                else
+                {
+                    string newFile = $"{fileName.Remove(fileName.LastIndexOf('.'))}{requestExtension}";
+                    blob.DownloadToFile(intermediatePath, FileMode.Create);
+                    //Call file converter
+
+                    if(UploadBlobToUserContainer(userName, newFile, intermediatePath))
+                    {
+                        newBlob = container.GetBlockBlobReference(newFile);
+                        return GetBlobDownloadLink(newBlob);
+                    }
+                    else { return $"Error: unable to convert {fileName}."; }
+                }
+            }
+            else { return $"Error: {fileName} not found."; }
         }
 
 
@@ -264,7 +323,7 @@ namespace ARFE
         {
             List<string> blobList = new List<string>();
 
-            foreach(Uri u in ListBlobUrisInPublicContainerOwnedBy(userName))
+            foreach (Uri u in ListBlobUrisInPublicContainerOwnedBy(userName))
             {
                 blobList.Add(GetBlobNameFromUri(u));
             }
@@ -328,28 +387,6 @@ namespace ARFE
             return blobClient.GetContainerReference(FormatBlobContainerName(userName));
         }
 
-        /// <summary>
-        /// Azure Blob Containers have a rigid rule set on Container name format.
-        /// Only lowercase letters, numbers, and dashes are allowed.
-        /// Only one consecutive dash allowed.
-        /// Dash must be surrounded by numers or letters.
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        private string FormatBlobContainerName(string userName)
-        {
-            string formattedName = userName.ToLower();
-
-            formattedName = formattedName.Replace('@', '-');
-            formattedName = formattedName.Replace('.', '-');
-            formattedName = formattedName.Replace("--", "-");
-            if (formattedName[0] == '-')
-                formattedName.Remove(0, 1);
-            if (formattedName[(formattedName.Length - 1)] == '-')
-                formattedName.Remove(formattedName.Length - 1);
-
-            return formattedName;
-        }
 
         /// <summary>
         /// Given the Uri for a blob within a container, extract the 
@@ -363,6 +400,20 @@ namespace ARFE
             string[] sp = uri_string.Split('/');
 
             return sp[sp.Length - 1];
+        }
+
+
+        private string GetBlobDownloadLink(CloudBlockBlob blob)
+        {
+            SharedAccessBlobPolicy sharingPolicy = new SharedAccessBlobPolicy()
+            {   //can read, allow up to 1 hour to download
+                Permissions = SharedAccessBlobPermissions.Read,
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(1)
+            };
+            SharedAccessBlobHeaders headers = new SharedAccessBlobHeaders()
+            { ContentDisposition = $"attachment;filename={blob.Name}" };
+
+            return $"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
         }
 
         #endregion
