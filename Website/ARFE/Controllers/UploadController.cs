@@ -41,12 +41,10 @@ namespace ARFE.Controllers
                     string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
                     file.SaveAs(_path);
 
-                    Process process = new Process();
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    process.StartInfo.FileName = Server.MapPath("~/Content/FileConversion.exe");
-                    process.StartInfo.Arguments = Server.MapPath("~/UploadedFiles/" + _FileName);
-                    process.Start();
-                    process.Close();
+                    FileConversionController x = new FileConversionController();
+
+                    string output = x.ConvertToFBX(_FileName);
+
 
                     BlobManager blobManager = new BlobManager();
                     blobManager.UploadBlobToUserContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
