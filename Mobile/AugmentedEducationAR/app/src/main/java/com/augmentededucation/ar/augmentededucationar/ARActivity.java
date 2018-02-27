@@ -11,9 +11,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.augmentededucation.ar.augmentededucationar.arcore.CameraPermissionHelper;
@@ -31,12 +29,12 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.PointCloud;
 import com.google.ar.core.Session;
 import com.google.ar.core.Trackable;
+import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -234,7 +232,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
 
             // TODO MotionEvent tap
             MotionEvent tap = queuedSingleTaps.poll();
-            if (tap != null && camera.getTrackingState() == Trackable.TrackingState.TRACKING) {
+            if (tap != null && camera.getTrackingState() == TrackingState.TRACKING) {
                 for (HitResult hit : frame.hitTest(tap)) {
                     Trackable trackable = hit.getTrackable();
                     if (trackable instanceof  Plane && ((Plane) trackable).isPoseInPolygon(hit.getHitPose())) {
@@ -245,7 +243,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
 
             backgroundRenderer.draw(frame);
 
-            if (camera.getTrackingState() == Trackable.TrackingState.PAUSED) {
+            if (camera.getTrackingState() == TrackingState.PAUSED) {
                     return;
             }
 
@@ -268,7 +266,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
                     session.getAllTrackables(Plane.class), camera.getDisplayOrientedPose(), projmtx);
 
             if (anchor != null) {
-                if (anchor.getTrackingState() == Trackable.TrackingState.TRACKING) {
+                if (anchor.getTrackingState() == TrackingState.TRACKING) {
                     anchor.getPose().toMatrix(anchorMatrix, 0);
 
                     virtualObject.updateModelMatrix(anchorMatrix, scaleFactor);

@@ -26,7 +26,7 @@ import com.augmentededucation.ar.augmentededucationar.R;
 import com.google.ar.core.Camera;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
-import com.google.ar.core.Trackable.TrackingState;
+import com.google.ar.core.TrackingState;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
