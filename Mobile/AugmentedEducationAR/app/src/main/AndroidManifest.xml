@@ -3,6 +3,7 @@
     package="com.augmentededucation.ar.augmentededucationar">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"

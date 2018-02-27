@@ -23,6 +23,8 @@ public class HomeActivity extends AppCompatActivity {
 	private static final int READ_BARCODE = 1;
 	private String fileName = "cone2.obj";
 
+	private String authToken;
+
 	private ListView modelsList;
 	private String[] models;
 
@@ -34,6 +36,11 @@ public class HomeActivity extends AppCompatActivity {
 		if (modelsList == null){
 			modelsList = findViewById(R.id.modelsList);
 		}
+
+		if (savedInstanceState != null)
+			authToken = savedInstanceState.getString(getString(R.string.web_AuthToken));
+		else
+			getIntent().getExtras().getString(getString(R.string.web_AuthToken));
 
 		try
 		{
@@ -94,5 +101,11 @@ public class HomeActivity extends AppCompatActivity {
 			} else Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format),
 					CommonStatusCodes.getStatusCodeString(resultCode)));
 		} else super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putString(getString(R.string.web_AuthToken), authToken);
 	}
 }
