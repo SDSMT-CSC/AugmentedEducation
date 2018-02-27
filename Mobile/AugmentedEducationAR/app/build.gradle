@@ -19,6 +19,9 @@ android {
 }
 
 dependencies {
+    // Persistence
+    implementation 'android.arch.persistence.room:runtime:' + rootProject.archRoomVersion
+
     // ARCore library
     implementation 'com.google.ar:core:1.0.0'
 
