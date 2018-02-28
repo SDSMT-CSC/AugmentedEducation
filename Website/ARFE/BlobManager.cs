@@ -135,16 +135,30 @@ namespace ARFE
                 }
                 else
                 {
+                    bool converted = false;
                     string newFile = $"{fileName.Remove(fileName.LastIndexOf('.'))}{requestExtension}";
+                    FileConverter converter = new FileConverter(intermediatePath, intermediatePath);
                     blob.DownloadToFile(intermediatePath, FileMode.Create);
-                    //Call file converter
 
-                    if(UploadBlobToUserContainer(userName, newFile, intermediatePath))
+                    switch (requestExtension)
                     {
-                        newBlob = container.GetBlockBlobReference(newFile);
-                        return GetBlobDownloadLink(newBlob);
+                        case ".fbx": break;
+                        case ".obj":
+                            converted = converter.ConvertToOBJ(fileName);
+                            break;
+                        default: break;
                     }
-                    else { return $"Error: unable to convert {fileName}."; }
+
+                    if (converted)
+                    {
+                        if (UploadBlobToUserContainer(userName, newFile, intermediatePath))
+                        {
+                            newBlob = container.GetBlockBlobReference(newFile);
+                            return GetBlobDownloadLink(newBlob);
+                        }
+                        else { return $"Error: unable to process converted file: {newFile}."; }
+                    }
+                    else { return $"Error: unable to convert {fileName} to type {requestExtension}."; }
                 }
             }
             else { return $"Error: {fileName} not found."; }

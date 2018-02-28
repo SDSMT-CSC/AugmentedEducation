@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace ARFE.Controllers
+namespace ARFE
 {
     public class FileConverter 
     {
