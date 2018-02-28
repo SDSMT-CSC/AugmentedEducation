@@ -34,16 +34,14 @@ namespace ARFE.Controllers
                 if (file.ContentLength > 0)
                 {
                     string _FileName = Path.GetFileName(file.FileName);
-                    int index = _FileName.LastIndexOf(".");
-                    string noExtension = _FileName.Substring(0, index);
-                    string fbxExtension = noExtension + ".fbx";
-
+                    string noExtension = _FileName.Substring(0, _FileName.LastIndexOf("."));
+                    string fbxExtension = $"{noExtension}.fbx";
                     string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
                     file.SaveAs(_path);
 
-                    FileConverter x = new FileConverter();
+                    FileConverter converter = new FileConverter();
 
-                    bool output = x.ConvertToFBX(_FileName);
+                    bool output = converter.ConvertToFBX(_FileName);
 
 
 
