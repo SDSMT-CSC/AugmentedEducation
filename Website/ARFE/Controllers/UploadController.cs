@@ -39,9 +39,13 @@ namespace ARFE.Controllers
                     string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
                     file.SaveAs(_path);
 
-                    FileConverter converter = new FileConverter();
+                    FileConverter x = new FileConverter("UploadedFiles","DownloadedFiles");
 
-                    bool output = converter.ConvertToFBX(_FileName);
+                    bool output = x.ConvertToFBX(_FileName);
+                    output = x.ConvertToDAE(_FileName);
+                    output = x.ConvertToOBJ(_FileName);
+                    output = x.ConvertToSTL(_FileName);
+                    output = x.ConvertToPLY(_FileName);
 
 
 
