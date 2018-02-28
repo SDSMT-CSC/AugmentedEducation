@@ -11,11 +11,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.augmentededucation.ar.augmentededucationar.WebAccess.WebAccessor;
 import com.augmentededucation.ar.augmentededucationar.barcode.ScanQRCodeActivity;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -23,10 +31,12 @@ public class HomeActivity extends AppCompatActivity {
 	private static final int READ_BARCODE = 1;
 	private String fileName = "cone2.obj";
 
+	WebAccessor accessor;
 	private String authToken;
 
-	private ListView modelsList;
+	private ModelListView modelsList;
 	private String[] models;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,34 +47,70 @@ public class HomeActivity extends AppCompatActivity {
 			modelsList = findViewById(R.id.modelsList);
 		}
 
+		accessor = new WebAccessor(this);
+
 		if (savedInstanceState != null)
 			authToken = savedInstanceState.getString(getString(R.string.web_AuthToken));
 		else
-			getIntent().getExtras().getString(getString(R.string.web_AuthToken));
+			authToken = getIntent().getExtras().getString(getString(R.string.web_AuthToken));
+
+		accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.OWNED_ALL, new Response.Listener<JSONObject>()
+		{
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					if (response.get("success").toString().equals("True")) {
+						JSONObject result = response.getJSONObject("result");
+
+						int numFiles = result.getInt("totalCount");
+						if (numFiles == 0)
+							return;
+
+						JSONArray files = result.getJSONArray("files");
+
+						for (int i = 0; i < numFiles; i++)
+						{
+							JSONObject obj = files.getJSONObject(i);
+							modelsList.add(obj.getString("name"), obj.getString("uri"));
+						}
+						modelsList.refreshList();
+					}
+					else {
+						Toast.makeText(getBaseContext(), response.get("reason").toString(), Toast.LENGTH_SHORT).show();
+					}
+				}
+				catch (JSONException ex) {
+					Toast.makeText(getBaseContext(), "Unable to list files", Toast.LENGTH_SHORT).show();
+				}
+			}
+		},
+		new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(getBaseContext(), "Unable to authenticate", Toast.LENGTH_LONG).show();
+			}
+		});
 
 		try
 		{
 			String[] assets = getAssets().list("");
-			ArrayList<String> tempModelList = new ArrayList<>();
 			for (String asset : assets)
 			{
 				if (asset.contains(".obj") && !asset.contains(".mtl"))
 				{
-					tempModelList.add(asset.substring(0, asset.indexOf(".obj")));
+					modelsList.add(asset.substring(0, asset.indexOf(".obj")), asset.substring(0, asset.indexOf(".obj")));
 				}
 			}
 
-			models = new String[tempModelList.size()];
-			tempModelList.toArray(models);
-			ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, models);
-			modelsList.setAdapter(adapter);
+			modelsList.refreshList();
 
 			modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
 			{
 				@Override
 				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
 				{
-					fileName = models[i] + ".obj";
+					fileName = modelsList.getURI(i) + ".obj";
 					ViewInAR(view);
 				}
 			});

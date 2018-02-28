@@ -15,6 +15,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by kpetr on 2/25/2018.
@@ -50,26 +52,22 @@ public class WebAccessor
 		requestQueue.add(jsonObjectRequest);
 	}
 
-	public void getModelListing(String authToken, FileDescriptor descriptor, int pageNumber, Response.Listener<JSONObject> listener, Response.ErrorListener eListener) {
-		JSONObject jsonObject = new JSONObject();
+	public void getAllModelsListing(final String authToken, FileDescriptor types, Response.Listener<JSONObject> listener, Response.ErrorListener eListener) {
 
-		try
+		String url = String.format("%s/%s/%s/?descriptor=%d", baseAddress, mobileAuth, listFiles, types.ordinal());
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, listener, eListener)
 		{
-			jsonObject.put("token", authToken);
-		}
-		catch (JSONException ex) {
-			return;
-		}
-
-		String url = String.format("%s/%s/%s/%d/%d/", baseAddress, mobileAuth, listFiles, descriptor, pageNumber);
-		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, jsonObject, listener, eListener);
+			@Override
+			public Map<String, String> getHeaders() {
+				HashMap<String, String> headers = new HashMap<>();
+				headers.put("token", authToken);
+				return headers;
+			}
+		};
 		requestQueue.add(jsonObjectRequest);
 	}
 
-	public void getModelListing(String authToken, FileDescriptor descriptor, Response.Listener<JSONObject> listener, Response.ErrorListener eListener) {
-		getModelListing(authToken, descriptor, 1, listener, eListener);
-	}
-		public enum FileDescriptor
+	public enum FileDescriptor
 	{
 		ALL,
 		OWNED_ALL,
