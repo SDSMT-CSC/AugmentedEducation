@@ -33,33 +33,29 @@ namespace ARFE.Controllers
             {
                 if (file.ContentLength > 0)
                 {
-                    string _FileName = Path.GetFileName(file.FileName);
-                    string noExtension = _FileName.Substring(0, _FileName.LastIndexOf("."));
-                    string fbxExtension = $"{noExtension}.fbx";
-                    string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
-                    file.SaveAs(_path);
+                    string fileName = Path.GetFileName(file.FileName);
+                    string noExtension = fileName.Substring(0, fileName.LastIndexOf("."));
+                    file.SaveAs(Path.Combine(Server.MapPath("~/UploadedFiles"), fileName));
 
-                    FileConverter x = new FileConverter("UploadedFiles","DownloadedFiles");
+                    FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
 
-                    bool output = x.ConvertToFBX(_FileName);
-                    output = x.ConvertToDAE(_FileName);
-                    output = x.ConvertToOBJ(_FileName);
-                    output = x.ConvertToSTL(_FileName);
-                    output = x.ConvertToPLY(_FileName);
-
-
-
-                    BlobManager blobManager = new BlobManager();
-                    blobManager.UploadBlobToUserContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
-
-                    System.Threading.Thread.Sleep(2000);
+                    if (converter.ConvertToFBX(fileName))
+                    {
+                        BlobManager blobManager = new BlobManager();
+                        blobManager.UploadBlobToUserContainer(User.Identity.Name, $"{noExtension}.fbx", Server.MapPath("~/UploadedFiles"));
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Common file type conversion failed.";
+                        return View();
+                    }
                 }
-                ViewBag.Message = "File Uploaded Successfully!!";
+                ViewBag.Message = "File Uploaded Successfully.";
                 return View();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                ViewBag.Message = "File upload failed!!";
+                ViewBag.Message = "File Upload Failed.";
                 return View();
             }
         }
