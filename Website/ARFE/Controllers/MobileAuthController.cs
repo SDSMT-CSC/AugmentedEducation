@@ -195,7 +195,6 @@ namespace ARFE.Controllers
 
 
         [HttpGet]
-        //public async Task<string> DownloadFile(string fileUri)
         public async Task<string> DownloadFile()
         {
             string reason = string.Empty;
@@ -207,10 +206,10 @@ namespace ARFE.Controllers
 
             if (string.IsNullOrEmpty(validateUserInfo.Item2))
             {
-                string[] uriParts = fileUri.Split('/');
-                BlobManager blobManager = new BlobManager();
                 if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
 
+                string[] uriParts = fileUri.Split('/');
+                BlobManager blobManager = new BlobManager();
                 string blobName = uriParts[uriParts.Count() - 1];
                 string containerName = uriParts[uriParts.Count() - 2];
 
@@ -219,7 +218,7 @@ namespace ARFE.Controllers
                     || containerName.Equals("public"))
                 {
                     //downloadUrl = blobManager.DownloadBlobFromUserContainer(containerName, blobName);
-                    downloadUrl = blobManager.ConvertAndDownloadBlobFromUserContainer(containerName, blobName, ".obj", Server.MapPath("~/ConvertTemp"));
+                    downloadUrl = blobManager.ConvertAndDownloadBlobFromUserContainer(containerName, blobName, ".obj", Server.MapPath("~/UploadedFiles"));
                     if (downloadUrl.Contains("Error: "))
                     {
                         reason = downloadUrl;
@@ -245,7 +244,7 @@ namespace ARFE.Controllers
             if (string.IsNullOrEmpty(validateUserInfo.Item2))
             {
                 if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
-
+                //To Do
             }
 
             return "";

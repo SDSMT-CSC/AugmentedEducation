@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 
 using Microsoft.Azure;
@@ -29,6 +30,11 @@ namespace ARFE
             if (container == null && !container.CreateIfNotExists())
             {
                 container = null;
+            }
+            else
+            {
+                PurgeOldTemporaryBlobs(userName);
+                if (userName != "public") { PurgeOldTemporaryBlobs("public"); }
             }
 
             return container;
@@ -73,9 +79,10 @@ namespace ARFE
         /// <returns></returns>
         public bool UploadBlobToUserContainer(string userName, string fileName, string filePath)
         {
-            bool uploaded = true;
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
+            string extension = fileName.Substring(fileName.LastIndexOf('.'));
+            bool uploaded = true;
 
             if (blob.Exists())
             {
@@ -86,8 +93,25 @@ namespace ARFE
             if (uploaded)
             {
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
-                blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
-                blob.SetMetadata();
+                //overwrite same blob will keep key
+                if (!blob.Metadata.ContainsKey("OwnerName"))
+                {
+                    blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
+                    blob.SetMetadata();
+                }
+                //primarily want to store .fbx due to small size
+                if (extension != ".fbx")
+                {
+                    if (!blob.Metadata.ContainsKey("LastAccessed"))
+                    {
+                        blob.Metadata.Add(new KeyValuePair<string, string>("LastAccessed", DateTime.UtcNow.ToString()));
+                    }
+                    else
+                    {
+                        blob.Metadata["LastAccessed"] = DateTime.UtcNow.ToString();
+                    }
+                    blob.SetMetadata();
+                }
             }
 
             return uploaded;
@@ -113,52 +137,41 @@ namespace ARFE
 
 
         /// <summary>
-        /// Given the current Identity logged in user name and the name of the file to download,
-        /// return a redirect to allow download of the file.
+        /// Get reference to <paramref name="fileName"/> blob in storage, perform
+        /// filetype conversion and upload converted if necessary.  Return download link or error.
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="fileName"></param>
+        /// <param name="requestExtension"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
-        public string ConvertAndDownloadBlobFromUserContainer(string userName, string fileName, string requestExtension, string intermediatePath)
+        public string ConvertAndDownloadBlobFromUserContainer(string userName, string fileName, string requestExtension, string path)
         {
             CloudBlobContainer container;
-            CloudBlockBlob blob, newBlob;
+            CloudBlockBlob blob, getBlob;
+            string getFileName = $"{fileName.Remove(fileName.LastIndexOf('.'))}{requestExtension}";
 
             container = GetOrCreateBlobContainer(userName);
             blob = container.GetBlockBlobReference(fileName);
+            getBlob = container.GetBlockBlobReference(getFileName);
 
             if (blob.Exists())
             {
-                if (fileName.EndsWith(requestExtension))
-                {
-                    return GetBlobDownloadLink(blob);
-                }
+                //file exists how we want it in storage, download
+                if (fileName.EndsWith(requestExtension)) { return GetBlobDownloadLink(blob); }
                 else
                 {
-                    bool converted = false;
-                    string newFile = $"{fileName.Remove(fileName.LastIndexOf('.'))}{requestExtension}";
-                    FileConverter converter = new FileConverter(intermediatePath, intermediatePath);
-                    blob.DownloadToFile(intermediatePath, FileMode.Create);
+                    //see if conversion exists in storage and download
+                    if (getBlob.Exists()) { return GetBlobDownloadLink(getBlob); }
 
-                    switch (requestExtension)
-                    {
-                        case ".fbx": break;
-                        case ".obj":
-                            converted = converter.ConvertToOBJ(fileName);
-                            break;
-                        default: break;
-                    }
+                    //conversion Result may be converted blob name or error
+                    string conversionResult = ConvertBlobToBlob(blob, userName, fileName, path, requestExtension);
+                    getBlob = container.GetBlockBlobReference(conversionResult);
 
-                    if (converted)
-                    {
-                        if (UploadBlobToUserContainer(userName, newFile, intermediatePath))
-                        {
-                            newBlob = container.GetBlockBlobReference(newFile);
-                            return GetBlobDownloadLink(newBlob);
-                        }
-                        else { return $"Error: unable to process converted file: {newFile}."; }
-                    }
-                    else { return $"Error: unable to convert {fileName} to type {requestExtension}."; }
+                    //result was blob
+                    if (getBlob.Exists()) { return GetBlobDownloadLink(getBlob); }
+                    //result was error
+                    else { return conversionResult; }
                 }
             }
             else { return $"Error: {fileName} not found."; }
@@ -192,7 +205,7 @@ namespace ARFE
         /// <returns></returns>
         public List<Uri> ListBlobUrisInUserContainer(string userName)
         {
-            CloudBlobContainer container = GetCloudBlobContainer(userName);
+            CloudBlobContainer container = GetOrCreateBlobContainer(userName);
 
             return container.ListBlobs().Select(blob => blob.Uri).ToList();
         }
@@ -300,7 +313,7 @@ namespace ARFE
         /// <returns>A list of Uris to the blobs in the public container</returns>
         public List<Uri> ListBlobUrisInPublicContainer()
         {
-            CloudBlobContainer container = GetCloudBlobContainer("public");
+            CloudBlobContainer container = GetOrCreateBlobContainer("public");
 
             return container.ListBlobs().Select(blob => blob.Uri).ToList();
         }
@@ -348,7 +361,7 @@ namespace ARFE
 
         public List<Uri> ListBlobUrisInPublicContainerOwnedBy(string userName)
         {
-            CloudBlobContainer container = GetCloudBlobContainer("public");
+            CloudBlobContainer container = GetOrCreateBlobContainer("public");
             List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
             List<Uri> blobUriList = new List<Uri>();
 
@@ -430,6 +443,74 @@ namespace ARFE
             return $"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
         }
 
+        private string ConvertBlobToBlob(CloudBlockBlob fromBlob, string userName, string fileName, string path, string requestExtension)
+        {
+            bool converted = false;
+            CloudBlockBlob toBlob = null;
+            string returnMessage = string.Empty;
+            CloudBlobContainer container = fromBlob.Parent.Container;
+            FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
+            string getFileName = $"{fileName.Remove(fileName.LastIndexOf('.'))}{requestExtension}";
+
+            while (File.Exists(Path.Combine(path, fileName)))
+            {   //Chill out until other file uploaded and removed
+                Thread.Sleep(1500); //sleep 1.5 seconds - don't waste resources just looping
+            }
+
+            //path parameter is absolute
+            using (Stream fileStream = File.OpenWrite(Path.Combine(path, fileName)))
+            {   //Have to use DownloadToStream - DownloadToFile results in access denied error
+                fromBlob.DownloadToStream(fileStream);
+            }
+
+            switch (requestExtension) //extensible for more filetype conversion download options
+            {
+                case ".obj": // convert to .obj
+                    converted = converter.ConvertToOBJ(fileName);
+                    break;
+                default: break;
+            }
+
+            if (converted)
+            {
+                //upload converted file to blob storage
+                if (UploadBlobToUserContainer(userName, getFileName, path))
+                {   //get reference to blob and get download link
+                    toBlob = container.GetBlockBlobReference(getFileName);
+
+                    returnMessage = toBlob.Name;
+                }
+                else { returnMessage = $"Error: unable to process converted file: {getFileName}."; }
+            }
+            else { returnMessage = $"Error: unable to convert {fileName} to type {requestExtension}."; }
+
+            //Clear up ~/UploadedFiles folder
+            if (File.Exists(Path.Combine(path, getFileName))) { File.Delete(Path.Combine(path, getFileName)); }
+            if (File.Exists(Path.Combine(path, fileName))) { File.Delete(Path.Combine(path, fileName)); }
+
+            return returnMessage;
+        }
+
+        private void PurgeOldTemporaryBlobs(string userName)
+        {
+            CloudBlobContainer container = GetCloudBlobContainer(userName);
+            List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
+
+            foreach (IListBlobItem blobItem in blobList)
+            {
+                CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                if (blob.Metadata.Keys.Contains("LastAccessed"))
+                {
+                    DateTime now = DateTime.UtcNow;
+                    DateTime lastAccessed = DateTime.SpecifyKind(DateTime.Parse(blob.Metadata["LastAccessed"]), DateTimeKind.Utc);
+
+                    if (lastAccessed.AddHours(.5) < now) //over 30 minutes old
+                    {
+                        blob.Delete(DeleteSnapshotsOption.IncludeSnapshots);
+                    }
+                }
+            }
+        }
         #endregion
     }
 }
