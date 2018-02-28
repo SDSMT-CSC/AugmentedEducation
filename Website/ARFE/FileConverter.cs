@@ -9,6 +9,14 @@ namespace ARFE.Controllers
 {
     public class FileConverter 
     {
+        private string InputFolder;
+        private string OutputFolder;
+        public FileConverter(string inputFolder, string outputFolder)
+        {
+            InputFolder = inputFolder;
+            OutputFolder = outputFolder;
+        }
+
         public bool ConvertToFBX(string filename)
         {
             if (ValidateExtension(filename))
@@ -24,8 +32,8 @@ namespace ARFE.Controllers
                     process.StartInfo.FileName = HttpRuntime.AppDomainAppPath + "UploadedFiles\\FileConversion.exe";
 
                     string arguments = "-i ";
-                    arguments += HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + filename;
-                    arguments += " -t .fbx -o " + HttpRuntime.AppDomainAppPath + "UploadedFiles\\"+ basefile+".fbx";
+                    arguments += HttpRuntime.AppDomainAppPath + InputFolder + "\\" + filename;
+                    arguments += " -t .fbx -o " + HttpRuntime.AppDomainAppPath + OutputFolder + "\\"+ basefile+".fbx";
 
 
                     process.StartInfo.Arguments = arguments;
@@ -59,8 +67,8 @@ namespace ARFE.Controllers
                     process.StartInfo.FileName = HttpRuntime.AppDomainAppPath + "UploadedFiles\\FileConversion.exe";
 
                     string arguments = "-i ";
-                    arguments += HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + filename;
-                    arguments += " -t .dae -o " + HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + basefile + ".dae";
+                    arguments += HttpRuntime.AppDomainAppPath + InputFolder + "\\" + filename;
+                    arguments += " -t .dae -o " + HttpRuntime.AppDomainAppPath + OutputFolder + "\\" + basefile + ".dae";
 
 
                     process.StartInfo.Arguments = arguments;
@@ -94,8 +102,8 @@ namespace ARFE.Controllers
                     process.StartInfo.FileName = HttpRuntime.AppDomainAppPath + "UploadedFiles\\FileConversion.exe";
 
                     string arguments = "-i ";
-                    arguments += HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + filename;
-                    arguments += " -t .obj -o " + HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + basefile + ".obj";
+                    arguments += HttpRuntime.AppDomainAppPath + InputFolder + "\\" + filename;
+                    arguments += " -t .dae -o " + HttpRuntime.AppDomainAppPath + OutputFolder + "\\" + basefile + ".obj";
 
 
                     process.StartInfo.Arguments = arguments;
@@ -129,8 +137,8 @@ namespace ARFE.Controllers
                     process.StartInfo.FileName = HttpRuntime.AppDomainAppPath + "UploadedFiles\\FileConversion.exe";
 
                     string arguments = "-i ";
-                    arguments += HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + filename;
-                    arguments += " -t .stl -o " + HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + basefile + ".stl";
+                    arguments += HttpRuntime.AppDomainAppPath + InputFolder + "\\" + filename;
+                    arguments += " -t .dae -o " + HttpRuntime.AppDomainAppPath + OutputFolder + "\\" + basefile + ".stl";
 
 
                     process.StartInfo.Arguments = arguments;
@@ -164,8 +172,8 @@ namespace ARFE.Controllers
                     process.StartInfo.FileName = HttpRuntime.AppDomainAppPath + "UploadedFiles\\FileConversion.exe";
 
                     string arguments = "-i ";
-                    arguments += HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + filename;
-                    arguments += " -t .ply -o " + HttpRuntime.AppDomainAppPath + "UploadedFiles\\" + basefile + ".ply";
+                    arguments += HttpRuntime.AppDomainAppPath + InputFolder + "\\" + filename;
+                    arguments += " -t .dae -o " + HttpRuntime.AppDomainAppPath + OutputFolder + "\\" + basefile + ".ply";
 
 
                     process.StartInfo.Arguments = arguments;
