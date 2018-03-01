@@ -28,7 +28,7 @@ namespace ARFE.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadFile(HttpPostedFileBase file)
+        public ActionResult UploadFile(HttpPostedFileBase file, bool publicFile)
         {
             string uploadMessage = "File Uploaded Successfully.";
             if (file.ContentLength > 0)

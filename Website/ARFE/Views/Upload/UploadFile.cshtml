@@ -13,8 +13,12 @@
     <br />
     <div>
         @Html.TextBox("file", "", new { type = "file" }) <br />
-
+        @Html.CheckBox("publicFile", false)
+        <p3>Public File</p3>
+        <br />
+        <br />
         <input type="submit" value="Upload" />
+
 
         @ViewBag.Message
 
