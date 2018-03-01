@@ -25,10 +25,14 @@ import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 
+import com.augmentededucation.ar.augmentededucationar.FileManager;
 import com.augmentededucation.ar.augmentededucationar.R;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -238,9 +242,22 @@ public class ObjectRenderer {
     ) throws IOException {
 
         String parentDirectory = OBJ_PATH.split("/")[0] + "/";
+
+        InputStream objInputStream;
+        if (OBJ_PATH.contains(FileManager.assetsFileNameSubstring))
+        {
+            String fname = OBJ_PATH.substring(OBJ_PATH.indexOf(FileManager.assetsFileNameSubstring) + FileManager.assetsFileNameSubstring.length());
+            objInputStream = context.getAssets().open(fname);
+        }
+        else
+        {
+            File file = new File(OBJ_PATH);
+            objInputStream = new FileInputStream(file);
+        }
+
         // Read the obj file.
-        InputStream objInputStream = context.getAssets().open(OBJ_PATH);
         mObj = ObjReader.read(objInputStream);
+
 
         if (mObj.getNumMaterialGroups() == 0 && mObj.getMtlFileNames().size() == 0) {
             Log.e(TAG, "No mtl file defined for this model.");
