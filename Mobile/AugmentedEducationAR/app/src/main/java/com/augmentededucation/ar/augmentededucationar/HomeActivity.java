@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -99,7 +100,7 @@ public class HomeActivity extends AppCompatActivity {
 			{
 				if (asset.contains(".obj") && !asset.contains(".mtl"))
 				{
-					modelsList.add(asset.substring(0, asset.indexOf(".obj")), asset.substring(0, asset.indexOf(".obj")));
+					modelsList.add(asset.substring(0, asset.indexOf(".obj")), FileManager.assetsFileNameSubstring + asset);
 				}
 			}
 
@@ -110,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
 				@Override
 				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
 				{
-					fileName = modelsList.getURI(i) + ".obj";
+					fileName = modelsList.getURI(i);
 					ViewInAR(view);
 				}
 			});

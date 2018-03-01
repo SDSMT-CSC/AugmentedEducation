@@ -2,6 +2,7 @@ package com.augmentededucation.ar.augmentededucationar.WebAccess;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.net.Uri;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,15 +25,18 @@ import java.util.Map;
 
 public class WebAccessor
 {
+	DownloadManager downloadManager;
 	private RequestQueue requestQueue;
 
 	private static String baseAddress = "http://sdminesaugmentededucation.azurewebsites.net";
 	private static String mobileAuth = "MobileAuth";
 	private static String requestAuthToken = "RequestAuthToken";
 	private static String listFiles = "ListFiles";
+	private static String downloadFile = "DownloadFile";
 
 	public WebAccessor(Context context) {
 		requestQueue = Volley.newRequestQueue(context);
+		downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 	}
 
 	public void authenticate(String username, String password, Response.Listener<JSONObject> listener, Response.ErrorListener eListener) {
@@ -65,6 +69,16 @@ public class WebAccessor
 			}
 		};
 		requestQueue.add(jsonObjectRequest);
+	}
+
+	public long downloadFile(Context context, String authToken, String uri, String destDir, String destName) {
+		String url = String.format("%s/%s/%s/", baseAddress, mobileAuth, downloadFile);
+		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+		request.addRequestHeader("token", authToken);
+		request.addRequestHeader("fileUri", uri);
+		request.setDestinationInExternalFilesDir(context, destDir, destName);
+
+		return downloadManager.enqueue(request);
 	}
 
 	public enum FileDescriptor
