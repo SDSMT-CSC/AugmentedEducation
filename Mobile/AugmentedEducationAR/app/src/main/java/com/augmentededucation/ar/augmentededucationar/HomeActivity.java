@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.augmentededucation.ar.augmentededucationar.WebAccess.WebAccessor;
 import com.augmentededucation.ar.augmentededucationar.barcode.ScanQRCodeActivity;
+import com.augmentededucation.ar.augmentededucationar.db.entity.Model;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
@@ -30,7 +31,7 @@ import java.util.Map;
 public class HomeActivity extends AppCompatActivity {
 	private static final String LOG_TAG = MainActivity.class.getSimpleName();
 	private static final int READ_BARCODE = 1;
-	private String fileName = "cone2.obj";
+	private Model model;
 
 	WebAccessor accessor;
 	private String authToken;
@@ -72,7 +73,10 @@ public class HomeActivity extends AppCompatActivity {
 						for (int i = 0; i < numFiles; i++)
 						{
 							JSONObject obj = files.getJSONObject(i);
-							modelsList.add(obj.getString("name"), obj.getString("uri"));
+							Model m = new Model();
+							m.url = obj.getString("uri");
+							m.name = obj.getString("name");
+							modelsList.add(m);
 						}
 						modelsList.refreshList();
 					}
@@ -100,7 +104,10 @@ public class HomeActivity extends AppCompatActivity {
 			{
 				if (asset.contains(".obj") && !asset.contains(".mtl"))
 				{
-					modelsList.add(asset.substring(0, asset.indexOf(".obj")), FileManager.assetsFileNameSubstring + asset);
+					Model m = new Model();
+					m.url = FileManager.assetsFileNameSubstring + asset;
+					m.name = asset.substring(0, asset.indexOf(".obj"));
+					modelsList.add(m);
 				}
 			}
 
@@ -111,7 +118,7 @@ public class HomeActivity extends AppCompatActivity {
 				@Override
 				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
 				{
-					fileName = modelsList.getURI(i);
+					model = modelsList.getModel(i);
 					ViewInAR(view);
 				}
 			});
@@ -124,7 +131,7 @@ public class HomeActivity extends AppCompatActivity {
 
 	public void ViewInAR(View view) {
 		Intent intent = new Intent(this, ARActivity.class);
-		intent.putExtra(ARActivity.FILENAME_TAG, fileName);
+		intent.putExtra(ARActivity.FILENAME_TAG, model.url);
 		startActivity(intent);
 	}
 
@@ -143,7 +150,7 @@ public class HomeActivity extends AppCompatActivity {
 					Barcode barcode = (Barcode) data.getExtras().get(ScanQRCodeActivity.BarcodeObject);
 					Toast.makeText(this, barcode.rawValue, Toast.LENGTH_LONG).show();
 					Point[] p = barcode.cornerPoints;
-					fileName = barcode.rawValue;
+					model.url = barcode.rawValue;
 				} else Toast.makeText(this, R.string.no_barcode_captured, Toast.LENGTH_LONG).show();
 			} else Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format),
 					CommonStatusCodes.getStatusCodeString(resultCode)));

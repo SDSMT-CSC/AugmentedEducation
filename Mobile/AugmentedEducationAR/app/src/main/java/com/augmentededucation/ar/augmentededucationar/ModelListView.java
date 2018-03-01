@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.augmentededucation.ar.augmentededucationar.db.entity.Model;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,7 +19,7 @@ public class ModelListView extends ListView
 	Context context;
 
 	private ArrayList<String> editableModelList;
-	private HashMap<Integer, String> URIs;
+	private HashMap<Integer, Model> Models;
 	private String[] modelList;
 
 	public ModelListView(Context context) {
@@ -41,13 +43,13 @@ public class ModelListView extends ListView
 	{
 		this.context = context;
 		editableModelList = new ArrayList<>();
-		URIs = new HashMap<>();
+		Models = new HashMap<>();
 	}
 
-	public void add(String name, String uri)
+	public void add(Model model)
 	{
-		URIs.put(editableModelList.size(), uri);
-		editableModelList.add(name);
+		Models.put(editableModelList.size(), model);
+		editableModelList.add(model.name);
 	}
 
 	public void refreshList()
@@ -58,7 +60,7 @@ public class ModelListView extends ListView
 		this.setAdapter(adapter);
 	}
 
-	public String getURI(int location) {
-		return URIs.get(location);
+	public Model getModel(int location) {
+		return Models.get(location);
 	}
 }
