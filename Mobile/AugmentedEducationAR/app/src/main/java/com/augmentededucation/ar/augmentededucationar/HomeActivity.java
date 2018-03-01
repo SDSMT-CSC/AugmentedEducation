@@ -39,6 +39,8 @@ public class HomeActivity extends AppCompatActivity {
 	private ModelListView modelsList;
 	private String[] models;
 
+	private FileManager fileManager;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class HomeActivity extends AppCompatActivity {
 		}
 
 		accessor = new WebAccessor(this);
+		fileManager = new FileManager(this);
 
 		if (savedInstanceState != null)
 			authToken = savedInstanceState.getString(getString(R.string.web_AuthToken));
@@ -76,7 +79,9 @@ public class HomeActivity extends AppCompatActivity {
 							Model m = new Model();
 							m.url = obj.getString("uri");
 							m.name = obj.getString("name");
-							modelsList.add(m);
+//							modelsList.add(m);
+							fileManager.addModelToDatabase(m);
+
 						}
 						modelsList.refreshList();
 					}
@@ -107,8 +112,14 @@ public class HomeActivity extends AppCompatActivity {
 					Model m = new Model();
 					m.url = FileManager.assetsFileNameSubstring + asset;
 					m.name = asset.substring(0, asset.indexOf(".obj"));
-					modelsList.add(m);
+//					modelsList.add(m);
+					fileManager.addModelToDatabase(m);
 				}
+			}
+
+			ArrayList<Model> modelList = fileManager.getListOfModels();
+			for (Model m : modelList) {
+				modelsList.add(m);
 			}
 
 			modelsList.refreshList();

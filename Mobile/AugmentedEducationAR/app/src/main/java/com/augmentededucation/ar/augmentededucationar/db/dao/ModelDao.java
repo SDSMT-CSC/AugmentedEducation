@@ -25,7 +25,7 @@ public interface ModelDao {
     List<Model> loadModelWhereURL(String url);
 
     @Query("UPDATE Model SET location = :newLocation, name = :newName WHERE Model.url = :url")
-    List<Model> updateModel(String url, String newName, String newLocation);
+    void updateModel(String url, String newName, String newLocation);
 
     @Insert(onConflict = IGNORE)
     void insertModel(Model model);
