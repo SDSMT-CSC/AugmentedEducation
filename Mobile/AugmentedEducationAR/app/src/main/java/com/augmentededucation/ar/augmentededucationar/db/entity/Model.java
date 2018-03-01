@@ -12,7 +12,9 @@ import android.support.annotation.NonNull;
 public class Model {
     @PrimaryKey
     @NonNull
-    public String id;
+    public String url;  // url stores place on the website to download the model
 
-    public String url;
+    public String name;
+
+    public String location;  // empty string indicates not downloaded
 }
