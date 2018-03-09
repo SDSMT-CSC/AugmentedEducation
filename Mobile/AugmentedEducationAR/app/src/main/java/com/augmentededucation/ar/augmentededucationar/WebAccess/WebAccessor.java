@@ -3,6 +3,7 @@ package com.augmentededucation.ar.augmentededucationar.WebAccess;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -73,10 +74,13 @@ public class WebAccessor
 
 	public long downloadFile(Context context, String authToken, String uri, String destDir, String destName) {
 		String url = String.format("%s/%s/%s/", baseAddress, mobileAuth, downloadFile);
+
 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
 		request.addRequestHeader("token", authToken);
 		request.addRequestHeader("fileUri", uri);
-		request.setDestinationInExternalFilesDir(context, destDir, destName);
+		request.setTitle(destName);
+		//request.setDestinationInExternalFilesDir(context, destDir, destName);
+		request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destName);
 
 		return downloadManager.enqueue(request);
 	}

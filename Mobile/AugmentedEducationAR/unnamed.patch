@@ -1,0 +1,240 @@
+Index: Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/FileManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/FileManager.java	(revision b68975909a7574df8cf9043f40576b5e2fb4d3e6)
++++ Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/FileManager.java	(revision )
+@@ -2,7 +2,12 @@
+ 
+ import android.app.DownloadManager;
+ import android.arch.persistence.room.Room;
++import android.content.BroadcastReceiver;
+ import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++import android.database.Cursor;
++import android.os.Environment;
+ 
+ import com.augmentededucation.ar.augmentededucationar.WebAccess.WebAccessor;
+ import com.augmentededucation.ar.augmentededucationar.db.AppDatabase;
+@@ -20,18 +25,51 @@
+ 	private DownloadManager downloadManager;
+ 	private WebAccessor webAccessor;
+ 	private AppDatabase db;
++	private Context context;
+ 
+ 	public final static String assetsFileNameSubstring = "file:///android_asset/";
+-
+ 	private final static String dbName = "augmentededucationdb";
++	private final static String folderName = Environment.DIRECTORY_DOWNLOADS;
++
++	public String fileLocation;
++
++	private Long downloadingFile;
+ 
+ 	public FileManager(Context context) {
+ 		webAccessor = new WebAccessor(context);
+ 		db = AppDatabase.getInstance(context, dbName);
++		downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
++		this.context = context;
+ 	}
+ 
+-	public void downloadFile(String location) {
++	public void downloadModel(final Model model, String authToken, final BroadcastReceiver receiver) {
++		if (downloadingFile != null) {
++			return;
++		}
+ 
++		context.registerReceiver(new BroadcastReceiver()
++		{
++			@Override
++			public void onReceive(Context context, Intent intent)
++			{
++				Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(downloadingFile));
++				if (cursor == null) {
++					return;
++				}
++				cursor.moveToFirst();
++
++				int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
++				if (status == DownloadManager.STATUS_SUCCESSFUL) {
++					fileLocation = folderName + "/" + model.name;
++					model.location = fileLocation;
++					setModelDB(model);
++					downloadingFile = null;
++					receiver.onReceive(context, intent);
++				}
++			}
++	}, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
++
++		downloadingFile = webAccessor.downloadFile(context, authToken, model.url, folderName, model.name);
+ 	}
+ 
+ 	public void addModelToDatabase(Model model) {
+@@ -39,11 +77,27 @@
+ 		if (models.size() == 0) {
+ 			db.modelDao().insertModel(model);
+ 		}
++	}
++
++	public void setModelDB(Model model) {
++		List<Model> models = db.modelDao().loadModelWhereURL(model.url);
++		if (models.size() == 0) {
++			db.modelDao().insertModel(model);
++		}
+ 		else {
+ 			db.modelDao().updateModel(model.url, model.name, model.location);
+ 		}
+ 	}
+ 
++	public Model getUpdatedModel(Model model) {
++		List<Model> models = db.modelDao().loadModelWhereURL(model.url);
++		if (models.size() > 0) {
++			return models.get(0);
++		}
++		else
++			return null;
++	}
++
+ 	public ArrayList<Model> getListOfModels() {
+ 		return (ArrayList<Model>) db.modelDao().loadAllModels();
+ 	}
+Index: Mobile/AugmentedEducationAR/app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Mobile/AugmentedEducationAR/app/src/main/AndroidManifest.xml	(revision b68975909a7574df8cf9043f40576b5e2fb4d3e6)
++++ Mobile/AugmentedEducationAR/app/src/main/AndroidManifest.xml	(revision )
+@@ -4,6 +4,8 @@
+ 
+     <uses-permission android:name="android.permission.CAMERA" />
+     <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
++    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+ 
+     <application
+         android:allowBackup="true"
+Index: Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/HomeActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/HomeActivity.java	(revision b68975909a7574df8cf9043f40576b5e2fb4d3e6)
++++ Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/HomeActivity.java	(revision )
+@@ -1,6 +1,10 @@
+ package com.augmentededucation.ar.augmentededucationar;
+ 
++import android.app.DownloadManager;
++import android.content.BroadcastReceiver;
++import android.content.Context;
+ import android.content.Intent;
++import android.content.IntentFilter;
+ import android.graphics.Point;
+ import android.os.Bundle;
+ import android.support.v7.app.AppCompatActivity;
+@@ -41,7 +45,6 @@
+ 
+ 	private FileManager fileManager;
+ 
+-
+ 	@Override
+ 	protected void onCreate(Bundle savedInstanceState) {
+ 		super.onCreate(savedInstanceState);
+@@ -111,9 +114,10 @@
+ 				{
+ 					Model m = new Model();
+ 					m.url = FileManager.assetsFileNameSubstring + asset;
++					m.location = m.url;
+ 					m.name = asset.substring(0, asset.indexOf(".obj"));
+ //					modelsList.add(m);
+-					fileManager.addModelToDatabase(m);
++					fileManager.setModelDB(m);
+ 				}
+ 			}
+ 
+@@ -127,10 +131,22 @@
+ 			modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+ 			{
+ 				@Override
+-				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
++				public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l)
+ 				{
+ 					model = modelsList.getModel(i);
+-					ViewInAR(view);
++					if (model.location == null) {
++						fileManager.downloadModel(model, authToken, new BroadcastReceiver()
++						{
++							@Override
++							public void onReceive(Context context, Intent intent)
++							{
++								ViewInAR();
++							}
++						});
++					}
++					else {
++						ViewInAR();
++					}
+ 				}
+ 			});
+ 		}
+@@ -140,7 +156,7 @@
+ 
+ 	}
+ 
+-	public void ViewInAR(View view) {
++	public void ViewInAR() {
+ 		Intent intent = new Intent(this, ARActivity.class);
+ 		intent.putExtra(ARActivity.FILENAME_TAG, model.url);
+ 		startActivity(intent);
+@@ -161,7 +177,12 @@
+ 					Barcode barcode = (Barcode) data.getExtras().get(ScanQRCodeActivity.BarcodeObject);
+ 					Toast.makeText(this, barcode.rawValue, Toast.LENGTH_LONG).show();
+ 					Point[] p = barcode.cornerPoints;
+-					model.url = barcode.rawValue;
++
++					Model m = new Model();
++					m.url = barcode.rawValue;
++					m.name = m.url;
++					fileManager.addModelToDatabase(m);
++
+ 				} else Toast.makeText(this, R.string.no_barcode_captured, Toast.LENGTH_LONG).show();
+ 			} else Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format),
+ 					CommonStatusCodes.getStatusCodeString(resultCode)));
+@@ -173,4 +194,5 @@
+ 		super.onSaveInstanceState(savedInstanceState);
+ 		savedInstanceState.putString(getString(R.string.web_AuthToken), authToken);
+ 	}
++
+ }
+Index: Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/WebAccess/WebAccessor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/WebAccess/WebAccessor.java	(revision b68975909a7574df8cf9043f40576b5e2fb4d3e6)
++++ Mobile/AugmentedEducationAR/app/src/main/java/com/augmentededucation/ar/augmentededucationar/WebAccess/WebAccessor.java	(revision )
+@@ -3,6 +3,7 @@
+ import android.app.DownloadManager;
+ import android.content.Context;
+ import android.net.Uri;
++import android.os.Environment;
+ 
+ import com.android.volley.Request;
+ import com.android.volley.RequestQueue;
+@@ -73,10 +74,13 @@
+ 
+ 	public long downloadFile(Context context, String authToken, String uri, String destDir, String destName) {
+ 		String url = String.format("%s/%s/%s/", baseAddress, mobileAuth, downloadFile);
++
+ 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+ 		request.addRequestHeader("token", authToken);
+ 		request.addRequestHeader("fileUri", uri);
+-		request.setDestinationInExternalFilesDir(context, destDir, destName);
++		request.setTitle(destName);
++		//request.setDestinationInExternalFilesDir(context, destDir, destName);
++		request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destName);
+ 
+ 		return downloadManager.enqueue(request);
+ 	}

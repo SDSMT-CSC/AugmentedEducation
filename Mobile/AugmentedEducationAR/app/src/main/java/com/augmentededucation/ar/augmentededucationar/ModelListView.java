@@ -2,6 +2,7 @@ package com.augmentededucation.ar.augmentededucationar;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -21,6 +22,9 @@ public class ModelListView extends ListView
 	private ArrayList<String> editableModelList;
 	private HashMap<Integer, Model> Models;
 	private String[] modelList;
+	private FileManager fileManager;
+
+	private ArrayAdapter<String> adapter;
 
 	public ModelListView(Context context) {
 		super(context);
@@ -44,6 +48,7 @@ public class ModelListView extends ListView
 		this.context = context;
 		editableModelList = new ArrayList<>();
 		Models = new HashMap<>();
+		fileManager = new FileManager(context);
 	}
 
 	public void add(Model model)
@@ -52,11 +57,25 @@ public class ModelListView extends ListView
 		editableModelList.add(model.name);
 	}
 
+	public void clear()
+	{
+		Models.clear();
+		editableModelList.clear();
+	}
+
 	public void refreshList()
 	{
+		this.clear();
+
+		ArrayList<Model> mList = fileManager.getListOfModels();
+		for (Model m : mList) {
+			add(m);
+		}
+
 		modelList = new String[editableModelList.size()];
 		editableModelList.toArray(modelList);
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, modelList);
+		adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, modelList);
+		Log.e("listview", "refreshing with " + editableModelList.size() + " items");
 		this.setAdapter(adapter);
 	}
 

@@ -1,6 +1,10 @@
 package com.augmentededucation.ar.augmentededucationar;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +45,6 @@ public class HomeActivity extends AppCompatActivity {
 
 	private FileManager fileManager;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,7 +84,6 @@ public class HomeActivity extends AppCompatActivity {
 							m.name = obj.getString("name");
 //							modelsList.add(m);
 							fileManager.addModelToDatabase(m);
-
 						}
 						modelsList.refreshList();
 					}
@@ -111,15 +113,11 @@ public class HomeActivity extends AppCompatActivity {
 				{
 					Model m = new Model();
 					m.url = FileManager.assetsFileNameSubstring + asset;
+					m.location = m.url;
 					m.name = asset.substring(0, asset.indexOf(".obj"));
 //					modelsList.add(m);
-					fileManager.addModelToDatabase(m);
+					fileManager.setModelDB(m);
 				}
-			}
-
-			ArrayList<Model> modelList = fileManager.getListOfModels();
-			for (Model m : modelList) {
-				modelsList.add(m);
 			}
 
 			modelsList.refreshList();
@@ -127,10 +125,22 @@ public class HomeActivity extends AppCompatActivity {
 			modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
 			{
 				@Override
-				public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+				public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l)
 				{
 					model = modelsList.getModel(i);
-					ViewInAR(view);
+					if (model.location == null) {
+						fileManager.downloadModel(model, authToken, new BroadcastReceiver()
+						{
+							@Override
+							public void onReceive(Context context, Intent intent)
+							{
+								ViewInAR();
+							}
+						});
+					}
+					else {
+						ViewInAR();
+					}
 				}
 			});
 		}
@@ -140,7 +150,7 @@ public class HomeActivity extends AppCompatActivity {
 
 	}
 
-	public void ViewInAR(View view) {
+	public void ViewInAR() {
 		Intent intent = new Intent(this, ARActivity.class);
 		intent.putExtra(ARActivity.FILENAME_TAG, model.url);
 		startActivity(intent);
@@ -161,7 +171,14 @@ public class HomeActivity extends AppCompatActivity {
 					Barcode barcode = (Barcode) data.getExtras().get(ScanQRCodeActivity.BarcodeObject);
 					Toast.makeText(this, barcode.rawValue, Toast.LENGTH_LONG).show();
 					Point[] p = barcode.cornerPoints;
-					model.url = barcode.rawValue;
+
+					Model m = new Model();
+					m.url = barcode.rawValue;
+					m.name = m.url;
+					fileManager.addModelToDatabase(m);
+
+					modelsList.refreshList();
+
 				} else Toast.makeText(this, R.string.no_barcode_captured, Toast.LENGTH_LONG).show();
 			} else Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format),
 					CommonStatusCodes.getStatusCodeString(resultCode)));
@@ -173,4 +190,5 @@ public class HomeActivity extends AppCompatActivity {
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putString(getString(R.string.web_AuthToken), authToken);
 	}
+
 }
