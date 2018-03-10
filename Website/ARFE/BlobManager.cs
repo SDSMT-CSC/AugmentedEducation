@@ -2,11 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.IO.Compression;
 using System.Collections.Generic;
 
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.IO.Compression;
 
 namespace ARFE
 {
@@ -445,15 +447,15 @@ namespace ARFE
 
         private string ConvertBlobToBlob(CloudBlockBlob fromBlob, string userName, string fileName, string path, string requestExtension)
         {
-            bool converted = false;
             CloudBlockBlob toBlob = null;
             string returnMessage = string.Empty;
             CloudBlobContainer container = fromBlob.Parent.Container;
-            FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
-            string getFileName = $"{fileName.Remove(fileName.LastIndexOf('.'))}{requestExtension}";
+            string getFileName = $"{fileName.Remove(fileName.LastIndexOf('.'))}";
+            string folderName = $"{fileName.Remove(fileName.LastIndexOf('.'))}-{requestExtension.Substring(1)}";
+            string zipFolderName = $"{folderName}.zip";
 
             while (File.Exists(Path.Combine(path, fileName)))
-            {   //Chill out until other file uploaded and removed
+            {   //Wait until other file uploaded and removed
                 Thread.Sleep(1500); //sleep 1.5 seconds - don't waste resources just looping
             }
 
@@ -462,6 +464,29 @@ namespace ARFE
             {   //Have to use DownloadToStream - DownloadToFile results in access denied error
                 fromBlob.DownloadToStream(fileStream);
             }
+
+            if(ConvertAndZip(path, requestExtension, fileName, folderName, getFileName, zipFolderName))
+            {
+                //upload converted file to blob storage
+                if (UploadBlobToUserContainer(userName, zipFolderName, path))
+                {   //get reference to blob and get download link
+                    toBlob = container.GetBlockBlobReference(zipFolderName);
+
+                    returnMessage = toBlob.Name;
+                }
+                else { returnMessage = $"Error: unable to process converted file: {getFileName}."; }
+            }
+            else { returnMessage = $"Error: unable to convert {fileName} to type {requestExtension}."; }
+
+            CleanupUploadedFiles(path, fileName, folderName, zipFolderName);
+
+            return returnMessage;
+        }
+
+        private bool ConvertAndZip(string path, string requestExtension, string fileName, string folderName, string getFileName, string zipFolderName)
+        {
+            bool converted = false;
+            FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
 
             switch (requestExtension) //extensible for more filetype conversion download options
             {
@@ -473,22 +498,48 @@ namespace ARFE
 
             if (converted)
             {
-                //upload converted file to blob storage
-                if (UploadBlobToUserContainer(userName, getFileName, path))
-                {   //get reference to blob and get download link
-                    toBlob = container.GetBlockBlobReference(getFileName);
+                Thread.Sleep(2000);
+                string[] allFiles = Directory.GetFiles(path);
+                DirectoryInfo newDir = Directory.CreateDirectory(Path.Combine(path, folderName));
 
-                    returnMessage = toBlob.Name;
+                foreach (string file in allFiles)
+                {
+                    if (!file.EndsWith(".dll") && !file.EndsWith(".exe"))
+                    {
+                        string nameWithoutPath = file.Substring(file.LastIndexOf(@"\") + 1);
+                        if (nameWithoutPath != fileName)
+                        {
+                            if (file.Remove(file.LastIndexOf('.')).EndsWith(getFileName))
+                            {
+                                File.Move(file, $@"{newDir.FullName}\{nameWithoutPath}");
+                            }
+                        }
+                    }
                 }
-                else { returnMessage = $"Error: unable to process converted file: {getFileName}."; }
-            }
-            else { returnMessage = $"Error: unable to convert {fileName} to type {requestExtension}."; }
 
+                ZipFile.CreateFromDirectory(newDir.FullName, $@"{newDir.Parent.FullName}\{zipFolderName}");
+            }
+
+            return converted;
+        }
+
+        private void CleanupUploadedFiles(string path, string fileName, string folderName, string zipDirectory)
+        {
             //Clear up ~/UploadedFiles folder
-            if (File.Exists(Path.Combine(path, getFileName))) { File.Delete(Path.Combine(path, getFileName)); }
             if (File.Exists(Path.Combine(path, fileName))) { File.Delete(Path.Combine(path, fileName)); }
 
-            return returnMessage;
+            //delete all contents of .zip and .zip
+            if(File.Exists(Path.Combine(path, zipDirectory))) { File.Delete(Path.Combine(path, zipDirectory)); }
+
+            //delete all contents of folder that made .zip and folder
+            if (Directory.Exists(Path.Combine(path, folderName)))
+            {
+                foreach (string file in Directory.GetFiles(Path.Combine(path, folderName)))
+                {
+                    File.Delete(file);
+                }
+                Directory.Delete(Path.Combine(path, folderName));
+            }
         }
 
         private void PurgeOldTemporaryBlobs(string userName)
@@ -511,6 +562,8 @@ namespace ARFE
                 }
             }
         }
+
+
         #endregion
     }
 }
