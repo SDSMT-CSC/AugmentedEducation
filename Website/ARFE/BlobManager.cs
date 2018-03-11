@@ -442,6 +442,16 @@ namespace ARFE
             SharedAccessBlobHeaders headers = new SharedAccessBlobHeaders()
             { ContentDisposition = $"attachment;filename={blob.Name}" };
 
+
+            if (!blob.Name.EndsWith(".fbx"))
+            {
+                if (blob.Metadata.ContainsKey("LastAccessed"))
+                {
+                    blob.Metadata["LastAccessed"] = DateTime.UtcNow.ToString();
+                }
+                blob.SetMetadata();
+            }
+
             return $"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
         }
 
