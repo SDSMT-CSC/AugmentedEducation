@@ -151,7 +151,7 @@ namespace ARFE
         {
             CloudBlobContainer container;
             CloudBlockBlob blob, getBlob;
-            string getFileName = $"{fileName.Remove(fileName.LastIndexOf('.'))}{requestExtension}";
+            string getFileName = $"{fileName.Remove(fileName.LastIndexOf('.'))}-{requestExtension.Substring(1)}.zip";
 
             container = GetOrCreateBlobContainer(userName);
             blob = container.GetBlockBlobReference(fileName);
@@ -455,8 +455,13 @@ namespace ARFE
             string zipFolderName = $"{folderName}.zip";
 
             while (File.Exists(Path.Combine(path, fileName)))
-            {   //Wait until other file uploaded and removed
-                Thread.Sleep(1500); //sleep 1.5 seconds - don't waste resources just looping
+            {   //remove other file if not in use
+                try
+                {
+                    File.Delete(Path.Combine(path, fileName));
+                }
+                //sleep 1.5 seconds - don't waste resources just looping
+                catch { Thread.Sleep(50); }
             }
 
             //path parameter is absolute
@@ -498,7 +503,7 @@ namespace ARFE
 
             if (converted)
             {
-                Thread.Sleep(2000);
+                Thread.Sleep(750);
                 string[] allFiles = Directory.GetFiles(path);
                 DirectoryInfo newDir = Directory.CreateDirectory(Path.Combine(path, folderName));
 

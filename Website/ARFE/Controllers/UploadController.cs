@@ -41,8 +41,13 @@ namespace ARFE.Controllers
                 try
                 {
                     while (System.IO.File.Exists(Path.Combine(basePath, fileName)))
-                    {   //Chill out until other file uploaded and removed
-                        Thread.Sleep(1500); //sleep 1.5 seconds - don't waste resources just looping
+                    {   //remove other file if not in use
+                        try
+                        {
+                            System.IO.File.Delete(Path.Combine(basePath, fileName));
+                        }
+                        //sleep 1.5 seconds - don't waste resources just looping
+                        catch { Thread.Sleep(50); }
                     }
 
                     //save file as uniqueName
@@ -62,7 +67,14 @@ namespace ARFE.Controllers
 
                         if (converter.ConvertToFBX(fileName))
                         {   //convert, upload, delete converted, delete original
-                            blobManager.UploadBlobToUserContainer(User.Identity.Name, $"{fileNameWithoutExtension}.fbx", basePath);
+                            if (publicFile)
+                            {
+                                blobManager.UploadBlobToPublicContainer(User.Identity.Name, $"{fileNameWithoutExtension}.fbx", basePath);
+                            }
+                            else
+                            {
+                                blobManager.UploadBlobToUserContainer(User.Identity.Name, $"{fileNameWithoutExtension}.fbx", basePath);
+                            }
                             System.IO.File.Delete(Path.Combine(basePath, $"{fileNameWithoutExtension}.fbx"));
                             System.IO.File.Delete(Path.Combine(basePath, fileName));
                         }
@@ -73,7 +85,7 @@ namespace ARFE.Controllers
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     uploadMessage = "File Upload Failed.";
                     if (System.IO.File.Exists(Path.Combine(basePath, fileName)))
