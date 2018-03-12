@@ -4,15 +4,20 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.augmentededucation.ar.augmentededucationar.R;
+import com.augmentededucation.ar.augmentededucationar.db.entity.Model;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,17 +77,61 @@ public class WebAccessor
 		requestQueue.add(jsonObjectRequest);
 	}
 
-	public long downloadFile(Context context, String authToken, String uri, String destDir, String destName) {
+	public void downloadFile(final Context context, final String authToken, final String uri, final String destName, final DownloadQueued queued) {
 		String url = String.format("%s/%s/%s/", baseAddress, mobileAuth, downloadFile);
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+			new Response.Listener<JSONObject>() {
+				@Override
+				public void onResponse(JSONObject response)
+				{
+					try {
+						if (response.get("success").toString().equals("True"))
+						{
+							String webUrl = response.getString("result");
 
-		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-		request.addRequestHeader("token", authToken);
-		request.addRequestHeader("fileUri", uri);
-		request.setTitle(destName);
-		//request.setDestinationInExternalFilesDir(context, destDir, destName);
-		request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destName);
+							DownloadManager.Request request = new DownloadManager.Request(Uri.parse(webUrl));
+							request.addRequestHeader("token", authToken);
+							request.setTitle(destName);
+							//request.setDestinationInExternalFilesDir(context, destDir, destName);
+							request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destName);
 
-		return downloadManager.enqueue(request);
+							queued.downloadQueued(downloadManager.enqueue(request));
+						}
+						else {
+							Toast.makeText(context, "Unable to download file", Toast.LENGTH_SHORT).show();
+						}
+					}
+					catch (JSONException ex) {
+						Toast.makeText(context, "Error downloading file", Toast.LENGTH_SHORT).show();
+					}
+
+				}
+			},
+			new Response.ErrorListener()  {
+				@Override
+				public void onErrorResponse(VolleyError error)
+				{
+					if (error instanceof TimeoutError)
+						Toast.makeText(context, "Request timeout", Toast.LENGTH_SHORT).show();
+					else
+						Toast.makeText(context, "Unable to download file", Toast.LENGTH_SHORT).show();
+				}
+			})
+		{
+			@Override
+			public Map<String, String> getHeaders() {
+				HashMap<String, String> headers = new HashMap<>();
+				headers.put("token", authToken);
+				headers.put("fileUri", uri);
+				return headers;
+			}
+		};
+		jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+				5000,
+				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+		requestQueue.add(jsonObjectRequest);
 	}
 
 	public enum FileDescriptor
@@ -92,5 +141,9 @@ public class WebAccessor
 		OWNED_PRIVATE,
 		OWNED_PUBLIC,
 		NOT_OWNED_PUBLIC
+	}
+
+	public interface DownloadQueued {
+		void downloadQueued(long downloadId);
 	}
 }

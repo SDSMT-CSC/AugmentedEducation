@@ -301,8 +301,12 @@ public class ObjectRenderer {
 
             //Load texture
             if (!mObj.getMtlFileNames().isEmpty()) {
-                List<Mtl> mtlList = MtlReader.read(
-                        context.getAssets().open(mObj.getMtlFileNames().get(0))); // TODO: file location
+                List<Mtl> mtlList;
+                if (OBJ_PATH.contains(FileManager.assetsFileNameSubstring))
+                        mtlList = MtlReader.read(context.getAssets().open(mObj.getMtlFileNames().get(0))); // TODO: file location
+                else
+                    mtlList = MtlReader.read(new FileInputStream (new File(OBJ_PATH).getParentFile().getPath() + "/" + mObj.getMtlFileNames().get(0)));
+
                 Mtl targetMat = null;
                 for (Mtl mat : mtlList) {
                     if (currentMatGroup.getName().equals(mat.getName())) {

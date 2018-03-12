@@ -8,6 +8,7 @@ import android.widget.ListView;
 
 import com.augmentededucation.ar.augmentededucationar.db.entity.Model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -69,6 +70,13 @@ public class ModelListView extends ListView
 
 		ArrayList<Model> mList = fileManager.getListOfModels();
 		for (Model m : mList) {
+			if (m.location != null && !m.location.startsWith(FileManager.assetsFileNameSubstring)) {
+				File file = new File(m.location);
+				if (!file.exists()){
+					m.location = null;
+					fileManager.setModelDB(m);
+				}
+			}
 			add(m);
 		}
 

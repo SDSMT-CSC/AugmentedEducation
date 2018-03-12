@@ -1,12 +1,17 @@
 package com.augmentededucation.ar.augmentededucationar;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +40,7 @@ import java.util.Map;
 public class HomeActivity extends AppCompatActivity {
 	private static final String LOG_TAG = MainActivity.class.getSimpleName();
 	private static final int READ_BARCODE = 1;
+	private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 3;
 	private Model model;
 
 	WebAccessor accessor;
@@ -50,6 +56,22 @@ public class HomeActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
+//		if (ContextCompat.checkSelfPermission(this,
+//				Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//			// Permission is not granted
+//			// Should we show an explanation?
+//			if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//					Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//					Toast.makeText(this, "Storage permissions needed to read/save models", Toast.LENGTH_LONG).show();
+//				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+//			} else {
+//				// No explanation needed; request the permission
+//				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+//
+//			}
+//		}
+
 		if (modelsList == null){
 			modelsList = findViewById(R.id.modelsList);
 		}
@@ -62,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
 		else
 			authToken = getIntent().getExtras().getString(getString(R.string.web_AuthToken));
 
-		accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.OWNED_ALL, new Response.Listener<JSONObject>()
+		accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.ALL, new Response.Listener<JSONObject>()
 		{
 			@Override
 			public void onResponse(JSONObject response) {
@@ -127,6 +149,11 @@ public class HomeActivity extends AppCompatActivity {
 				@Override
 				public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l)
 				{
+					if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+						Toast.makeText(getApplicationContext(), "Please enable storage permissions in settings", Toast.LENGTH_SHORT).show();
+						return;
+					}
+
 					model = modelsList.getModel(i);
 					if (model.location == null) {
 						fileManager.downloadModel(model, authToken, new BroadcastReceiver()
@@ -152,7 +179,7 @@ public class HomeActivity extends AppCompatActivity {
 
 	public void ViewInAR() {
 		Intent intent = new Intent(this, ARActivity.class);
-		intent.putExtra(ARActivity.FILENAME_TAG, model.url);
+		intent.putExtra(ARActivity.FILENAME_TAG, model.location);
 		startActivity(intent);
 	}
 
@@ -189,6 +216,18 @@ public class HomeActivity extends AppCompatActivity {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putString(getString(R.string.web_AuthToken), authToken);
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+	                                       @NonNull String[] permissions,
+	                                       @NonNull int[] grantResults)
+	{
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE)
+		{
+
+		}
 	}
 
 }
