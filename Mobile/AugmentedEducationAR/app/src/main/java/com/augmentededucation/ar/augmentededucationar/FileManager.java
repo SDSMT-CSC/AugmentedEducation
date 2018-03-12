@@ -43,7 +43,7 @@ public class FileManager
 	public final static String assetsFileNameSubstring = "file:///android_asset/";
 	private final static String dbName = "augmentededucationdb";
 	private final static String downloadsPath = Environment.getExternalStorageDirectory().getPath() + "/" + Environment.DIRECTORY_DOWNLOADS;
-	private final static String folderName = Environment.getExternalStorageDirectory().getPath() + "/" + Environment.DIRECTORY_DOWNLOADS;
+	private final static String folderName = Environment.getExternalStorageDirectory().getPath() + "/" + "Models/";
 
 	public String fileLocation;
 
@@ -53,6 +53,9 @@ public class FileManager
 		webAccessor = new WebAccessor(context);
 		db = AppDatabase.getInstance(context, dbName);
 		downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+		File saveDir = new File(folderName);
+		if (!saveDir.exists())
+			saveDir.mkdir();
 		this.context = context;
 	}
 

@@ -50,6 +50,7 @@ public class UnZipFile extends AsyncTask<String, Void, Boolean>
 			return false;
 		}
 
+		archive.delete();
 		return true;
 	}
 

@@ -92,7 +92,6 @@ public class WebAccessor
 							DownloadManager.Request request = new DownloadManager.Request(Uri.parse(webUrl));
 							request.addRequestHeader("token", authToken);
 							request.setTitle(destName);
-							//request.setDestinationInExternalFilesDir(context, destDir, destName);
 							request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destName);
 
 							queued.downloadQueued(downloadManager.enqueue(request));
