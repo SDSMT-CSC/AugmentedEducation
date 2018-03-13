@@ -119,6 +119,14 @@ namespace ARFE
         }
 
 
+        public bool DeleteBlobByNameInUserContainer(string userName, string blobName)
+        {
+            CloudBlobContainer container = GetOrCreateBlobContainer(userName);
+            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+
+            return blob.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
+        }
+
         /// <summary>
         /// Given the current Identity logged in user name and the name of the file to download,
         /// return a redirect to allow download of the file.
@@ -209,6 +217,22 @@ namespace ARFE
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
 
             return container.ListBlobs().Select(blob => blob.Uri).ToList();
+        }
+
+
+        public List<CloudBlockBlob> ListBlobsInUserContainer(string userName)
+        {
+            List<CloudBlockBlob> list = new List<CloudBlockBlob>();
+            CloudBlobContainer container = GetOrCreateBlobContainer(userName);
+
+            foreach (IListBlobItem blobItem in container.ListBlobs(null, true))
+            {
+                CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                blob.FetchAttributes();
+                list.Add(blob);
+            }
+
+            return list;
         }
 
 
@@ -342,7 +366,10 @@ namespace ARFE
         }
 
 
-
+        public bool DeleteBlobByNameInUserContainer(string blobName)
+        {
+            return DeleteBlobByNameInUserContainer("public", blobName);
+        }
 
 
 
@@ -537,19 +564,13 @@ namespace ARFE
 
                 foreach (string file in allFiles)
                 {
-                    if (!file.EndsWith(".dll") && !file.EndsWith(".exe"))
+                    string nameWithoutPath = file.Substring(file.LastIndexOf(@"\") + 1);
+                    foreach (string ext in producedExtensions)
                     {
-                        string nameWithoutPath = file.Substring(file.LastIndexOf(@"\") + 1);
-                        if (nameWithoutPath != fileName)
+                        if (nameWithoutPath.StartsWith(getFileName) && nameWithoutPath.EndsWith(ext))
                         {
-                            foreach (string ext in producedExtensions)
-                            {
-                                if (file.StartsWith(nameWithoutPath) && nameWithoutPath.EndsWith(ext))
-                                {
-                                    File.Move(file, $@"{newDir.FullName}\{nameWithoutPath}");
-                                    break;
-                                }
-                            }
+                            File.Move(file, $@"{newDir.FullName}\{nameWithoutPath}");
+                            break;
                         }
                     }
                 }
@@ -563,17 +584,21 @@ namespace ARFE
         private void CleanupUploadedFiles(string path, string fileName, string folderName, string zipDirectory)
         {
             string[] allFiles = Directory.GetFiles(path);
+            string noextension = fileName.Substring(0, fileName.IndexOf('.'));
 
             //Clear up ~/UploadedFiles folder
             foreach (string file in allFiles)
             {
-                string nameWithoutPath = file.Substring(file.LastIndexOf(@"\") + 1);
+                if (!file.EndsWith(".dll") && !file.EndsWith(".exe"))
+                {
+                    string nameWithoutPath = file.Replace($@"{path}\", "");
 
+                    if (nameWithoutPath.StartsWith(noextension) && File.Exists(file))
+                    {
+                        File.Delete(file);
+                    }
+                }
             }
-            if (File.Exists(Path.Combine(path, fileName))) { File.Delete(Path.Combine(path, fileName)); }
-
-            //delete all contents of .zip and .zip
-            if (File.Exists(Path.Combine(path, zipDirectory))) { File.Delete(Path.Combine(path, zipDirectory)); }
 
             //delete all contents of folder that made .zip and folder
             if (Directory.Exists(Path.Combine(path, folderName)))

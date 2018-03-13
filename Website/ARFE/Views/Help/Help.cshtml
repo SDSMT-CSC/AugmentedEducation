@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Augmented Education</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Upload a Model</h2>
+        <p>
+            Take 3D model from existing software and upload it here to be converted into an AR ready format.
+        </p>
+        <p><a class="btn btn-default" href="@Url.Action("UploadFile", null, new {controller = "Upload" }, Request.Url.Scheme)">Upload &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>My Models</h2>
+        <p>Look up and download the models that you have uploaded or downloaded in the past.</p>
+        <p><a class="btn btn-default" href="@Url.Action("GetMessage", null, new {controller = "Upload" }, Request.Url.Scheme)">DisplayQR &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>My Organization</h2>
+        <p>View all the models that are associated with your organization</p>
+        <p><a class="btn btn-default" href="@Url.Action("UploadFile", null, new {controller = "Upload" }, Request.Url.Scheme)">Organization &raquo;</a></p>
+    </div>
+</div>
