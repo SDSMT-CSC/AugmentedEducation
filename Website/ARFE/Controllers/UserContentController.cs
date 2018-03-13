@@ -28,9 +28,17 @@ namespace ARFE.Controllers
                 privatenames.Add(x.Substring(0, index));
             }
 
-            ViewBag.privatefilenames = privatenames;
+            var publicfileList = blob.ListBlobNamesInPublicContainerOwnedBy(User.Identity.Name);
+            List<string> publicnames = new List<string>();
+            foreach (string x in publicfileList)
+            {
+                index = x.LastIndexOf(".");
+                publicnames.Add(x.Substring(0, index));
+            }
 
-            // Let's get all states that we need for a DropDownList
+            ViewBag.privatefilenames = privatenames;
+            ViewBag.publicfilenames = publicnames;
+            
             var filestypes = GetAllFileTypes();
 
             var model = new FileTypeModel();
@@ -45,33 +53,88 @@ namespace ARFE.Controllers
         [HttpPost]
         public ActionResult PrivateContentSelect(FileTypeModel model, string downloadType)
         {
-            if (model.FileType != null)
+            if (model.FileType != null || downloadType.LastIndexOf("--Delete") >= 0)
             {
                 int index = downloadType.LastIndexOf("--");
-                string filename = downloadType.Substring(0, index) + model.FileType;
+                string filename = downloadType.Substring(0, index) + ".fbx";
                 string selectionType = downloadType.Substring(index + 2);
 
                 BlobManager blobManager = new BlobManager();
-                CloudBlobContainer container = blobManager.GetOrCreateBlobContainer(User.Identity.Name);
-                CloudBlockBlob blob = container.GetBlockBlobReference(filename);
-
-                string mobileLink = string.Empty;
-                if (blob.Exists())
-                    mobileLink = blob.Uri.ToString();
-
-                string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
 
                 if (selectionType == "Download")
                 {
+                    string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
                     Response.Redirect(downloadLink);
                 }
                 else if (selectionType == "GeneralQR")
                 {
+                    string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
                     return DisplayQRCode(downloadLink);
                 }
                 else if(selectionType == "MobileQR")
                 {
+                    CloudBlobContainer container = blobManager.GetOrCreateBlobContainer(User.Identity.Name);
+                    CloudBlockBlob blob = container.GetBlockBlobReference(filename);
+
+                    string mobileLink = string.Empty;
+                    if (blob.Exists())
+                        mobileLink = blob.Uri.ToString();
+
                     return DisplayQRCode(mobileLink);
+                }
+                else if(selectionType == "Delete")
+                {
+                    bool deleted = blobManager.DeleteBlobByNameInUserContainer(User.Identity.Name, filename);
+                    return Index();
+                }
+
+                return View();
+            }
+            else
+            {
+                ViewBag.Invalid = true;
+                return Index();
+            }
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult PublicContentSelect(FileTypeModel model, string downloadType)
+        {
+            if (model.FileType != null || downloadType.LastIndexOf("--Delete") >= 0)
+            {
+                int index = downloadType.LastIndexOf("--");
+                string filename = downloadType.Substring(0, index) + ".fbx";
+                string selectionType = downloadType.Substring(index + 2);
+
+                BlobManager blobManager = new BlobManager();
+
+                if (selectionType == "Download")
+                {
+                    string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer("public", filename, model.FileType, Server.MapPath("~/UploadedFiles"));
+                    Response.Redirect(downloadLink);
+                }
+                else if (selectionType == "GeneralQR")
+                {
+                    string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer("public", filename, model.FileType, Server.MapPath("~/UploadedFiles"));
+                    return DisplayQRCode(downloadLink);
+                }
+                else if (selectionType == "MobileQR")
+                {
+                    CloudBlobContainer container = blobManager.GetOrCreateBlobContainer("public");
+                    CloudBlockBlob blob = container.GetBlockBlobReference(filename);
+
+                    string mobileLink = string.Empty;
+                    if (blob.Exists())
+                        mobileLink = blob.Uri.ToString();
+
+                    return DisplayQRCode(mobileLink);
+                }
+                else if (selectionType == "Delete")
+                {
+                    bool deleted = blobManager.DeleteBlobByNameInUserContainer("public", filename);
+                    return Index();
                 }
 
                 return View();

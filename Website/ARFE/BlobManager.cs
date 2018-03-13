@@ -366,7 +366,7 @@ namespace ARFE
         }
 
 
-        public bool DeleteBlobByNameInUserContainer(string blobName)
+        public bool DeleteBlobByNameInPublicContainer(string blobName)
         {
             return DeleteBlobByNameInUserContainer("public", blobName);
         }
