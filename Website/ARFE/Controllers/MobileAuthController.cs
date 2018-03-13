@@ -217,7 +217,6 @@ namespace ARFE.Controllers
                 if (containerName.Equals(blobManager.FormatBlobContainerName(validateUserInfo.Item1))
                     || containerName.Equals("public"))
                 {
-                    //downloadUrl = blobManager.DownloadBlobFromUserContainer(containerName, blobName);
                     downloadUrl = blobManager.ConvertAndDownloadBlobFromUserContainer(containerName, blobName, ".obj", Server.MapPath("~/UploadedFiles"));
                     if (downloadUrl.Contains("Error: "))
                     {
