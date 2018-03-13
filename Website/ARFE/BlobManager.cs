@@ -498,6 +498,7 @@ namespace ARFE
             return returnMessage;
         }
 
+
         private bool ConvertAndZip(string path, string requestExtension, string fileName, string folderName, string getFileName, string zipFolderName)
         {
             bool converted = false;
@@ -507,6 +508,18 @@ namespace ARFE
             {
                 case ".obj": // convert to .obj
                     converted = converter.ConvertToOBJ(fileName);
+                    break;
+                case ".dae": // convert to .obj
+                    converted = converter.ConvertToDAE(fileName);
+                    break;
+                case ".fbx": // convert to .obj
+                    converted = converter.ConvertToFBX(fileName);
+                    break;
+                case ".stl": // convert to .obj
+                    converted = converter.ConvertToSTL(fileName);
+                    break;
+                case ".ply": // convert to .obj
+                    converted = converter.ConvertToPLY(fileName);
                     break;
                 default: break;
             }

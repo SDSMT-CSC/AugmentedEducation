@@ -57,7 +57,14 @@ namespace ARFE.Controllers
                     //uploaded file is fbx
                     if (fileNameExtention == ".fbx")
                     {   //upload and delete
-                        blobManager.UploadBlobToUserContainer(User.Identity.Name, fileName, basePath);
+                        if(publicFile)
+                        {
+                            blobManager.UploadBlobToPublicContainer(User.Identity.Name, fileName, basePath);
+                        }
+                        else
+                        {
+                            blobManager.UploadBlobToUserContainer(User.Identity.Name, fileName, basePath);
+                        }
                         System.IO.File.Delete(Path.Combine(basePath, fileName));
                     }
                     //uploaded file is not fbx -- convert
@@ -123,17 +130,6 @@ namespace ARFE.Controllers
                 }
             }
             return View();
-        }
-
-        public Bitmap GenerateQRCode(String address)
-        {
-
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(address, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            return qrCodeImage;
-
         }
     }
 }
