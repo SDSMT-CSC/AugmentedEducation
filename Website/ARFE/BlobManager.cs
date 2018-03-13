@@ -119,6 +119,14 @@ namespace ARFE
         }
 
 
+        public bool DeleteBlobByNameInUserContainer(string userName, string blobName)
+        {
+            CloudBlobContainer container = GetOrCreateBlobContainer(userName);
+            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+
+            return blob.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
+        }
+
         /// <summary>
         /// Given the current Identity logged in user name and the name of the file to download,
         /// return a redirect to allow download of the file.
@@ -358,7 +366,10 @@ namespace ARFE
         }
 
 
-
+        public bool DeleteBlobByNameInUserContainer(string blobName)
+        {
+            return DeleteBlobByNameInUserContainer("public", blobName);
+        }
 
 
 
