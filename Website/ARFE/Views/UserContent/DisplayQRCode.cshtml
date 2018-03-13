@@ -7,6 +7,11 @@
 
 <div id="print">
     <asp:DataList ID="qrcode" runat="server">
+
+        @ViewBag.filename
+
+        <br />
+        
         <img src="@ViewBag.QRCodeImage" style="width:400px;height:400px;" />
     </asp:DataList>
 </div>
