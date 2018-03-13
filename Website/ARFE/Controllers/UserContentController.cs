@@ -13,6 +13,7 @@ namespace ARFE.Controllers
 {
     public class UserContentController : Controller
     {
+        [Authorize]
         public ActionResult Index()
         {
             int index;
@@ -49,9 +50,7 @@ namespace ARFE.Controllers
             return View(model);
         }
 
-        //
-        // 2. Action method for handling user-entered data when 'Sign Up' button is pressed.
-        //
+        [Authorize]
         [HttpPost]
         public ActionResult PrivateContentSelect(FileTypeModel model, string downloadType)
         {
@@ -79,7 +78,7 @@ namespace ARFE.Controllers
             return View();
         }
 
-
+        [Authorize]
         public ActionResult PublicContentSelect(FileTypeModel model, string downloadType)
         {
             int index = downloadType.LastIndexOf("--");

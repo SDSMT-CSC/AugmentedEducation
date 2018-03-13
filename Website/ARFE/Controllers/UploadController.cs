@@ -15,18 +15,21 @@ namespace ARFE.Controllers
 {
     public class UploadController : Controller
     {
+        [Authorize]
         // GET: Upload  
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult UploadFile()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult UploadFile(HttpPostedFileBase file, bool publicFile)
         {
@@ -110,11 +113,13 @@ namespace ARFE.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult GetMessage()
         {
             return View();
         }
 
+        [Authorize]
         public ActionResult DisplayQR(string Message)
         {
 
