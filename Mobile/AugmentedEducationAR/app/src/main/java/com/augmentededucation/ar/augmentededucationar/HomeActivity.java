@@ -51,10 +51,14 @@ public class HomeActivity extends AppCompatActivity {
 
 	private FileManager fileManager;
 
+	private boolean itemTouched;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+
+		itemTouched = false;
 
 //		if (ContextCompat.checkSelfPermission(this,
 //				Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -105,7 +109,8 @@ public class HomeActivity extends AppCompatActivity {
 							m.url = obj.getString("uri");
 							m.name = obj.getString("name");
 //							modelsList.add(m);
-							fileManager.addModelToDatabase(m);
+							if (!m.name.endsWith(".zip"))
+								fileManager.addModelToDatabase(m);
 						}
 						modelsList.refreshList();
 					}
@@ -154,19 +159,23 @@ public class HomeActivity extends AppCompatActivity {
 						return;
 					}
 
-					model = modelsList.getModel(i);
-					if (model.location == null) {
-						fileManager.downloadModel(model, authToken, new BroadcastReceiver()
+					if (!itemTouched) {
+						itemTouched = true;
+						model = modelsList.getModel(i);
+						if (model.location == null)
 						{
-							@Override
-							public void onReceive(Context context, Intent intent)
+							fileManager.downloadModel(model, authToken, new BroadcastReceiver()
 							{
-								ViewInAR();
-							}
-						});
-					}
-					else {
-						ViewInAR();
+								@Override
+								public void onReceive(Context context, Intent intent)
+								{
+									ViewInAR();
+								}
+							});
+						} else
+						{
+							ViewInAR();
+						}
 					}
 				}
 			});
@@ -180,6 +189,7 @@ public class HomeActivity extends AppCompatActivity {
 	public void ViewInAR() {
 		Intent intent = new Intent(this, ARActivity.class);
 		intent.putExtra(ARActivity.FILENAME_TAG, model.location);
+		itemTouched = false;
 		startActivity(intent);
 	}
 

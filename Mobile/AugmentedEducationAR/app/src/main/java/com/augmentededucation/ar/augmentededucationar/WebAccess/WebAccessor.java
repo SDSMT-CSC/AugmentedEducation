@@ -10,6 +10,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -97,7 +98,7 @@ public class WebAccessor
 							queued.downloadQueued(downloadManager.enqueue(request));
 						}
 						else {
-							Toast.makeText(context, "Unable to download file", Toast.LENGTH_SHORT).show();
+							Toast.makeText(context, "Unable to download file - " + response.getString("reason"), Toast.LENGTH_SHORT).show();
 						}
 					}
 					catch (JSONException ex) {
@@ -112,8 +113,10 @@ public class WebAccessor
 				{
 					if (error instanceof TimeoutError)
 						Toast.makeText(context, "Request timeout", Toast.LENGTH_SHORT).show();
+					else if (error instanceof ServerError)
+						Toast.makeText(context, "Server Error - unable to download file", Toast.LENGTH_SHORT).show();
 					else
-						Toast.makeText(context, "Unable to download file", Toast.LENGTH_SHORT).show();
+						Toast.makeText(context, "Unable to download file - " + error.toString(), Toast.LENGTH_SHORT).show();
 				}
 			})
 		{
