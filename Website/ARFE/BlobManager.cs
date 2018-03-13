@@ -562,7 +562,14 @@ namespace ARFE
 
         private void CleanupUploadedFiles(string path, string fileName, string folderName, string zipDirectory)
         {
+            string[] allFiles = Directory.GetFiles(path);
+
             //Clear up ~/UploadedFiles folder
+            foreach (string file in allFiles)
+            {
+                string nameWithoutPath = file.Substring(file.LastIndexOf(@"\") + 1);
+
+            }
             if (File.Exists(Path.Combine(path, fileName))) { File.Delete(Path.Combine(path, fileName)); }
 
             //delete all contents of .zip and .zip
