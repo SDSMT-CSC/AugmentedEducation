@@ -212,6 +212,22 @@ namespace ARFE
         }
 
 
+        public List<CloudBlockBlob> ListBlobsInUserContainer(string userName)
+        {
+            List<CloudBlockBlob> list = new List<CloudBlockBlob>();
+            CloudBlobContainer container = GetOrCreateBlobContainer(userName);
+
+            foreach (IListBlobItem blobItem in container.ListBlobs(null, true))
+            {
+                CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                blob.FetchAttributes();
+                list.Add(blob);
+            }
+
+            return list;
+        }
+
+
         /// <summary>
         /// Get a list of associations of blob names to Uris within
         /// a given container.
