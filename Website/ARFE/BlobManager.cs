@@ -544,11 +544,11 @@ namespace ARFE
                         {
                             foreach (string ext in producedExtensions)
                             {
-                                if (nameWithoutPath.EndsWith(ext))
+                                if (file.StartsWith(nameWithoutPath) && nameWithoutPath.EndsWith(ext))
                                 {
                                     File.Move(file, $@"{newDir.FullName}\{nameWithoutPath}");
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }

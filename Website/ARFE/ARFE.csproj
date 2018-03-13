@@ -229,6 +229,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MobileAuthController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Controllers\UserContentController.cs" />
     <Compile Include="FileConverter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -301,6 +302,9 @@
     <Content Include="Views\Upload\DisplayQR.cshtml" />
     <Content Include="Views\Upload\GetMessage.cshtml" />
     <Content Include="Views\Upload\UploadFile.cshtml" />
+    <Content Include="Views\UserContent\ContentSelect.cshtml" />
+    <Content Include="Views\UserContent\DisplayQRCode.cshtml" />
+    <Content Include="Views\UserContent\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
