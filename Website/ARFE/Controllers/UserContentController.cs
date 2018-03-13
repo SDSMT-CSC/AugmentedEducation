@@ -1,4 +1,5 @@
-﻿using QRCoder;
+﻿using Microsoft.WindowsAzure.Storage.Blob;
+using QRCoder;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,17 +28,7 @@ namespace ARFE.Controllers
                 privatenames.Add(x.Substring(0, index));
             }
 
-            var publicfileList = blob.ListBlobNamesInPublicContainer();
-            List<string> publicnames = new List<string>();
-            foreach (string x in publicfileList)
-            {
-                index = x.LastIndexOf(".");
-                publicnames.Add(x.Substring(0, index));
-            }
-
             ViewBag.privatefilenames = privatenames;
-            ViewBag.publicfilenames = publicnames;
-            ViewBag.iterator = 0;
 
             // Let's get all states that we need for a DropDownList
             var filestypes = GetAllFileTypes();
@@ -64,7 +55,14 @@ namespace ARFE.Controllers
 
                 BlobManager blobManager = new BlobManager();
 
-                string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
+                CloudBlobContainer container = blobManager.GetOrCreateBlobContainer(User.Identity.Name);
+                CloudBlockBlob blob = container.GetBlockBlobReference(filename);
+                string downloadLink = string.Empty;
+
+                if (blob.Exists())
+                    downloadLink = blob.StorageUri.ToString();
+
+                //string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
 
                 ViewBag.DownloadLink = downloadLink;
 
@@ -85,42 +83,6 @@ namespace ARFE.Controllers
                 return Index();
             }
         }
-
-        [Authorize]
-        public ActionResult PublicContentSelect(FileTypeModel model, string downloadType)
-        {
-            if (model.FileType != null)
-            {
-                int index = downloadType.LastIndexOf("--");
-
-                string filename = downloadType.Substring(0, index) + ".fbx";
-
-                string selectionType = downloadType.Substring(index + 2);
-
-                BlobManager blobManager = new BlobManager();
-
-                string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
-
-                ViewBag.DownloadLink = downloadLink;
-
-                if (selectionType == "Download")
-                {
-                    Response.Redirect(downloadLink);
-                }
-                else if (selectionType == "QRCode")
-                {
-                    return DisplayQRCode(downloadLink);
-                }
-
-                return View();
-            }
-            else
-            {
-                ViewBag.invalid = true;
-                return Index();
-            }
-        }
-
 
         private ActionResult DisplayQRCode(string downloadLink)
         {
@@ -149,7 +111,6 @@ namespace ARFE.Controllers
                 ".stl",
             };
         }
-
 
         private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
         {

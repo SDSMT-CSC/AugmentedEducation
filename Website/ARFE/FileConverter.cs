@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 
@@ -37,7 +38,14 @@ namespace ARFE
 
 
                     process.StartInfo.Arguments = arguments;
+                    
                     process.Start();
+
+                    while(process.HasExited == false)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
                     process.Close();
                     return true;
                 }
@@ -73,6 +81,12 @@ namespace ARFE
 
                     process.StartInfo.Arguments = arguments;
                     process.Start();
+
+                    while (process.HasExited == false)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
                     process.Close();
                     return true;
                 }
@@ -108,6 +122,12 @@ namespace ARFE
 
                     process.StartInfo.Arguments = arguments;
                     process.Start();
+
+                    while (process.HasExited == false)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
                     process.Close();
                     return true;
                 }
@@ -143,6 +163,12 @@ namespace ARFE
 
                     process.StartInfo.Arguments = arguments;
                     process.Start();
+
+                    while (process.HasExited == false)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
                     process.Close();
                     return true;
                 }
@@ -178,6 +204,12 @@ namespace ARFE
 
                     process.StartInfo.Arguments = arguments;
                     process.Start();
+
+                    while (process.HasExited == false)
+                    {
+                        Thread.Sleep(1000);
+                    }
+
                     process.Close();
                     return true;
                 }
