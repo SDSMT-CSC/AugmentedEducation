@@ -28,9 +28,9 @@ namespace ARFE
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
 
-            if (container == null && !container.CreateIfNotExists())
+            if (!container.CreateIfNotExists() && container == null)
             {
-                container = null;
+                //Some sort of error
             }
             else
             {
@@ -94,6 +94,7 @@ namespace ARFE
             if (uploaded)
             {
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
+               
                 //overwrite same blob will keep key
                 if (!blob.Metadata.ContainsKey("OwnerName"))
                 {
@@ -614,22 +615,26 @@ namespace ARFE
         private void PurgeOldTemporaryBlobs(string userName)
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
-            List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
-
-            foreach (IListBlobItem blobItem in blobList)
+            try
             {
-                CloudBlockBlob blob = (CloudBlockBlob)blobItem;
-                if (blob.Metadata.Keys.Contains("LastAccessed"))
-                {
-                    DateTime now = DateTime.UtcNow;
-                    DateTime lastAccessed = DateTime.SpecifyKind(DateTime.Parse(blob.Metadata["LastAccessed"]), DateTimeKind.Utc);
+                List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
 
-                    if (lastAccessed.AddHours(.5) < now) //over 30 minutes old
+                foreach (IListBlobItem blobItem in blobList)
+                {
+                    CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                    if (blob.Metadata.Keys.Contains("LastAccessed"))
                     {
-                        blob.Delete(DeleteSnapshotsOption.IncludeSnapshots);
+                        DateTime now = DateTime.UtcNow;
+                        DateTime lastAccessed = DateTime.SpecifyKind(DateTime.Parse(blob.Metadata["LastAccessed"]), DateTimeKind.Utc);
+
+                        if (lastAccessed.AddHours(.5) < now) //over 30 minutes old
+                        {
+                            blob.Delete(DeleteSnapshotsOption.IncludeSnapshots);
+                        }
                     }
                 }
             }
+            catch { /*Ignore - can fail on new users*/ }
         }
 
 
