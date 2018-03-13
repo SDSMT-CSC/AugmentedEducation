@@ -48,31 +48,30 @@ namespace ARFE.Controllers
             if (model.FileType != null)
             {
                 int index = downloadType.LastIndexOf("--");
-
                 string filename = downloadType.Substring(0, index) + model.FileType;
-
                 string selectionType = downloadType.Substring(index + 2);
 
                 BlobManager blobManager = new BlobManager();
-
                 CloudBlobContainer container = blobManager.GetOrCreateBlobContainer(User.Identity.Name);
                 CloudBlockBlob blob = container.GetBlockBlobReference(filename);
-                string downloadLink = string.Empty;
 
+                string mobileLink = string.Empty;
                 if (blob.Exists())
-                    downloadLink = blob.StorageUri.ToString();
+                    mobileLink = blob.Uri.ToString();
 
-                //string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
-
-                ViewBag.DownloadLink = downloadLink;
+                string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
 
                 if (selectionType == "Download")
                 {
                     Response.Redirect(downloadLink);
                 }
-                else if (selectionType == "QRCode")
+                else if (selectionType == "GeneralQR")
                 {
                     return DisplayQRCode(downloadLink);
+                }
+                else if(selectionType == "MobileQR")
+                {
+                    return DisplayQRCode(mobileLink);
                 }
 
                 return View();
