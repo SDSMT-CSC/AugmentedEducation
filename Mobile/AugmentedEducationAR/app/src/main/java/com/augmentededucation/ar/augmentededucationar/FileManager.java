@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.augmentededucation.ar.augmentededucationar.WebAccess.UnZipFile;
 import com.augmentededucation.ar.augmentededucationar.WebAccess.WebAccessor;
@@ -95,7 +96,9 @@ public class FileManager
 								downloadingFile = null;
 								receiver.onReceive(context, intent);
 							}
-
+							else {
+								Toast.makeText(context, "Error preparing file for viewing", Toast.LENGTH_SHORT).show();
+							}
 						}
 					});
 					unZipFile.execute(source, dest);
