@@ -225,6 +225,7 @@
     <Compile Include="BlobManager.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DownloadController.cs" />
+    <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MobileAuthController.cs" />
@@ -305,6 +306,7 @@
     <Content Include="Views\UserContent\ContentSelect.cshtml" />
     <Content Include="Views\UserContent\DisplayQRCode.cshtml" />
     <Content Include="Views\UserContent\Index.cshtml" />
+    <Content Include="Views\Help\Help.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
