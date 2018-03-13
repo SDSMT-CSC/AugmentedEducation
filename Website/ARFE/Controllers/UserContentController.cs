@@ -49,7 +49,7 @@ namespace ARFE.Controllers
             {
                 int index = downloadType.LastIndexOf("--");
 
-                string filename = downloadType.Substring(0, index) + ".fbx";
+                string filename = downloadType.Substring(0, index) + model.FileType;
 
                 string selectionType = downloadType.Substring(index + 2);
 
