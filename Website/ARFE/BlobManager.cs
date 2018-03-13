@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System.IO.Compression;
 
 namespace ARFE
 {
@@ -470,7 +469,7 @@ namespace ARFE
                 {
                     File.Delete(Path.Combine(path, fileName));
                 }
-                //sleep 1.5 seconds - don't waste resources just looping
+                //sleep 50  miliseconds - don't waste resources just looping
                 catch { Thread.Sleep(50); }
             }
 
@@ -480,7 +479,7 @@ namespace ARFE
                 fromBlob.DownloadToStream(fileStream);
             }
 
-            if(ConvertAndZip(path, requestExtension, fileName, folderName, getFileName, zipFolderName))
+            if (ConvertAndZip(path, requestExtension, fileName, folderName, getFileName, zipFolderName))
             {
                 //upload converted file to blob storage
                 if (UploadBlobToUserContainer(userName, zipFolderName, path))
@@ -502,23 +501,30 @@ namespace ARFE
         private bool ConvertAndZip(string path, string requestExtension, string fileName, string folderName, string getFileName, string zipFolderName)
         {
             bool converted = false;
+            List<string> producedExtensions = new List<string>();
             FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
 
             switch (requestExtension) //extensible for more filetype conversion download options
             {
                 case ".obj": // convert to .obj
+                    producedExtensions.Add(".obj");
+                    producedExtensions.Add(".mtl");
                     converted = converter.ConvertToOBJ(fileName);
                     break;
-                case ".dae": // convert to .obj
+                case ".dae": // convert to .dae
+                    producedExtensions.Add(".dae");
                     converted = converter.ConvertToDAE(fileName);
                     break;
-                case ".fbx": // convert to .obj
+                case ".fbx": // convert to .fbx
+                    producedExtensions.Add(".fbx");
                     converted = converter.ConvertToFBX(fileName);
                     break;
-                case ".stl": // convert to .obj
+                case ".stl": // convert to .stl
+                    producedExtensions.Add(".stl");
                     converted = converter.ConvertToSTL(fileName);
                     break;
-                case ".ply": // convert to .obj
+                case ".ply": // convert to .ply
+                    producedExtensions.Add(".ply");
                     converted = converter.ConvertToPLY(fileName);
                     break;
                 default: break;
@@ -526,7 +532,6 @@ namespace ARFE
 
             if (converted)
             {
-                Thread.Sleep(750);
                 string[] allFiles = Directory.GetFiles(path);
                 DirectoryInfo newDir = Directory.CreateDirectory(Path.Combine(path, folderName));
 
@@ -537,9 +542,13 @@ namespace ARFE
                         string nameWithoutPath = file.Substring(file.LastIndexOf(@"\") + 1);
                         if (nameWithoutPath != fileName)
                         {
-                            if (file.Remove(file.LastIndexOf('.')).EndsWith(getFileName))
+                            foreach (string ext in producedExtensions)
                             {
-                                File.Move(file, $@"{newDir.FullName}\{nameWithoutPath}");
+                                if (nameWithoutPath.EndsWith(ext))
+                                {
+                                    File.Move(file, $@"{newDir.FullName}\{nameWithoutPath}");
+                                }
+                                break;
                             }
                         }
                     }
@@ -557,7 +566,7 @@ namespace ARFE
             if (File.Exists(Path.Combine(path, fileName))) { File.Delete(Path.Combine(path, fileName)); }
 
             //delete all contents of .zip and .zip
-            if(File.Exists(Path.Combine(path, zipDirectory))) { File.Delete(Path.Combine(path, zipDirectory)); }
+            if (File.Exists(Path.Combine(path, zipDirectory))) { File.Delete(Path.Combine(path, zipDirectory)); }
 
             //delete all contents of folder that made .zip and folder
             if (Directory.Exists(Path.Combine(path, folderName)))
