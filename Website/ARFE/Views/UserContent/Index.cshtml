@@ -1,6 +1,11 @@
 ﻿@model ARFE.Controllers.FileTypeModel
 
 <h2>Private Files</h2>
+
+@if(ViewBag.invalid != null && ViewBag.invalid == true)
+{
+    <p style="color:red">Must Select a File Type</p>
+}
 <div class="container" style="border: 2px solid #000000; border-radius:2px">
     <div class="row" >
         <div class="col-md-2" style="text-align:center;"><h5>File Name</h5></div>

@@ -47,62 +47,78 @@ namespace ARFE.Controllers
             // Create a list of SelectListItems so these can be rendered on the page
             model.FileTypes = GetSelectListItems(filestypes);
 
-            return View(model);
+            return View("Index",model);
         }
 
         [Authorize]
         [HttpPost]
         public ActionResult PrivateContentSelect(FileTypeModel model, string downloadType)
         {
-            int index = downloadType.LastIndexOf("--");
-
-            string filename = downloadType.Substring(0, index) + ".fbx";
-
-            string selectionType = downloadType.Substring(index + 2);
-
-            BlobManager blobManager = new BlobManager();
-
-            string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
-
-            ViewBag.DownloadLink = downloadLink;
-           
-            if(selectionType == "Download")
+            if (model.FileType != null)
             {
-                Response.Redirect(downloadLink);
+                int index = downloadType.LastIndexOf("--");
+
+                string filename = downloadType.Substring(0, index) + ".fbx";
+
+                string selectionType = downloadType.Substring(index + 2);
+
+                BlobManager blobManager = new BlobManager();
+
+                string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
+
+                ViewBag.DownloadLink = downloadLink;
+
+                if (selectionType == "Download")
+                {
+                    Response.Redirect(downloadLink);
+                }
+                else if (selectionType == "QRCode")
+                {
+                    return DisplayQRCode(downloadLink);
+                }
+
+                return View();
             }
-            else if(selectionType == "QRCode")
+            else
             {
-                return DisplayQRCode(downloadLink);
+                ViewBag.Invalid = true;
+                return Index();
             }
-            
-            return View();
         }
 
         [Authorize]
         public ActionResult PublicContentSelect(FileTypeModel model, string downloadType)
         {
-            int index = downloadType.LastIndexOf("--");
-
-            string filename = downloadType.Substring(0, index) + ".fbx";
-
-            string selectionType = downloadType.Substring(index + 2);
-
-            BlobManager blobManager = new BlobManager();
-
-            string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
-
-            ViewBag.DownloadLink = downloadLink;
-
-            if (selectionType == "Download")
+            if (model.FileType != null)
             {
-                Response.Redirect(downloadLink);
-            }
-            else if (selectionType == "QRCode")
-            {
-                return DisplayQRCode(downloadLink);
-            }
+                int index = downloadType.LastIndexOf("--");
 
-            return View();
+                string filename = downloadType.Substring(0, index) + ".fbx";
+
+                string selectionType = downloadType.Substring(index + 2);
+
+                BlobManager blobManager = new BlobManager();
+
+                string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
+
+                ViewBag.DownloadLink = downloadLink;
+
+                if (selectionType == "Download")
+                {
+                    Response.Redirect(downloadLink);
+                }
+                else if (selectionType == "QRCode")
+                {
+                    return DisplayQRCode(downloadLink);
+                }
+
+                return View();
+            }
+            else
+            {
+                ViewBag.invalid = true;
+                return Index();
+            }
         }
 
 
@@ -134,10 +150,7 @@ namespace ARFE.Controllers
             };
         }
 
-        // This is one of the most important parts in the whole example.
-        // This function takes a list of strings and returns a list of SelectListItem objects.
-        // These objects are going to be used later in the SignUp.html template to render the
-        // DropDownList.
+
         private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
         {
             // Create an empty list to hold result of the operation
