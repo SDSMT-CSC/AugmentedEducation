@@ -2,5 +2,26 @@
     ViewBag.Title = "DisplayQR";
 }
 
-<img src="@ViewBag.QRCodeImage" style="width:400px;height:400px;"/>
+<br />
+<br />
 
+<div id="print">
+    <asp:DataList ID="qrcode" runat="server">
+        <img src="@ViewBag.QRCodeImage" style="width:400px;height:400px;" />
+    </asp:DataList>
+</div>
+
+<br />
+<br />
+
+<input type="button" onclick="printQRCode('print')" value="Print QR Code" />
+
+<script language="javascript">
+    function printQRCode(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>
