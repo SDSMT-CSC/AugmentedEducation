@@ -90,14 +90,14 @@ namespace ARFE.Controllers
                         }
                         else
                         {   //didn't convert - delete from how was originally saved
-                            uploadMessage = "Common file type conversion failed.";
+                            uploadMessage = "Upload Failed. Accepted file types: FBX, DAE, OBJ, STL, PLY.";
                             System.IO.File.Delete(Path.Combine(basePath, fileName));
                         }
                     }
                 }
                 catch
                 {
-                    uploadMessage = "File Upload Failed.";
+                    uploadMessage = "Account error, please contact administrator.";
                     if (System.IO.File.Exists(Path.Combine(basePath, fileName)))
                     {
                         System.IO.File.Delete(Path.Combine(basePath, fileName));

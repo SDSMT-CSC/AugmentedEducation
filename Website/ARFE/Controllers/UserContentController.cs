@@ -69,6 +69,7 @@ namespace ARFE.Controllers
                 else if (selectionType == "GeneralQR")
                 {
                     string downloadLink = blobManager.ConvertAndDownloadBlobFromUserContainer(User.Identity.Name, filename, model.FileType, Server.MapPath("~/UploadedFiles"));
+                    ViewBag.FileName = filename.Substring(0, filename.Length - 4) + model.FileType;
                     return DisplayQRCode(downloadLink);
                 }
                 else if(selectionType == "MobileQR")
@@ -79,7 +80,7 @@ namespace ARFE.Controllers
                     string mobileLink = string.Empty;
                     if (blob.Exists())
                         mobileLink = blob.Uri.ToString();
-
+                    ViewBag.FileName = filename.Substring(0, filename.Length - 4) + model.FileType;
                     return DisplayQRCode(mobileLink);
                 }
                 else if(selectionType == "Delete")
