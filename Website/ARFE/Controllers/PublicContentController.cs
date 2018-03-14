@@ -24,8 +24,12 @@ namespace ARFE.Controllers
             List<string> filenames = new List<string>();
             foreach (string x in fileList)
             {
-                index = x.LastIndexOf(".");
-                filenames.Add(x.Substring(0, index));
+                if(!x.Contains(".zip"))
+                {
+                    index = x.LastIndexOf(".");
+                    filenames.Add(x.Substring(0, index));
+                }
+
             }
 
 

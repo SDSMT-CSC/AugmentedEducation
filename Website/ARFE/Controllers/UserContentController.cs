@@ -24,16 +24,23 @@ namespace ARFE.Controllers
             List<string> privatenames = new List<string>();
             foreach (string x in privatefileList)
             {
-                index = x.LastIndexOf(".");
-                privatenames.Add(x.Substring(0, index));
+                if(!x.Contains(".zip"))
+                {
+                    index = x.LastIndexOf(".");
+                    privatenames.Add(x.Substring(0, index));
+                }
+
             }
 
             var publicfileList = blob.ListBlobNamesInPublicContainerOwnedBy(User.Identity.Name);
             List<string> publicnames = new List<string>();
             foreach (string x in publicfileList)
             {
-                index = x.LastIndexOf(".");
-                publicnames.Add(x.Substring(0, index));
+                if(!x.Contains(".zip"))
+                {
+                    index = x.LastIndexOf(".");
+                    publicnames.Add(x.Substring(0, index));
+                }
             }
 
             ViewBag.privatefilenames = privatenames;
