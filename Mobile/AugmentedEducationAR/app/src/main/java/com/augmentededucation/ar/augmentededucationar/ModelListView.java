@@ -27,6 +27,12 @@ public class ModelListView extends ListView
 
 	private ArrayAdapter<String> adapter;
 
+	private Boolean isLocal = false;
+
+	public void setIsLocal(Boolean isLocal) {
+		this.isLocal = isLocal;
+	}
+
 	public ModelListView(Context context) {
 		super(context);
 		init(context);
@@ -68,7 +74,13 @@ public class ModelListView extends ListView
 	{
 		this.clear();
 
-		ArrayList<Model> mList = fileManager.getListOfModels();
+		ArrayList<Model> mList;
+		if (isLocal) {
+			mList = fileManager.getLocalModels();
+		} else {
+			mList = fileManager.getListOfModels();
+		}
+
 		for (Model m : mList) {
 			if (m.location != null && !m.location.startsWith(FileManager.assetsFileNameSubstring)) {
 				File file = new File(m.location);

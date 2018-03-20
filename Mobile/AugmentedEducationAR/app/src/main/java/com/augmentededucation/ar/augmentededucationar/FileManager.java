@@ -1,15 +1,12 @@
 package com.augmentededucation.ar.augmentededucationar;
 
 import android.app.DownloadManager;
-import android.arch.persistence.room.Room;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.augmentededucation.ar.augmentededucationar.WebAccess.UnZipFile;
@@ -17,18 +14,9 @@ import com.augmentededucation.ar.augmentededucationar.WebAccess.WebAccessor;
 import com.augmentededucation.ar.augmentededucationar.db.AppDatabase;
 import com.augmentededucation.ar.augmentededucationar.db.entity.Model;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Created by kpetr on 2/28/2018.
@@ -146,5 +134,11 @@ public class FileManager
 
 	public ArrayList<Model> getListOfModels() {
 		return (ArrayList<Model>) db.modelDao().loadAllModels();
+	}
+
+	public ArrayList<Model> getLocalModels() {
+		ArrayList<Model> arrayList = (ArrayList<Model>) db.modelDao().loadAllModels();
+		arrayList.removeIf(s -> s.location == null || s.location == "");
+		return arrayList;
 	}
 }

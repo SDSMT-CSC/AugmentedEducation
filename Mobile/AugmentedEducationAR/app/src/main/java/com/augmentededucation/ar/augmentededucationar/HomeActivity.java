@@ -1,23 +1,18 @@
 package com.augmentededucation.ar.augmentededucationar;
 
 import android.Manifest;
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -31,10 +26,6 @@ import com.google.android.gms.vision.barcode.Barcode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Map;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -137,6 +128,8 @@ public class HomeActivity extends AppCompatActivity {
 							//Toast.makeText(getBaseContext(), "Unable to authenticate", Toast.LENGTH_LONG).show();
 						}
 					});
+		} else {
+			modelsList.setIsLocal(true);
 		}
 
 		try
