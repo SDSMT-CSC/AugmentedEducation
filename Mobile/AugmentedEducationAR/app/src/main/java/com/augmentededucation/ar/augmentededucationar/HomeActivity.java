@@ -88,48 +88,56 @@ public class HomeActivity extends AppCompatActivity {
 		else
 			authToken = getIntent().getExtras().getString(getString(R.string.web_AuthToken));
 
-		accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.ALL, new Response.Listener<JSONObject>()
+		if (!authToken.equals(""))
 		{
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					if (response.get("success").toString().equals("True")) {
-						JSONObject result = response.getJSONObject("result");
-
-						int numFiles = result.getInt("totalCount");
-						if (numFiles == 0)
-							return;
-
-						JSONArray files = result.getJSONArray("files");
-
-						for (int i = 0; i < numFiles; i++)
+			accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.ALL, new Response.Listener<JSONObject>()
+					{
+						@Override
+						public void onResponse(JSONObject response)
 						{
-							JSONObject obj = files.getJSONObject(i);
-							Model m = new Model();
-							m.url = obj.getString("uri");
-							m.name = obj.getString("name");
+							try
+							{
+								if (response.get("success").toString().equals("True"))
+								{
+									JSONObject result = response.getJSONObject("result");
+
+									int numFiles = result.getInt("totalCount");
+									if (numFiles == 0)
+										return;
+
+									JSONArray files = result.getJSONArray("files");
+
+									for (int i = 0; i < numFiles; i++)
+									{
+										JSONObject obj = files.getJSONObject(i);
+										Model m = new Model();
+										m.url = obj.getString("uri");
+										m.name = obj.getString("name");
 //							modelsList.add(m);
-							if (!m.name.endsWith(".zip"))
-								fileManager.addModelToDatabase(m);
+										if (!m.name.endsWith(".zip"))
+											fileManager.addModelToDatabase(m);
+									}
+									modelsList.refreshList();
+								} else
+								{
+									Toast.makeText(getBaseContext(), response.get("reason").toString(), Toast.LENGTH_SHORT).show();
+								}
+							} catch (JSONException ex)
+							{
+								Toast.makeText(getBaseContext(), "Unable to list files", Toast.LENGTH_SHORT).show();
+							}
 						}
-						modelsList.refreshList();
-					}
-					else {
-						Toast.makeText(getBaseContext(), response.get("reason").toString(), Toast.LENGTH_SHORT).show();
-					}
-				}
-				catch (JSONException ex) {
-					Toast.makeText(getBaseContext(), "Unable to list files", Toast.LENGTH_SHORT).show();
-				}
-			}
-		},
-		new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
-				//Toast.makeText(getBaseContext(), "Unable to authenticate", Toast.LENGTH_LONG).show();
-			}
-		});
+					},
+					new Response.ErrorListener()
+					{
+						@Override
+						public void onErrorResponse(VolleyError error)
+						{
+							Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
+							//Toast.makeText(getBaseContext(), "Unable to authenticate", Toast.LENGTH_LONG).show();
+						}
+					});
+		}
 
 		try
 		{
@@ -149,36 +157,52 @@ public class HomeActivity extends AppCompatActivity {
 
 			modelsList.refreshList();
 
-			modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			if (!authToken.equals(""))
 			{
-				@Override
-				public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l)
+				modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
 				{
-					if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-						Toast.makeText(getApplicationContext(), "Please enable storage permissions in settings", Toast.LENGTH_SHORT).show();
-						return;
-					}
+					@Override
+					public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l)
+					{
+						if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+						{
+							Toast.makeText(getApplicationContext(), "Please enable storage permissions in settings", Toast.LENGTH_SHORT).show();
+							return;
+						}
 
-					if (!itemTouched) {
-						itemTouched = true;
-						model = modelsList.getModel(i);
-						if (model.location == null)
+						if (!itemTouched)
 						{
-							fileManager.downloadModel(model, authToken, new BroadcastReceiver()
+							itemTouched = true;
+							model = modelsList.getModel(i);
+							if (model.location == null)
 							{
-								@Override
-								public void onReceive(Context context, Intent intent)
+								fileManager.downloadModel(model, authToken, new BroadcastReceiver()
 								{
-									ViewInAR();
-								}
-							});
-						} else
-						{
-							ViewInAR();
+									@Override
+									public void onReceive(Context context, Intent intent)
+									{
+										ViewInAR();
+									}
+								});
+							} else
+							{
+								ViewInAR();
+							}
 						}
 					}
-				}
-			});
+				});
+			}
+			else {
+				modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+				{
+					@Override
+					public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+					{
+						model = modelsList.getModel(i);
+						ViewInAR();
+					}
+				});
+			}
 		}
 		catch (Exception e){
 			Log.e("ASSETS", "Unable to read assets");
@@ -211,7 +235,8 @@ public class HomeActivity extends AppCompatActivity {
 
 					Model m = new Model();
 					m.url = barcode.rawValue;
-					m.name = m.url;
+					String [] splitUrl = m.url.split("/");
+					m.name = splitUrl[splitUrl.length - 1];
 					fileManager.addModelToDatabase(m);
 
 					modelsList.refreshList();

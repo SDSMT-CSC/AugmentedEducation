@@ -20,4 +20,5 @@
     <string name="plus">+</string>
 
     <string name="web_AuthToken">AuthToken</string>
+    <string name="contoffline">Continue Offline</string>
 </resources>

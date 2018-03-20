@@ -58,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
         password.setText(password_string);
     }
 
+    public void continueOffline(View view) {
+        Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+        intent.putExtra(getString(R.string.web_AuthToken), "");
+        startActivity(intent);
+    }
+
     public void onNext(View v) {
         SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
