@@ -78,7 +78,7 @@ public class WebAccessor
 		requestQueue.add(jsonObjectRequest);
 	}
 
-	public void downloadFile(final Context context, final String authToken, final String uri, final String destName, final DownloadQueued queued) {
+	public void downloadFile(final Context context, final String authToken, final String uri, final String destName, final DownloadQueued queued, onDownloadError downloadError) {
 		String url = String.format("%s/%s/%s/", baseAddress, mobileAuth, downloadFile);
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
 			new Response.Listener<JSONObject>() {
@@ -99,10 +99,12 @@ public class WebAccessor
 						}
 						else {
 							Toast.makeText(context, "Unable to download file - " + response.getString("reason"), Toast.LENGTH_SHORT).show();
+							downloadError.onError();
 						}
 					}
 					catch (JSONException ex) {
 						Toast.makeText(context, "Error downloading file", Toast.LENGTH_SHORT).show();
+						downloadError.onError();
 					}
 
 				}
@@ -117,6 +119,8 @@ public class WebAccessor
 						Toast.makeText(context, "Server Error - unable to download file", Toast.LENGTH_SHORT).show();
 					else
 						Toast.makeText(context, "Unable to download file - " + error.toString(), Toast.LENGTH_SHORT).show();
+
+					downloadError.onError();
 				}
 			})
 		{
@@ -147,5 +151,9 @@ public class WebAccessor
 
 	public interface DownloadQueued {
 		void downloadQueued(long downloadId);
+	}
+
+	public interface onDownloadError {
+		void onError();
 	}
 }

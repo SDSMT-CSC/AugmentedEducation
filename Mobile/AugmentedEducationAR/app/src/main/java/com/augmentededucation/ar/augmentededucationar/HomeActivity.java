@@ -1,6 +1,7 @@
 package com.augmentededucation.ar.augmentededucationar;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -44,6 +46,8 @@ public class HomeActivity extends AppCompatActivity {
 
 	private boolean itemTouched;
 
+	private ProgressBar progressBar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,8 +71,13 @@ public class HomeActivity extends AppCompatActivity {
 //			}
 //		}
 
-		if (modelsList == null){
+		if (modelsList == null) {
 			modelsList = findViewById(R.id.modelsList);
+		}
+
+		if (progressBar == null) {
+			progressBar = findViewById(R.id.progressBar);
+			progressBar.setVisibility(View.INVISIBLE);
 		}
 
 		accessor = new WebAccessor(this);
@@ -79,17 +88,12 @@ public class HomeActivity extends AppCompatActivity {
 		else
 			authToken = getIntent().getExtras().getString(getString(R.string.web_AuthToken));
 
-		if (!authToken.equals(""))
-		{
-			accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.ALL, new Response.Listener<JSONObject>()
-					{
+		if (!authToken.equals("")) {
+			accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.OWNED_PRIVATE, new Response.Listener<JSONObject>() {
 						@Override
-						public void onResponse(JSONObject response)
-						{
-							try
-							{
-								if (response.get("success").toString().equals("True"))
-								{
+						public void onResponse(JSONObject response) {
+							try {
+								if (response.get("success").toString().equals("True")) {
 									JSONObject result = response.getJSONObject("result");
 
 									int numFiles = result.getInt("totalCount");
@@ -98,8 +102,7 @@ public class HomeActivity extends AppCompatActivity {
 
 									JSONArray files = result.getJSONArray("files");
 
-									for (int i = 0; i < numFiles; i++)
-									{
+									for (int i = 0; i < numFiles; i++) {
 										JSONObject obj = files.getJSONObject(i);
 										Model m = new Model();
 										m.url = obj.getString("uri");
@@ -109,21 +112,17 @@ public class HomeActivity extends AppCompatActivity {
 											fileManager.addModelToDatabase(m);
 									}
 									modelsList.refreshList();
-								} else
-								{
+								} else {
 									Toast.makeText(getBaseContext(), response.get("reason").toString(), Toast.LENGTH_SHORT).show();
 								}
-							} catch (JSONException ex)
-							{
+							} catch (JSONException ex) {
 								Toast.makeText(getBaseContext(), "Unable to list files", Toast.LENGTH_SHORT).show();
 							}
 						}
 					},
-					new Response.ErrorListener()
-					{
+					new Response.ErrorListener() {
 						@Override
-						public void onErrorResponse(VolleyError error)
-						{
+						public void onErrorResponse(VolleyError error) {
 							Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
 							//Toast.makeText(getBaseContext(), "Unable to authenticate", Toast.LENGTH_LONG).show();
 						}
@@ -132,13 +131,10 @@ public class HomeActivity extends AppCompatActivity {
 			modelsList.setIsLocal(true);
 		}
 
-		try
-		{
+		try {
 			String[] assets = getAssets().list("");
-			for (String asset : assets)
-			{
-				if (asset.contains(".obj") && !asset.contains(".mtl"))
-				{
+			for (String asset : assets) {
+				if (asset.contains(".obj") && !asset.contains(".mtl")) {
 					Model m = new Model();
 					m.url = FileManager.assetsFileNameSubstring + asset;
 					m.location = m.url;
@@ -150,54 +146,50 @@ public class HomeActivity extends AppCompatActivity {
 
 			modelsList.refreshList();
 
-			if (!authToken.equals(""))
-			{
-				modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-				{
+			if (!authToken.equals("")) {
+				modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					@Override
-					public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l)
-					{
-						if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-						{
+					public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
+						if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 							Toast.makeText(getApplicationContext(), "Please enable storage permissions in settings", Toast.LENGTH_SHORT).show();
 							return;
 						}
 
-						if (!itemTouched)
-						{
+						if (!itemTouched) {
 							itemTouched = true;
 							model = modelsList.getModel(i);
-							if (model.location == null)
-							{
-								fileManager.downloadModel(model, authToken, new BroadcastReceiver()
-								{
-									@Override
-									public void onReceive(Context context, Intent intent)
-									{
-										ViewInAR();
-									}
-								});
-							} else
-							{
+							if (model.location == null) {
+								progressBar.setVisibility(View.VISIBLE);
+								fileManager.downloadModel(model, authToken,
+										new BroadcastReceiver() {
+											@Override
+											public void onReceive(Context context, Intent intent) {
+												progressBar.setVisibility(View.INVISIBLE);
+												ViewInAR();
+											}
+										},
+										new WebAccessor.onDownloadError() {
+											@Override
+											public void onError() {
+												progressBar.setVisibility(View.INVISIBLE);
+											}
+										});
+							} else {
 								ViewInAR();
 							}
 						}
 					}
 				});
-			}
-			else {
-				modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-				{
+			} else {
+				modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 					@Override
-					public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-					{
+					public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 						model = modelsList.getModel(i);
 						ViewInAR();
 					}
 				});
 			}
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			Log.e("ASSETS", "Unable to read assets");
 		}
 
@@ -211,8 +203,8 @@ public class HomeActivity extends AppCompatActivity {
 	}
 
 	public void scanQRCode(View view) {
-		 Intent scanQRCodeIntent = new Intent(this, ScanQRCodeActivity.class);
-		 startActivityForResult(scanQRCodeIntent, READ_BARCODE);
+		Intent scanQRCodeIntent = new Intent(this, ScanQRCodeActivity.class);
+		startActivityForResult(scanQRCodeIntent, READ_BARCODE);
 	}
 
 	@Override
@@ -228,7 +220,7 @@ public class HomeActivity extends AppCompatActivity {
 
 					Model m = new Model();
 					m.url = barcode.rawValue;
-					String [] splitUrl = m.url.split("/");
+					String[] splitUrl = m.url.split("/");
 					m.name = splitUrl[splitUrl.length - 1];
 					fileManager.addModelToDatabase(m);
 
@@ -249,11 +241,9 @@ public class HomeActivity extends AppCompatActivity {
 	@Override
 	public void onRequestPermissionsResult(int requestCode,
 	                                       @NonNull String[] permissions,
-	                                       @NonNull int[] grantResults)
-	{
+	                                       @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE)
-		{
+		if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE) {
 
 		}
 	}

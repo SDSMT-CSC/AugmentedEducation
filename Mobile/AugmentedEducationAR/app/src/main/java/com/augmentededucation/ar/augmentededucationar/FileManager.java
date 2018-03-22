@@ -48,7 +48,7 @@ public class FileManager
 		this.context = context;
 	}
 
-	public void downloadModel(final Model model, String authToken, final BroadcastReceiver receiver) {
+	public void downloadModel(final Model model, String authToken, final BroadcastReceiver receiver, WebAccessor.onDownloadError downloadError) {
 		if (downloadingFile != null) {
 			return;
 		}
@@ -103,7 +103,7 @@ public class FileManager
 					if (downloadingFile == null)
 						downloadingFile = downloadId;
 				}
-			});
+			}, downloadError);
 	}
 
 	public void addModelToDatabase(Model model) {
