@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ARFE.Controllers.FileTypeModel
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -29,11 +30,11 @@
                                                                 // when page is rendered after postback,
                                                                 // take selected value from Model.State.
 
-                                                                     // 2. Take list of values from Model.States
-                                                                     Model.FileTypes,
+                                                                          // 2. Take list of values from Model.States
+                                                                          Model.FileTypes,
 
-                                                                     // 3. Text for the first 'default' option
-                                                                     "- Select a File Type -")
+                                                                          // 3. Text for the first 'default' option
+                                                                          "- Select a File Type -")
                 </div>
                 <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--Download">Download File</button></div>
                 <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--GeneralQR">General QR Code</button></div>

@@ -16,13 +16,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Augmented Reality", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Augmented Education", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Upload", "UploadFile", "Upload")</li>
                     <li>@Html.ActionLink("Public Content", "Index", "PublicContent")</li>
                     <li>@Html.ActionLink("My Content", "Index", "UserContent")</li>
+                    <li>@Html.ActionLink("Upload", "UploadFile", "Upload")</li>
                     <li>@Html.ActionLink("Help", "Help", "Help")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
