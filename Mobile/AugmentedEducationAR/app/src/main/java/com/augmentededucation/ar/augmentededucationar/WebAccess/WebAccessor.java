@@ -81,10 +81,7 @@ public class WebAccessor
 	public void downloadFile(final Context context, final String authToken, final String uri, final String destName, final DownloadQueued queued, onDownloadError downloadError) {
 		String url = String.format("%s/%s/%s/", baseAddress, mobileAuth, downloadFile);
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-			new Response.Listener<JSONObject>() {
-				@Override
-				public void onResponse(JSONObject response)
-				{
+				response -> {
 					try {
 						if (response.get("success").toString().equals("True"))
 						{
@@ -107,12 +104,8 @@ public class WebAccessor
 						downloadError.onError();
 					}
 
-				}
-			},
-			new Response.ErrorListener()  {
-				@Override
-				public void onErrorResponse(VolleyError error)
-				{
+				},
+				error -> {
 					if (error instanceof TimeoutError)
 						Toast.makeText(context, "Request timeout", Toast.LENGTH_SHORT).show();
 					else if (error instanceof ServerError)
@@ -121,8 +114,7 @@ public class WebAccessor
 						Toast.makeText(context, "Unable to download file - " + error.toString(), Toast.LENGTH_SHORT).show();
 
 					downloadError.onError();
-				}
-			})
+				})
 		{
 			@Override
 			public Map<String, String> getHeaders() {

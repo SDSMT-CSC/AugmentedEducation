@@ -89,44 +89,38 @@ public class HomeActivity extends AppCompatActivity {
 			authToken = getIntent().getExtras().getString(getString(R.string.web_AuthToken));
 
 		if (!authToken.equals("")) {
-			accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.OWNED_PRIVATE, new Response.Listener<JSONObject>() {
-						@Override
-						public void onResponse(JSONObject response) {
-							try {
-								if (response.get("success").toString().equals("True")) {
-									JSONObject result = response.getJSONObject("result");
+			accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.OWNED_PRIVATE, response -> {
+				try {
+					if (response.get("success").toString().equals("True")) {
+						JSONObject result = response.getJSONObject("result");
 
-									int numFiles = result.getInt("totalCount");
-									if (numFiles == 0)
-										return;
+						int numFiles = result.getInt("totalCount");
+						if (numFiles == 0)
+							return;
 
-									JSONArray files = result.getJSONArray("files");
+						JSONArray files = result.getJSONArray("files");
 
-									for (int i = 0; i < numFiles; i++) {
-										JSONObject obj = files.getJSONObject(i);
-										Model m = new Model();
-										m.url = obj.getString("uri");
-										m.name = obj.getString("name");
+						for (int i = 0; i < numFiles; i++) {
+							JSONObject obj = files.getJSONObject(i);
+							Model m = new Model();
+							m.url = obj.getString("uri");
+							m.name = obj.getString("name");
 //							modelsList.add(m);
-										if (!m.name.endsWith(".zip"))
-											fileManager.addModelToDatabase(m);
-									}
-									modelsList.refreshList();
-								} else {
-									Toast.makeText(getBaseContext(), response.get("reason").toString(), Toast.LENGTH_SHORT).show();
-								}
-							} catch (JSONException ex) {
-								Toast.makeText(getBaseContext(), "Unable to list files", Toast.LENGTH_SHORT).show();
-							}
+							if (!m.name.endsWith(".zip"))
+								fileManager.addModelToDatabase(m);
 						}
-					},
-					new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
-							//Toast.makeText(getBaseContext(), "Unable to authenticate", Toast.LENGTH_LONG).show();
-						}
-					});
+						modelsList.refreshList();
+					} else {
+						Toast.makeText(getBaseContext(), response.get("reason").toString(), Toast.LENGTH_SHORT).show();
+					}
+				} catch (JSONException ex) {
+					Toast.makeText(getBaseContext(), "Unable to list files", Toast.LENGTH_SHORT).show();
+				}
+			},
+			error -> {
+				Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(getBaseContext(), "Unable to authenticate", Toast.LENGTH_LONG).show();
+			});
 		} else {
 			modelsList.setIsLocal(true);
 		}
