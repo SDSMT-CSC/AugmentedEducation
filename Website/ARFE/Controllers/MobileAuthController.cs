@@ -90,163 +90,192 @@ namespace ARFE.Controllers
         [HttpPost]
         public async Task<string> RequestAuthToken()
         {
-            string token = string.Empty;
-            string reason = string.Empty;
-            string userName = string.Empty;
-            string password = string.Empty;
-            Stream bodyStream = Request.InputStream;
-            JObject requestJson = JObject.Parse(new StreamReader(bodyStream).ReadToEnd());
-
-            foreach (JToken t in requestJson.Children())
+            try
             {
-                //Get Json values out from keys
-                if (t.Path == "userName") { userName = requestJson["userName"].ToString(); }
-                else if (t.Path == "password") { password = requestJson["password"].ToString(); }
-            }
+                string token = string.Empty;
+                string reason = string.Empty;
+                string userName = string.Empty;
+                string password = string.Empty;
+                Stream bodyStream = Request.InputStream;
+                JObject requestJson = JObject.Parse(new StreamReader(bodyStream).ReadToEnd());
 
-            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
-            {
-                userName = userName.ToLower();
-                reason = await UserSignIn(userName, password);
-
-                if (string.IsNullOrEmpty(reason))
+                foreach (JToken t in requestJson.Children())
                 {
-                    //return token generated for user
-                    token = _TokenCache.GenerateToken(userName, password);
+                    //Get Json values out from keys
+                    if (t.Path == "userName") { userName = requestJson["userName"].ToString(); }
+                    else if (t.Path == "password") { password = requestJson["password"].ToString(); }
                 }
-            }
-            else { reason = "'userName' and 'password' fields are required."; }
 
-            //string -> JObject -> string provides formatted Json
-            return (JObject.Parse(FormatRequestAuthTokenResult(reason, token))).ToString();
+                if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
+                {
+                    userName = userName.ToLower();
+                    reason = await UserSignIn(userName, password);
+
+                    if (string.IsNullOrEmpty(reason))
+                    {
+                        //return token generated for user
+                        token = _TokenCache.GenerateToken(userName, password);
+                    }
+                }
+                else { reason = "'userName' and 'password' fields are required."; }
+
+                //string -> JObject -> string provides formatted Json
+                return (JObject.Parse(FormatRequestAuthTokenResult(reason, token))).ToString();
+            }
+            catch (Exception ex)
+            {
+                return ($"Exception: {ex.ToString()}");
+            }
         }
 
         [HttpGet]
         public async Task<string> ListFiles(int descriptor, int? pageNumber)
         {
-            int totalPages = 0;
-            int currentPage = 0;
-            string reason = string.Empty;
-            string userName = string.Empty;
-            Tuple<string, string> validateUserInfo;
-            List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
-            List<List<Tuple<string, Uri>>> pageFiles = new List<List<Tuple<string, Uri>>>();
-
-            validateUserInfo = await ValidateUser();
-
-            if (string.IsNullOrEmpty(validateUserInfo.Item2))
+            try
             {
-                userName = validateUserInfo.Item1;
-                BlobManager blobManager = new BlobManager();
+                int totalPages = 0;
+                int currentPage = 0;
+                string reason = string.Empty;
+                string userName = string.Empty;
+                Tuple<string, string> validateUserInfo;
+                List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
+                List<List<Tuple<string, Uri>>> pageFiles = new List<List<Tuple<string, Uri>>>();
 
-                switch (descriptor)
-                {
-                    case ((int)FileDescriptor.ALL): //0
-                        fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
-                        fileList.AddRange(blobManager.ListBlobNamesToUrisInPublicContainer());
-                        break;
-                    case ((int)FileDescriptor.OWNED_ALL): //1
-                        fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
-                        fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
-                        break;
-                    case ((int)FileDescriptor.OWNED_PRIVATE): //2
-                        fileList = blobManager.ListBlobNamesToUrisInUserContainer(User.Identity.Name);
-                        break;
-                    case ((int)FileDescriptor.OWNED_PUBLIC): //3
-                        fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
-                        break;
-                    case ((int)FileDescriptor.NOT_OWNED_PUBLIC): //4
-                                                                 //List of all public files
-                        fileList = blobManager.ListBlobNamesToUrisInPublicContainer();
-                        //remove the ones owned by user
-                        foreach (Tuple<string, Uri> file in blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName))
-                        {
-                            fileList.Remove(file);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                validateUserInfo = await ValidateUser();
 
-                //if requesting page and there is content
-                if (pageNumber.HasValue && fileList.Count > 0)
+                if (string.IsNullOrEmpty(validateUserInfo.Item2))
                 {
-                    //if requesting valid page
-                    if (pageNumber.Value > 0)
+                    userName = validateUserInfo.Item1;
+                    BlobManager blobManager = new BlobManager();
+
+                    switch (descriptor)
                     {
-                        pageFiles = PaginateFiles(fileList);
-                        //if requested page is in range of real pages
-                        if (pageNumber.Value <= pageFiles.Count)
-                        {
-                            totalPages = pageFiles.Count;
-                            currentPage = pageNumber.Value;
-                            fileList = pageFiles[pageNumber.Value - 1];
-                        }
-                        else { reason = "Page number out of bounds."; }
+                        case ((int)FileDescriptor.ALL): //0
+                            fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
+                            fileList.AddRange(blobManager.ListBlobNamesToUrisInPublicContainer());
+                            break;
+                        case ((int)FileDescriptor.OWNED_ALL): //1
+                            fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
+                            fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
+                            break;
+                        case ((int)FileDescriptor.OWNED_PRIVATE): //2
+                            fileList = blobManager.ListBlobNamesToUrisInUserContainer(User.Identity.Name);
+                            break;
+                        case ((int)FileDescriptor.OWNED_PUBLIC): //3
+                            fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
+                            break;
+                        case ((int)FileDescriptor.NOT_OWNED_PUBLIC): //4
+                                                                     //List of all public files
+                            fileList = blobManager.ListBlobNamesToUrisInPublicContainer();
+                            //remove the ones owned by user
+                            foreach (Tuple<string, Uri> file in blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName))
+                            {
+                                fileList.Remove(file);
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                    else { reason = "Page number must be greater than 0."; }
-                }
-            }
 
-            //string -> JObject -> string provides formatted Json
-            //Quotes needed around everything that isn't a numeric value
-            return (JObject.Parse(FormatListFilesResult(fileList, reason, currentPage, totalPages))).ToString();
+                    //if requesting page and there is content
+                    if (pageNumber.HasValue && fileList.Count > 0)
+                    {
+                        //if requesting valid page
+                        if (pageNumber.Value > 0)
+                        {
+                            pageFiles = PaginateFiles(fileList);
+                            //if requested page is in range of real pages
+                            if (pageNumber.Value <= pageFiles.Count)
+                            {
+                                totalPages = pageFiles.Count;
+                                currentPage = pageNumber.Value;
+                                fileList = pageFiles[pageNumber.Value - 1];
+                            }
+                            else { reason = "Page number out of bounds."; }
+                        }
+                        else { reason = "Page number must be greater than 0."; }
+                    }
+                }
+
+                //string -> JObject -> string provides formatted Json
+                //Quotes needed around everything that isn't a numeric value
+                return (JObject.Parse(FormatListFilesResult(fileList, reason, currentPage, totalPages))).ToString();
+
+            }
+            catch (Exception ex)
+            {
+                return ($"Exception: {ex.ToString()}");
+            }
         }
 
 
         [HttpGet]
         public async Task<string> DownloadFile()
         {
-            string reason = string.Empty;
-            string fileUri = string.Empty;
-            string downloadUrl = string.Empty;
-            Tuple<string, string> validateUserInfo = null;
-
-            validateUserInfo = await ValidateUser();
-
-            if (string.IsNullOrEmpty(validateUserInfo.Item2))
+            try
             {
-                if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
+                string reason = string.Empty;
+                string fileUri = string.Empty;
+                string downloadUrl = string.Empty;
+                Tuple<string, string> validateUserInfo = null;
 
-                string[] uriParts = fileUri.Split('/');
-                BlobManager blobManager = new BlobManager();
-                string blobName = uriParts[uriParts.Count() - 1];
-                string containerName = uriParts[uriParts.Count() - 2];
+                validateUserInfo = await ValidateUser();
 
-                //make sure user is only trying to get their own or public file
-                if (containerName.Equals(blobManager.FormatBlobContainerName(validateUserInfo.Item1))
-                    || containerName.Equals("public"))
+                if (string.IsNullOrEmpty(validateUserInfo.Item2))
                 {
-                    downloadUrl = blobManager.ConvertAndDownloadBlobFromUserContainer(containerName, blobName, ".obj", Server.MapPath("~/UploadedFiles"));
-                    if (downloadUrl.Contains("Error: "))
-                    {
-                        reason = downloadUrl;
-                        downloadUrl = string.Empty;
-                    }
-                }
-                else { reason = "Permission denied."; }
-            }
+                    if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
 
-            return (JObject.Parse(FormatDownloadFileResult(reason, downloadUrl))).ToString();
+                    string[] uriParts = fileUri.Split('/');
+                    BlobManager blobManager = new BlobManager();
+                    string blobName = uriParts[uriParts.Count() - 1];
+                    string containerName = uriParts[uriParts.Count() - 2];
+
+                    //make sure user is only trying to get their own or public file
+                    if (containerName.Equals(blobManager.FormatBlobContainerName(validateUserInfo.Item1))
+                        || containerName.Equals("public"))
+                    {
+                        downloadUrl = blobManager.ConvertAndDownloadBlobFromUserContainer(containerName, blobName, ".obj", Server.MapPath("~/UploadedFiles"));
+                        if (downloadUrl.Contains("Error: "))
+                        {
+                            reason = downloadUrl;
+                            downloadUrl = string.Empty;
+                        }
+                    }
+                    else { reason = "Permission denied."; }
+                }
+
+                return (JObject.Parse(FormatDownloadFileResult(reason, downloadUrl))).ToString();
+            }
+            catch (Exception ex)
+            {
+                return ($"Exception: {ex.ToString()}");
+            }
         }
 
 
         [HttpGet]
         public async Task<string> DownloadFileQR()
         {
-            string reason = string.Empty;
-            string fileUri = string.Empty;
-            Tuple<string, string> validateUserInfo = null;
-
-            validateUserInfo = await ValidateUser();
-
-            if (string.IsNullOrEmpty(validateUserInfo.Item2))
+            try
             {
-                if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
-                //To Do
-            }
+                string reason = string.Empty;
+                string fileUri = string.Empty;
+                Tuple<string, string> validateUserInfo = null;
 
-            return "";
+                validateUserInfo = await ValidateUser();
+
+                if (string.IsNullOrEmpty(validateUserInfo.Item2))
+                {
+                    if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
+                    //To Do
+                }
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return ($"Exception: {ex.ToString()}");
+            }
         }
 
         #endregion
