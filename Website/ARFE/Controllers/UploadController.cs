@@ -9,67 +9,117 @@ using System.Drawing.Imaging;
 using System.Collections.Generic;
 
 using QRCoder;
+using System.Threading;
 
 namespace ARFE.Controllers
 {
     public class UploadController : Controller
     {
+        [Authorize]
         // GET: Upload  
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult UploadFile()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
-        public ActionResult UploadFile(HttpPostedFileBase file)
+        public ActionResult UploadFile(HttpPostedFileBase file, bool publicFile)
         {
-            try
+            string uploadMessage = "File Uploaded Successfully.";
+            if (file.ContentLength > 0)
             {
-                if (file.ContentLength > 0)
+                string basePath = Server.MapPath("~/UploadedFiles");
+                string fileName = Path.GetFileName(file.FileName);
+                string fileNameExtention = fileName.Substring(fileName.LastIndexOf('.'));
+                string fileNameWithoutExtension = fileName.Replace(fileNameExtention, "");
+
+                try
                 {
-                    string _FileName = Path.GetFileName(file.FileName);
-                    int index = _FileName.LastIndexOf(".");
-                    string noExtension = _FileName.Substring(0, index);
-                    string fbxExtension = noExtension + ".fbx";
+                    while (System.IO.File.Exists(Path.Combine(basePath, fileName)))
+                    {   //remove other file if not in use
+                        try
+                        {
+                            System.IO.File.Delete(Path.Combine(basePath, fileName));
+                        }
+                        //sleep 1.5 seconds - don't waste resources just looping
+                        catch { Thread.Sleep(50); }
+                    }
 
-                    string _path = Path.Combine(Server.MapPath("~/UploadedFiles"), _FileName);
-                    file.SaveAs(_path);
-
-                    Process process = new Process();
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    process.StartInfo.FileName = Server.MapPath("~/Content/FileConversion.exe");
-                    process.StartInfo.Arguments = Server.MapPath("~/UploadedFiles/" + _FileName);
-                    process.Start();
-                    process.Close();
-
+                    //save file as uniqueName
+                    file.SaveAs(Path.Combine(basePath, fileName));
                     BlobManager blobManager = new BlobManager();
-                    blobManager.UploadBlobToUserContainer(User.Identity.Name, fbxExtension, Server.MapPath("~/UploadedFiles"));
 
-                    System.Threading.Thread.Sleep(2000);
+                    //uploaded file is fbx
+                    if (fileNameExtention == ".fbx")
+                    {   //upload and delete
+                        if(publicFile)
+                        {
+                            blobManager.UploadBlobToPublicContainer(User.Identity.Name, fileName, basePath);
+                        }
+                        else
+                        {
+                            blobManager.UploadBlobToUserContainer(User.Identity.Name, fileName, basePath);
+                        }
+                        System.IO.File.Delete(Path.Combine(basePath, fileName));
+                    }
+                    //uploaded file is not fbx -- convert
+                    else
+                    {
+                        FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
 
-
+                        if (converter.ConvertToFBX(fileName))
+                        {   //convert, upload, delete converted, delete original
+                            if (publicFile)
+                            {
+                                blobManager.UploadBlobToPublicContainer(User.Identity.Name, $"{fileNameWithoutExtension}.fbx", basePath);
+                            }
+                            else
+                            {
+                                blobManager.UploadBlobToUserContainer(User.Identity.Name, $"{fileNameWithoutExtension}.fbx", basePath);
+                            }
+                            System.IO.File.Delete(Path.Combine(basePath, $"{fileNameWithoutExtension}.fbx"));
+                            System.IO.File.Delete(Path.Combine(basePath, fileName));
+                        }
+                        else
+                        {   //didn't convert - delete from how was originally saved
+                            uploadMessage = "Upload Failed. Accepted file types: FBX, DAE, OBJ, STL, PLY.";
+                            System.IO.File.Delete(Path.Combine(basePath, fileName));
+                        }
+                    }
                 }
-                ViewBag.Message = "File Uploaded Successfully!!";
-                return View();
+                catch
+                {
+                    uploadMessage = "Account error, please contact administrator.";
+                    if (System.IO.File.Exists(Path.Combine(basePath, fileName)))
+                    {
+                        System.IO.File.Delete(Path.Combine(basePath, fileName));
+                    }
+                    if (System.IO.File.Exists(Path.Combine(basePath, $"{fileNameWithoutExtension}.fbx")))
+                    {
+                        System.IO.File.Delete(Path.Combine(basePath, $"{fileNameWithoutExtension}.fbx"));
+                    }
+                }
             }
-            catch(Exception ex)
-            {
-                ViewBag.Message = "File upload failed!!";
-                return View();
-            }
+
+            ViewBag.Message = uploadMessage;
+            return View();
         }
 
+        [Authorize]
         public ActionResult GetMessage()
         {
             return View();
         }
 
+        [Authorize]
         public ActionResult DisplayQR(string Message)
         {
 
@@ -85,17 +135,6 @@ namespace ARFE.Controllers
                 }
             }
             return View();
-        }
-
-        public Bitmap GenerateQRCode(String address)
-        {
-
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(address, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            return qrCodeImage;
-
         }
     }
 }

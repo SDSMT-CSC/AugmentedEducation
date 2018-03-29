@@ -78,6 +78,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Spatial, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.8.2\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
@@ -223,10 +225,14 @@
     <Compile Include="BlobManager.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DownloadController.cs" />
+    <Compile Include="Controllers\HelpController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MobileAuthController.cs" />
+    <Compile Include="Controllers\PublicContentController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Controllers\UserContentController.cs" />
+    <Compile Include="FileConverter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -249,8 +255,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Connected Services\augmentededucationblobAzureStorage\ConnectedService.json" />
-    <None Include="Properties\PublishProfiles\ARFE - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\AugementedEducation - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\SDMinesAugmentedEducation - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -263,6 +267,8 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="UploadedFiles\assimp-vc140-mt.dll" />
+    <Content Include="UploadedFiles\FileConversion.exe" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -298,10 +304,14 @@
     <Content Include="Views\Upload\DisplayQR.cshtml" />
     <Content Include="Views\Upload\GetMessage.cshtml" />
     <Content Include="Views\Upload\UploadFile.cshtml" />
+    <Content Include="Views\UserContent\ContentSelect.cshtml" />
+    <Content Include="Views\UserContent\DisplayQRCode.cshtml" />
+    <Content Include="Views\UserContent\Index.cshtml" />
+    <Content Include="Views\Help\Help.cshtml" />
+    <Content Include="Views\PublicContent\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="UploadedFiles\" />
     <Folder Include="Views\Blobs\" />
     <Folder Include="Views\Download\" />
     <Folder Include="Views\MobileAuth\" />
@@ -321,6 +331,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AuthenticationTokenCache\AuthenticationTokenCache.csproj">
+      <Project>{957d847a-4515-409a-8441-092458f9cf2a}</Project>
+      <Name>AuthenticationTokenCache</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

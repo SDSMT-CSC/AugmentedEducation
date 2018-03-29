@@ -1,0 +1,47 @@
+﻿@model ARFE.Controllers.FileTypeModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>All Public Files</h2>
+
+@if (ViewBag.invalid != null && ViewBag.invalid == true)
+{
+    <p style="color:red">Must Select a File Type</p>
+}
+
+<div class="container" style="border: 2px solid #000000; border-radius:2px">
+    <div class="row">
+        <div class="col-md-2" style="text-align:center;"><h5>File Name</h5></div>
+        <div class="col-md-4" style="text-align:center;"><h5>Selected File Type</h5></div>
+        <div class="col-md-2" style="text-align:center;"><h5>Download File</h5></div>
+        <div class="col-md-2" style="text-align:center;"><h5>General QRCode</h5></div>
+        <div class="col-md-2" style="text-align:center;"><h5>QRCode For Mobile App</h5></div>
+    </div>
+
+    @foreach (string file in ViewBag.filenames)
+    {
+        <div class="row">
+            @using (Html.BeginForm("ContentSelect", "PublicContent", FormMethod.Post, new { role = "form" }))
+            {
+                <div class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></div>
+                <div class="col-md-4" style="height:100%; text-align:center;">
+                    @Html.DropDownListFor(m => m.FileType, // 1. Store selected value in Model.State;
+                                                                // when page is rendered after postback,
+                                                                // take selected value from Model.State.
+
+                                                                // 2. Take list of values from Model.States
+                                                                Model.FileTypes,
+
+                                                                // 3. Text for the first 'default' option
+                                                                "- Select a File Type -")
+                </div>
+                <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--Download">Download File</button></div>
+                <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--GeneralQR">General QR Code</button></div>
+                <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--MobileQR">Mobile QR Code</button></div>
+
+            }
+        </div>
+    }
+</div>
+
