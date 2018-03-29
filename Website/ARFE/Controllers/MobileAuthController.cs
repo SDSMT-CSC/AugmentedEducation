@@ -124,7 +124,7 @@ namespace ARFE.Controllers
             }
             catch (Exception ex)
             {
-                return ($"Exception: {ex.ToString()}");
+                return ($"{{ \"Exception\": \"{ex.ToString()}\" }}");
             }
         }
 
@@ -159,7 +159,7 @@ namespace ARFE.Controllers
                             fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
                             break;
                         case ((int)FileDescriptor.OWNED_PRIVATE): //2
-                            fileList = blobManager.ListBlobNamesToUrisInUserContainer(User.Identity.Name);
+                            fileList = blobManager.ListBlobNamesToUrisInUserContainer(userName);
                             break;
                         case ((int)FileDescriptor.OWNED_PUBLIC): //3
                             fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
@@ -204,7 +204,7 @@ namespace ARFE.Controllers
             }
             catch (Exception ex)
             {
-                return ($"Exception: {ex.ToString()}");
+                return ($"{{ \"Exception\": \"{ex.ToString()}\" }}");
             }
         }
 
@@ -248,7 +248,7 @@ namespace ARFE.Controllers
             }
             catch (Exception ex)
             {
-                return ($"Exception: {ex.ToString()}");
+                return ($"{{ \"Exception\": \"{ex.ToString()}\" }}");
             }
         }
 
@@ -274,7 +274,7 @@ namespace ARFE.Controllers
             }
             catch (Exception ex)
             {
-                return ($"Exception: {ex.ToString()}");
+                return ($"{{ \"Exception\": \"{ex.ToString()}\" }}");
             }
         }
 
