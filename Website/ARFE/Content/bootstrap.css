@@ -4386,12 +4386,12 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .navbar-default {
-  background-color: #f8f8f8;
-  border-color: #e7e7e7;
+    background-color: #071D49;
+    border-color: #071D49;
 }
 
 .navbar-default .navbar-brand {
-  color: #777777;
+  color: #FFFFFF;
 }
 
 .navbar-default .navbar-brand:hover,
