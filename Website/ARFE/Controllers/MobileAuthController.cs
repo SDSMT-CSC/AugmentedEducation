@@ -2,18 +2,15 @@
 using System.IO;
 using System.Web;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
-using System.Net.Http;
-using System.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using Newtonsoft.Json.Linq;
 using AuthenticationTokenCache;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-
-using Newtonsoft.Json.Linq;
-using System.Text;
 
 namespace ARFE.Controllers
 {
@@ -54,39 +51,12 @@ namespace ARFE.Controllers
 
         #region Public Methods
 
-        /* Waiting until SSL can be ensured
-        public string CreateAccount(string userName, string password, string verifyPassword)
-        {
-            Models.LoginViewModel loginVM;
-            string responseString = string.Empty;
-            AccountController accountController = new AccountController();
-
-            if (password != verifyPassword)
-            {
-                responseString = "Passwords do not match";
-            }
-            else
-            {
-                loginVM = new Models.LoginViewModel()
-                {
-                    Email = userName,
-                    Password = password,
-                };
-
-                accountController.Login(loginVM, "").Wait();
-
-                if (accountController.User.Identity.IsAuthenticated)
-                {
-                    responseString = RequestAuthToken(userName, password);
-                }
-            }
-
-
-            return responseString;
-        }
-        */
-
-
+        /// <summary>
+        /// Read the userName and password values from the JSON and create a unique 
+        /// Authorization Token string associated to the user credentials and stored
+        /// in a cache.
+        /// </summary>
+        /// <returns>JSON response of the Authentication Token</returns>
         [HttpPost]
         public async Task<string> RequestAuthToken()
         {
@@ -128,6 +98,22 @@ namespace ARFE.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Return a list of files that a mobile user has access to denoted by an ownership
+        /// descriptor value.  The discriptor values are 
+        /// 0: ALL (All public and private files that the mobile user has access to.),
+        /// 1: OWNED_ALL (All public and private files that the mobile user owns), 
+        /// 2: OWNED_PRIVATE (All of the private files owned by the mobile user), 
+        /// 3: OWNED_PUBLIC (All of the public files owned by the mobile user), 
+        /// 4: NOT_OWNED_PUBLIC (All of the public files not owned by the mobile user).
+        /// 
+        /// If a <paramref name="pageNumber"/> value is supplied, the response list will be paginated
+        /// with at most 10 results per page, and the correct page of values will be returned.
+        /// </summary>
+        /// <param name="descriptor">The file descriptor value</param>
+        /// <param name="pageNumber">The page index to return.  If null, return all pages.</param>
+        /// <returns>The JSON response of the requested file names to associated non-downloadable URIs.</returns>
         [HttpGet]
         public async Task<string> ListFiles(int descriptor, int? pageNumber)
         {
@@ -209,6 +195,13 @@ namespace ARFE.Controllers
         }
 
 
+        /// <summary>
+        /// Using the Authentication Token and the FileUri, both provided in the HTTP header as 
+        /// fileUri: [fileUri], token: [token]
+        /// Authenticate the user from the provided token, and request to Azure Blob storage to 
+        /// get a downloadable file URI for the file.
+        /// </summary>
+        /// <returns>The JSON response containing the downloadable file URI.</returns>
         [HttpGet]
         public async Task<string> DownloadFile()
         {
@@ -219,61 +212,39 @@ namespace ARFE.Controllers
                 string downloadUrl = string.Empty;
                 Tuple<string, string> validateUserInfo = null;
 
+                //Get username and validate password from auth token
                 validateUserInfo = await ValidateUser();
 
                 if (string.IsNullOrEmpty(validateUserInfo.Item2))
                 {
+                    //get file URI from HTTP headers
                     if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
 
+                    //Parse Blob Container name and Blob Name
                     string[] uriParts = fileUri.Split('/');
                     BlobManager blobManager = new BlobManager();
                     string blobName = uriParts[uriParts.Count() - 1];
                     string containerName = uriParts[uriParts.Count() - 2];
 
                     //make sure user is only trying to get their own or public file
-                    if (containerName.Equals(blobManager.FormatBlobContainerName(validateUserInfo.Item1))
-                        || containerName.Equals("public"))
+                    if (containerName.Equals(blobManager.FormatBlobContainerName(validateUserInfo.Item1)) || containerName.Equals("public"))
                     {
                         downloadUrl = blobManager.ConvertAndDownloadBlobFromUserContainer(containerName, blobName, ".obj", Server.MapPath("~/UploadedFiles"));
                         if (downloadUrl.Contains("Error: "))
                         {
+                            //bad download attempt
                             reason = downloadUrl;
                             downloadUrl = string.Empty;
                         }
                     }
                     else { reason = "Permission denied."; }
                 }
-
+                //return JSON
                 return (JObject.Parse(FormatDownloadFileResult(reason, downloadUrl))).ToString();
             }
             catch (Exception ex)
             {
-                return ($"{{ \"Exception\": \"{ex.ToString()}\" }}");
-            }
-        }
-
-
-        [HttpGet]
-        public async Task<string> DownloadFileQR()
-        {
-            try
-            {
-                string reason = string.Empty;
-                string fileUri = string.Empty;
-                Tuple<string, string> validateUserInfo = null;
-
-                validateUserInfo = await ValidateUser();
-
-                if (string.IsNullOrEmpty(validateUserInfo.Item2))
-                {
-                    if (Request.Headers.AllKeys.Contains("fileUri")) { fileUri = Request.Headers["fileUri"].ToString(); }
-                    //To Do
-                }
-
-                return "";
-            }
-            catch (Exception ex)
-            {
+                //return exception message
                 return ($"{{ \"Exception\": \"{ex.ToString()}\" }}");
             }
         }
