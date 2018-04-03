@@ -29,25 +29,66 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * The Home activity where the list of models and scan QE code button are displayed.  Tapping on a button in the
+ * list will move to the ARActivity where the model is displayed.  Clicking on the Scan QR code button will move
+ * to the ScanQRCodeActivity where the user can scan a QR code.
+ */
 public class HomeActivity extends AppCompatActivity {
+
+	/**
+	 * Logging tag
+	 */
 	private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+	/**
+	 * Permissions ID numbers
+	 */
 	private static final int READ_BARCODE = 1;
 	private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 3;
+
+	/**
+	 * The model that is set when the user taps on a model.  It will be used to send to the ARActivity to display
+	 * the model.
+	 */
 	private Model model;
 
-	WebAccessor accessor;
+	/**
+	 * The authorization token that should be received from the MainActivity when the user authenticates with the
+	 * website.  The value be empty in which online models will not be shown.
+	 */
 	private String authToken;
 
+	/**
+	 * The list that is displayed in the view
+	 */
 	private ModelListView modelsList;
-	private String[] models;
 
+	/**
+	 * Manage files on the phone via a database
+	 */
 	private FileManager fileManager;
 
+	/**
+	 * A flag for once a user taps a model.  If this is true, then taps on models in the list will be ignored.
+	 */
 	private boolean itemTouched;
 
+	/**
+	 * A spinning progress bar to show the user that a model is downloading.
+	 */
 	private ProgressBar progressBar;
 
+	/**
+	 * Called when the activity is created.  It performs the following operations:
+	 *      1) TODO: Check for permissions, and ask if not granted
+	 *      2) Add models from the website to the list
+	 *      3) Add models in the assets folder to the list
+	 *
+	 * TODO: Put in better error messages/toasts
+	 *
+	 * @param savedInstanceState The bundle if recreating the activity
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,6 +96,7 @@ public class HomeActivity extends AppCompatActivity {
 
 		itemTouched = false;
 
+		// Check for permissions (TODO)
 //		if (ContextCompat.checkSelfPermission(this,
 //				Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //
@@ -80,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
 			progressBar.setVisibility(View.INVISIBLE);
 		}
 
-		accessor = new WebAccessor(this);
+		WebAccessor accessor = new WebAccessor(this);
 		fileManager = new FileManager(this);
 
 		if (savedInstanceState != null)
@@ -88,9 +130,24 @@ public class HomeActivity extends AppCompatActivity {
 		else
 			authToken = getIntent().getExtras().getString(getString(R.string.web_AuthToken));
 
+		// Get a list of models from the website
 		if (!authToken.equals("")) {
 			accessor.getAllModelsListing(authToken, WebAccessor.FileDescriptor.OWNED_PRIVATE, response -> {
 				try {
+					/*
+						Expects json response in the form:
+						{
+							"success": <"True"/"False">,
+							"totalCount": <number of models>,
+							"files": [
+								{
+									"uri": <file url>
+									"name": <file name">
+								}, ...
+							],
+							"reason": "<reason>"
+						}
+					 */
 					if (response.get("success").toString().equals("True")) {
 						JSONObject result = response.getJSONObject("result");
 
@@ -105,11 +162,12 @@ public class HomeActivity extends AppCompatActivity {
 							Model m = new Model();
 							m.url = obj.getString("uri");
 							m.name = obj.getString("name");
-//							modelsList.add(m);
+
+							// zip folders are listed, so ignore them because they are duplicates of other files
 							if (!m.name.endsWith(".zip"))
 								fileManager.addModelToDatabase(m);
 						}
-						modelsList.refreshList();
+						modelsList.refreshList();  // refreshing the list will get the models stored in the database
 					} else {
 						Toast.makeText(getBaseContext(), response.get("reason").toString(), Toast.LENGTH_SHORT).show();
 					}
@@ -125,52 +183,47 @@ public class HomeActivity extends AppCompatActivity {
 			modelsList.setIsLocal(true);
 		}
 
+		// Add assets to the database, which will be added to the list
 		try {
 			String[] assets = getAssets().list("");
 			for (String asset : assets) {
+				// only add obj files
 				if (asset.contains(".obj") && !asset.contains(".mtl")) {
 					Model m = new Model();
 					m.url = FileManager.assetsFileNameSubstring + asset;
 					m.location = m.url;
 					m.name = asset.substring(0, asset.indexOf(".obj"));
-//					modelsList.add(m);
 					fileManager.setModelDB(m);
 				}
 			}
 
 			modelsList.refreshList();
 
+			// Set listener for when a user taps a model in the list
 			if (!authToken.equals("")) {
-				modelsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> adapterView, final View view, int i, long l) {
-						if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-							Toast.makeText(getApplicationContext(), "Please enable storage permissions in settings", Toast.LENGTH_SHORT).show();
-							return;
-						}
+				modelsList.setOnItemClickListener((adapterView, view, i, l) -> {
+					if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+						Toast.makeText(getApplicationContext(), "Please enable storage permissions in settings", Toast.LENGTH_SHORT).show();
+						return;
+					}
 
-						if (!itemTouched) {
-							itemTouched = true;
-							model = modelsList.getModel(i);
-							if (model.location == null) {
-								progressBar.setVisibility(View.VISIBLE);
-								fileManager.downloadModel(model, authToken,
-										new BroadcastReceiver() {
-											@Override
-											public void onReceive(Context context, Intent intent) {
-												progressBar.setVisibility(View.INVISIBLE);
-												ViewInAR();
-											}
-										},
-										new WebAccessor.onDownloadError() {
-											@Override
-											public void onError() {
-												progressBar.setVisibility(View.INVISIBLE);
-											}
-										});
-							} else {
-								ViewInAR();
-							}
+					// Only register taps if a model is not downloading/processing
+					if (!itemTouched) {
+						itemTouched = true;
+						model = modelsList.getModel(i);
+						if (model.location == null) {
+							progressBar.setVisibility(View.VISIBLE);
+							fileManager.downloadModel(model, authToken,
+									new BroadcastReceiver() {
+										@Override
+										public void onReceive(Context context, Intent intent) {
+											progressBar.setVisibility(View.INVISIBLE);
+											ViewInAR();
+										}
+									},
+									() -> progressBar.setVisibility(View.INVISIBLE));
+						} else {
+							ViewInAR();
 						}
 					}
 				});
@@ -189,6 +242,9 @@ public class HomeActivity extends AppCompatActivity {
 
 	}
 
+	/**
+	 * Transition to the ARActivity when the a model is downloaded and the user wants to view it
+	 */
 	public void ViewInAR() {
 		Intent intent = new Intent(this, ARActivity.class);
 		intent.putExtra(ARActivity.FILENAME_TAG, model.location);
@@ -196,11 +252,23 @@ public class HomeActivity extends AppCompatActivity {
 		startActivity(intent);
 	}
 
+	/**
+	 * Transition to the ScanQRCodeActivity where the user can add a model to the list via a QR code.
+	 * @param view Needed by the onClick to specify which view called it
+	 */
 	public void scanQRCode(View view) {
 		Intent scanQRCodeIntent = new Intent(this, ScanQRCodeActivity.class);
 		startActivityForResult(scanQRCodeIntent, READ_BARCODE);
 	}
 
+	/**
+	 * Catches the result from teh QR scanning activity.  It will catch all results from the startActivityForResult
+	 * function, so tags need to be set to only case the results.
+	 *
+	 * @param requestCode The request code/tag used to specify which call is returning
+	 * @param resultCode The result to specify success/failure
+	 * @param data Data returned from the activity
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Check which request we're responding to
@@ -220,18 +288,36 @@ public class HomeActivity extends AppCompatActivity {
 
 					modelsList.refreshList();
 
-				} else Toast.makeText(this, R.string.no_barcode_captured, Toast.LENGTH_LONG).show();
-			} else Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format),
-					CommonStatusCodes.getStatusCodeString(resultCode)));
-		} else super.onActivityResult(requestCode, resultCode, data);
+				}
+				else
+					Toast.makeText(this, R.string.no_barcode_captured, Toast.LENGTH_LONG).show();
+			}
+			else
+				Log.e(LOG_TAG, String.format(getString(R.string.barcode_error_format), CommonStatusCodes.getStatusCodeString(resultCode)));
+		}
+		else
+			super.onActivityResult(requestCode, resultCode, data);
 	}
 
+	/**
+	 * If moving away from the activity, save the auth token so future accesses to the sever are allowed.
+	 * @param savedInstanceState The bundle to save the data into
+	 */
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putString(getString(R.string.web_AuthToken), authToken);
 	}
 
+	/**
+	 * Called after requesting permissions from the user
+	 *
+	 * TODO: Actually implement permission requests, and handle the results
+	 *
+	 * @param requestCode Permission requested
+	 * @param permissions The permissions asked
+	 * @param grantResults The permissions granted
+	 */
 	@Override
 	public void onRequestPermissionsResult(int requestCode,
 	                                       @NonNull String[] permissions,
