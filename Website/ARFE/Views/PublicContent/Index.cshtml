@@ -3,45 +3,47 @@
     ViewBag.Title = "Index";
 }
 
-<h2 class="text-center" style="margin-top:60px;margin-bottom:20px;"">Public Files</h2>
+<h2 class="text-center" style="margin-top:60px;margin-bottom:20px;" ">Public Files</h2>
 
 @if (ViewBag.invalid != null && ViewBag.invalid == true)
 {
     <p style="color:red">Must Select a File Type</p>
 }
 
-<div class="container" style="border: 2px solid #000000; border-radius:2px">
-    <div class="row">
-        <div class="col-md-2" style="text-align:center;"><h5>File Name</h5></div>
-        <div class="col-md-4" style="text-align:center;"><h5>Selected File Type</h5></div>
-        <div class="col-md-2" style="text-align:center;"><h5>Download File</h5></div>
-        <div class="col-md-2" style="text-align:center;"><h5>General QRCode</h5></div>
-        <div class="col-md-2" style="text-align:center;"><h5>QRCode For Mobile App</h5></div>
-    </div>
+<table>
+    <tr>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>File Name</b></h5></td>
+        <td class="col-md-4" style="text-align:center;color:#071D49;"><h5><b>Selected File Type</b></h5></td>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Download File</b></h5></td>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>General QRC ode</b></h5></td>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Mobile QR Code</b></h5></td>
+    </tr>
 
     @foreach (string file in ViewBag.filenames)
     {
-        <div class="row">
+        //Padding and margin styling applied to button to ensure consistency in application. See last td of table for margin and padding styling.
+        <tr>
             @using (Html.BeginForm("ContentSelect", "PublicContent", FormMethod.Post, new { role = "form" }))
             {
-                <div class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></div>
-                <div class="col-md-4" style="height:100%; text-align:center;">
+                <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
+                <td class="col-md-4" style="height:100%; text-align:center;">
                     @Html.DropDownListFor(m => m.FileType, // 1. Store selected value in Model.State;
                                                                 // when page is rendered after postback,
                                                                 // take selected value from Model.State.
 
-                                                                // 2. Take list of values from Model.States
-                                                                Model.FileTypes,
+                                                                       // 2. Take list of values from Model.States
+                                                                       Model.FileTypes,
 
-                                                                // 3. Text for the first 'default' option
-                                                                "- Select a File Type -")
-                </div>
-                <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--Download">Download File</button></div>
-                <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--GeneralQR">General QR Code</button></div>
-                <div class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--MobileQR">Mobile QR Code</button></div>
+                                                                       // 3. Text for the first 'default' option
+                                                                       "- Select a File Type -")
+                </td>
+                <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--Download">Download File</button></td>
+                <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--GeneralQR">General QR Code</button></td>
+                <td class="col-md-2" style="text-align:center; height:100%; padding-top:10px;padding-bottom:10px;margin-bottom:10px;"><button type="submit" name="downloadType" value="@file--MobileQR">Mobile QR Code</button></td>
 
             }
-        </div>
+        </tr>
     }
-</div>
+</table>
+        </div>
 
