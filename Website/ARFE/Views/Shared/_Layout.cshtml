@@ -31,16 +31,16 @@
             <h1 style="color:#B3A369"><b>Augmented Education</b></h1>
         </div>
     </div>
-        <div class="container body-content">
-            @RenderBody()
-            <hr />
-            <footer>
-                <p>&copy; @DateTime.Now.Year - South Dakota School of Mines and Technology</p>
-            </footer>
-        </div>
+    <div class="container body-content" style="min-height: 75vh; overflow: hidden; display: block; position: relative; padding-bottom: 80px;">
+        @RenderBody()
+        <hr />
+    </div>
+    <div class="footer">
+        <p style="padding-left:5vw;">&copy; @DateTime.Now.Year - South Dakota School of Mines and Technology</p>
+    </div>
 
-        @Scripts.Render("~/bundles/jquery")
-        @Scripts.Render("~/bundles/bootstrap")
-        @RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
 </body>
 </html>
