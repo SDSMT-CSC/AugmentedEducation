@@ -1,6 +1,6 @@
 ﻿@model ARFE.Controllers.FileTypeModel
 
-<h2 class="text-center" style="margin-top:60px;margin-bottom:20px;">My Private Files</h2>
+<h2 class="text-center" style="margin-top:60px;margin-bottom:40px;">My Private Files</h2>
 
 @if (ViewBag.invalid != null && ViewBag.invalid == true)
 {
@@ -9,19 +9,22 @@
 
 <table class="container">
     <tr>
-        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>File Name</b></h5></td>
-        <td class="col-md-3" style="text-align:center;color:#071D49;"><h5><b>Selected File Type</b></h5></td>
-        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Download File</b></h5></td>
-        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>General QR Code</b></h5></td>
-        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Mobile QR Code</b></h5></td>
-        <td class="col-md-1" style="text-align:center;color:#071D49;"><h5><b>Delete</b></h5></td>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>File Name</h5></td>
+        <td class="col-md-3" style="text-align:center;color:#071D49;"><h5><b>Selected File Type</h5></td>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Download File</h5></td>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>General QR Code</h5></td>
+        <td class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Mobile QR Code</h5></td>
+        <td class="col-md-1" style="text-align:center;color:#071D49;"><h5><b>Delete</h5></td>
     </tr>
 
-    @foreach (string file in ViewBag.privatefilenames)
+
+
+    @foreach (string file in ViewBag.publicfilenames)
     {
+
         //Padding and margin styling applied to button to ensure consistency in application. See last td of table for margin and padding styling.
         <tr>
-            @using (Html.BeginForm("PrivateContentSelect", "UserContent", FormMethod.Post, new { role = "form" }))
+            @using (Html.BeginForm("PublicContentSelect", "UserContent", FormMethod.Post, new { role = "form" }))
             {
 
                 <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
@@ -31,11 +34,11 @@
                                                                 // when page is rendered after postback,
                                                                 // take selected value from Model.State.
 
-                                                                     // 2. Take list of values from Model.States
-                                                                     Model.FileTypes,
+                                                                    // 2. Take list of values from Model.States
+                                                                    Model.FileTypes,
 
-                                                                     // 3. Text for the first 'default' option
-                                                                     "- Select a File Type -")
+                                                                    // 3. Text for the first 'default' option
+                                                                    "- Select a File Type -")
                 </td>
                 <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--Download">Download File</button></td>
                 <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--GeneralQR">General QR Code</button></td>
@@ -46,11 +49,12 @@
     }
 </table>
 
+
 <br />
 <br />
 <br />
 
-<h2 class="text-center" style="margin-top:20px;margin-bottom:20px;">My Public Files</h2>
+<h2 class="text-center" style="margin-top:20px;margin-bottom:40px;">My Public Files</h2>
 
 @if (ViewBag.invalid != null && ViewBag.invalid == true)
 {
