@@ -47,10 +47,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:autoText="false"
+        android:background="@android:color/darker_gray"
         android:ems="10"
         android:hint="@string/scale_factor"
         android:inputType="number|numberDecimal"
-        app:layout_constraintBottom_toBottomOf="@+id/surfaceview"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/button2"
         app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintStart_toEndOf="@+id/button"
         app:layout_constraintTop_toTopOf="@+id/button2" />
