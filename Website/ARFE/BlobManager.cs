@@ -65,7 +65,6 @@ namespace ARFE
             return formattedName;
         }
 
-
         #region privately owned containers
 
 
@@ -83,15 +82,8 @@ namespace ARFE
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
             string extension = fileName.Substring(fileName.LastIndexOf('.'));
-            bool uploaded = true;
 
-            if (blob.Exists())
-            {
-#warning warn user about overwrite file if already exists
-                //display prompt - possibly set uploaded false
-            }
-
-            if (uploaded)
+            if (!blob.Exists())
             {
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
                
@@ -114,9 +106,11 @@ namespace ARFE
                     }
                     blob.SetMetadata();
                 }
+
+                return true;
             }
 
-            return uploaded;
+            return false;
         }
 
 
@@ -274,24 +268,18 @@ namespace ARFE
         /// <returns></returns>
         public bool UploadBlobToPublicContainer(string userName, string fileName, string filePath)
         {
-            bool uploaded = true;
             CloudBlobContainer container = GetOrCreateBlobContainer("public");
             CloudBlockBlob blob = container.GetBlockBlobReference($"{FormatBlobContainerName(userName)}-{fileName}");
 
-            if (blob.Exists())
-            {
-#warning warn user about overwrite file if already exists
-                //display prompt - possibly set uploaded false
-            }
-
-            if (uploaded)
+            if (!blob.Exists())
             {
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
                 blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
                 blob.SetMetadata();
+                return true;
             }
 
-            return uploaded;
+            return false;
         }
 
 
@@ -481,6 +469,7 @@ namespace ARFE
 
             return $"{blob.Uri}{blob.GetSharedAccessSignature(sharingPolicy, headers)}";
         }
+
 
         private string ConvertBlobToBlob(CloudBlockBlob fromBlob, string userName, string fileName, string path, string requestExtension)
         {
