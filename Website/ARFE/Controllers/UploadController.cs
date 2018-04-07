@@ -34,6 +34,7 @@ namespace ARFE.Controllers
         public ActionResult UploadFile(HttpPostedFileBase file, bool publicFile)
         {
             string uploadMessage = "File Uploaded Successfully.";
+            
             if (file.ContentLength > 0)
             {
                 string basePath = Server.MapPath("~/UploadedFiles");
