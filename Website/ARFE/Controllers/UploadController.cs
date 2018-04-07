@@ -31,14 +31,13 @@ namespace ARFE.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult UploadFile(HttpPostedFileBase file, bool publicFile)
+        public ActionResult UploadFile(HttpPostedFileBase BaseFile, HttpPostedFileBase MatFile, bool publicFile, string AltFileName, string FileDescription)
         {
             string uploadMessage = "File Uploaded Successfully.";
-            
-            if (file.ContentLength > 0)
+            if (BaseFile.ContentLength > 0)
             {
                 string basePath = Server.MapPath("~/UploadedFiles");
-                string fileName = Path.GetFileName(file.FileName);
+                string fileName = Path.GetFileName(BaseFile.FileName);
                 string fileNameExtention = fileName.Substring(fileName.LastIndexOf('.'));
                 string fileNameWithoutExtension = fileName.Replace(fileNameExtention, "");
 
@@ -55,7 +54,7 @@ namespace ARFE.Controllers
                     }
 
                     //save file as uniqueName
-                    file.SaveAs(Path.Combine(basePath, fileName));
+                    BaseFile.SaveAs(Path.Combine(basePath, fileName));
                     BlobManager blobManager = new BlobManager();
 
                     //uploaded file is fbx
@@ -114,28 +113,20 @@ namespace ARFE.Controllers
             return View();
         }
 
-        [Authorize]
-        public ActionResult GetMessage()
+        public ActionResult OverWriteUpload(string overWrite, string filename)
         {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult DisplayQR(string Message)
-        {
-
-            using (MemoryStream ms = new MemoryStream())
+            if(overWrite == "Yes")
             {
-                QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(Message, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-                using (Bitmap bitmap = qrCode.GetGraphic(20))
-                {
-                    bitmap.Save(ms, ImageFormat.Png);
-                    ViewBag.QRCodeImage = "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
-                }
+                
             }
+            else
+            {
+
+            }
+
             return View();
         }
+
+
     }
 }
