@@ -25,7 +25,6 @@ import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 
 import com.augmentededucation.ar.augmentededucationar.FileManager;
@@ -325,8 +324,10 @@ public class ObjectRenderer {
                     if (targetMat.getMapKd().contains("tga")) {
                         textureBitmap = readTgaToBitmap(context, targetMat.getMapKd());
                     } else {
-                        textureBitmap = BitmapFactory.decodeStream(
-                                context.getAssets().open(targetMat.getMapKd()));
+                        if (OBJ_PATH.contains(FileManager.assetsFileNameSubstring))
+                            textureBitmap = BitmapFactory.decodeStream(context.getAssets().open(targetMat.getMapKd()));
+                        else
+                            textureBitmap = BitmapFactory.decodeStream(new FileInputStream(new File(OBJ_PATH).getParentFile().getPath() + targetMat.getMapKd()));
                     }
 
                     GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[i]);
@@ -335,6 +336,7 @@ public class ObjectRenderer {
                             GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR_MIPMAP_LINEAR);
                     GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
                             GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+                    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, textureBitmap, 0);
                     GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
                     GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
 

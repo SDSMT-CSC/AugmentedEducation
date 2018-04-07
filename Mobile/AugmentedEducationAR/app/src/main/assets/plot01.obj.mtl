@@ -1,0 +1,14 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.3.0)
+
+newmtl Material_118
+Kd 1 1 1
+Ka 0.2000000029802322 0.2000000029802322 0.2000000029802322
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 11986900
+illum 2
+map_Kd plot01_fbx_02.fbm/863.png
+map_Ks plot01_fbx_02.fbm/867.png
+
