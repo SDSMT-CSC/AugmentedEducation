@@ -77,7 +77,7 @@ namespace ARFE
         /// <param name="fileName"></param>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public bool UploadBlobToUserContainer(string userName, string fileName, string filePath)
+        public bool UploadBlobToUserContainer(string userName, string fileName, string filePath, bool overwrite = false)
         {
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
@@ -266,7 +266,7 @@ namespace ARFE
         /// <param name="fileName">Name of the file</param>
         /// <param name="filePath">Path to the file</param>
         /// <returns></returns>
-        public bool UploadBlobToPublicContainer(string userName, string fileName, string filePath)
+        public bool UploadBlobToPublicContainer(string userName, string fileName, string filePath, bool overwrite = false)
         {
             CloudBlobContainer container = GetOrCreateBlobContainer("public");
             CloudBlockBlob blob = container.GetBlockBlobReference($"{FormatBlobContainerName(userName)}-{fileName}");
@@ -412,7 +412,7 @@ namespace ARFE
 
         #endregion
 
-
+        
         #region Private
 
         /// <summary>
