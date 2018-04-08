@@ -42,16 +42,17 @@
             <p id="matWarning" style="color:red">Only file type .mtl supported for material file</p>
             <br />
             <br />
+            <label>Alternate File Name (Optional)</label><br />
+            @Html.TextBox("AltFileName", "", new { id = "AltFileName", type = "text", maxlength = 255 })
+            <p id="altWarning" style="color:red">Invalid Characters. (Valid characters are: a-z,A-Z,0-9,-,_)</p>
+            <br />
+            <br />
+            <label>File Description (Optional)</label><br />
+            @Html.TextArea("FileDescription", "", new { id = "FileDesc", type = "text", maxlength = 255 })
+            <br />
+            <br />
             @Html.CheckBox("publicFile", false)
             <p3>Public File</p3>
-            <br />
-            <br />
-            <label>Alternate File Name (Optional)</label><br/>
-            @Html.TextBox("AltFileName", "", new { id = "AltFileName", type = "text", maxlength = 255 })
-            <br />
-            <br />
-            <label>File Description (Optional)</label><br/>
-            @Html.TextArea("FileDescription", "", new { id = "FileDesc", type = "text", maxlength = 255 })
             <br />
             <br />
             <br />
@@ -62,11 +63,13 @@
     }
 
     <script type="text/javascript">
+
         $(document).ready(function () {
             $("#MatUpload *").prop('disabled', true);
             $("#btnUpload").prop('disabled', true);
             $("#baseWarning").prop('hidden', true);
             $("#matWarning").prop('hidden', true);
+            $("#altWarning").prop('hidden', true);
 
             $('#baseFile').on('change', function () {
 
@@ -113,6 +116,23 @@
                         $('#matFile').val("");
                         $("#matWarning").prop('hidden', false);
                         $("#btnUpload").prop('disabled', true);
+                    }
+                }
+            });
+
+            $('#AltFileName').on('keyup', function () {
+                var altName = $('#AltFileName').val();
+                var badString = "!@@#$%^&*()?><,./\"\'{]}\\|`~=+";
+
+                for (var i = 0; i < altName.length; i++) {
+                    
+                    if (badString.indexOf(altName.charAt(i)) == -1) {
+                        $("#btnUpload").prop('disabled', false);
+                        $("#altWarning").prop('hidden', true);
+                    }
+                    else {
+                        $("#btnUpload").prop('disabled', true);
+                        $("#altWarning").prop('hidden', false);
                     }
                 }
             });
