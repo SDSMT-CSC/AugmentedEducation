@@ -40,9 +40,11 @@ namespace ARFE.Controllers
         public ActionResult UploadFile(HttpPostedFileBase BaseFile, HttpPostedFileBase MatFile, bool publicFile, string AltFileName, string FileDescription)
         {
             string subDir = string.Empty;
-            s_BasePath = Server.MapPath("~/UploadedFiles");
             string uploadMessage = "File Uploaded Successfully.";
-            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance(s_BasePath);
+            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance();
+
+            if(string.IsNullOrEmpty(s_BasePath))
+                s_BasePath = uploadedFiles.BasePath;
 
             if (BaseFile.ContentLength > 0)
             {
@@ -89,7 +91,10 @@ namespace ARFE.Controllers
         public ActionResult OverWriteUpload(string overWrite, string fileName)
         {
             string userName = User.Identity.Name;
-            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance(s_BasePath);
+            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance();
+
+            if (string.IsNullOrEmpty(s_BasePath))
+                s_BasePath = uploadedFiles.BasePath;
 
             if (overWrite == "Yes")
             {

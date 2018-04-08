@@ -23,20 +23,30 @@ namespace ARFE
         #region Constructor
 
         //singleton
-        public static UploadedFileCache GetInstance(string basePath)
+        public static UploadedFileCache GetInstance()
         {
             if (s_Instance == null)
             {
-                s_Instance = new UploadedFileCache(basePath);
+                s_Instance = new UploadedFileCache();
             }
             return s_Instance;
         }
 
-        private UploadedFileCache(string basePath)
+        private UploadedFileCache()
         {
-            s_BasePath = basePath;
             s_UsedGuids = new List<Guid>();
             s_FileDataByGuid = new Dictionary<Guid, FileData>();
+        }
+
+        #endregion
+
+
+        #region Properties
+
+        public string BasePath
+        {
+            get { return s_BasePath; }
+            set { if (string.IsNullOrEmpty(s_BasePath)) s_BasePath = value; }
         }
 
         #endregion
@@ -82,15 +92,18 @@ namespace ARFE
             Guid defaultGuid = GetGuidForSavingFile();
             Guid fileGuid = defaultGuid;
 
-            foreach (FileData data in s_FileDataByGuid.Values)
+            if (s_FileDataByGuid != null)
             {
-                //belongs to user, has matching name, is most recent
-                if (data.OwnerName == userName
-                && data.FileName == fileName
-                && data.FileExpirationTime < mostRecent)
+                foreach (FileData data in s_FileDataByGuid.Values)
                 {
-                    fileGuid = data.FileGuid;
-                    mostRecent = data.FileExpirationTime;
+                    //belongs to user, has matching name, is most recent
+                    if (data.OwnerName == userName
+                    && data.FileName == fileName
+                    && data.FileExpirationTime < mostRecent)
+                    {
+                        fileGuid = data.FileGuid;
+                        mostRecent = data.FileExpirationTime;
+                    }
                 }
             }
 
@@ -117,7 +130,7 @@ namespace ARFE
         {
             Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
 
-            if(s_FileDataByGuid.ContainsKey(fileGuid))
+            if (s_FileDataByGuid.ContainsKey(fileGuid))
             {
                 return s_FileDataByGuid[fileGuid].IsPublic;
             }
@@ -173,26 +186,29 @@ namespace ARFE
             DateTime now = DateTime.Now;
             List<Guid> removed = new List<Guid>();
 
-            foreach (Guid g in s_FileDataByGuid.Keys)
+            if (s_FileDataByGuid != null)
             {
-                FileData data = s_FileDataByGuid[g];
-                if (now > data.FileExpirationTime)
+                foreach (Guid g in s_FileDataByGuid.Keys)
                 {
-                    if (s_Instance.DeleteFile(data.OwnerName, data.FileName))
-                        removed.Add(g);
-                    else
-                        s_Instance.MarkForDelete(data.OwnerName, data.FileName);
+                    FileData data = s_FileDataByGuid[g];
+                    if (now > data.FileExpirationTime)
+                    {
+                        if (s_Instance.DeleteFile(data.OwnerName, data.FileName))
+                            removed.Add(g);
+                        else
+                            s_Instance.MarkForDelete(data.OwnerName, data.FileName);
+                    }
                 }
             }
 
             //get all UploadedFiles/<GUID> directory names
             List<string> subDirs = Directory.GetDirectories(s_BasePath).ToList();
-            foreach(Guid g in s_UsedGuids)
+            foreach (Guid g in s_UsedGuids)
             {   //guid exists as UsedGuid but not as subdir name
-                if(!subDirs.Contains(g.ToString()))
+                if (!subDirs.Contains(g.ToString()))
                 {
                     //add guid to list of tracked items to be removed
-                    if(!removed.Contains(g))
+                    if (!removed.Contains(g))
                         removed.Add(g);
                 }
             }
