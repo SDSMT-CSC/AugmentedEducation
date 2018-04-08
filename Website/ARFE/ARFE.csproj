@@ -337,6 +337,10 @@
       <Project>{957d847a-4515-409a-8441-092458f9cf2a}</Project>
       <Name>AuthenticationTokenCache</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9ff255dd-071b-474a-b25a-b252e50670ca}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
