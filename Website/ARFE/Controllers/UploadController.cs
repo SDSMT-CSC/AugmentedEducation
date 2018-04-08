@@ -15,6 +15,12 @@ namespace ARFE.Controllers
 {
     public class UploadController : Controller
     {
+        #region Members
+
+        private static string s_BasePath;
+
+        #endregion
+
         [Authorize]
         // GET: Upload  
         public ActionResult Index()
@@ -33,100 +39,123 @@ namespace ARFE.Controllers
         [HttpPost]
         public ActionResult UploadFile(HttpPostedFileBase BaseFile, HttpPostedFileBase MatFile, bool publicFile, string AltFileName, string FileDescription)
         {
+            string subDir = string.Empty;
+            s_BasePath = Server.MapPath("~/UploadedFiles");
             string uploadMessage = "File Uploaded Successfully.";
+            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance(s_BasePath);
+
             if (BaseFile.ContentLength > 0)
             {
-                string basePath = Server.MapPath("~/UploadedFiles");
+                string matFileName = string.Empty;
                 string fileName = Path.GetFileName(BaseFile.FileName);
-                string fileNameExtention = fileName.Substring(fileName.LastIndexOf('.'));
-                string fileNameWithoutExtension = fileName.Replace(fileNameExtention, "");
+                string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
+
+                if (MatFile != null)
+                    matFileName = Path.GetFileName(MatFile.FileName);
 
                 try
                 {
-                    while (System.IO.File.Exists(Path.Combine(basePath, fileName)))
-                    {   //remove other file if not in use
-                        try
-                        {
-                            System.IO.File.Delete(Path.Combine(basePath, fileName));
-                        }
-                        //sleep 1.5 seconds - don't waste resources just looping
-                        catch { Thread.Sleep(50); }
-                    }
+                    if (uploadedFiles.SaveFile(BaseFile, User.Identity.Name, fileName, FileDescription, publicFile))
+                    {
+                        if (!string.IsNullOrEmpty(matFileName))
+                            if (!uploadedFiles.SaveFile(MatFile, User.Identity.Name, matFileName, FileDescription, publicFile))
+                            { /*ViewBag message*/ }
 
-                    //save file as uniqueName
-                    BaseFile.SaveAs(Path.Combine(basePath, fileName));
-                    BlobManager blobManager = new BlobManager();
+                        BlobManager blobManager = new BlobManager();
+                        subDir = uploadedFiles.FindContainingFolderGUIDForFile(User.Identity.Name, fileName).ToString();
 
-                    //uploaded file is fbx
-                    if (fileNameExtention == ".fbx")
-                    {   //upload and delete
-                        if(publicFile)
-                        {
-                            blobManager.UploadBlobToPublicContainer(User.Identity.Name, fileName, basePath);
+                        if (fileExt == ".fbx")
+                        {   //no conversion necessary - upload
+                            UploadToBlob(fileName, subDir, FileDescription, publicFile);
                         }
                         else
-                        {
-                            blobManager.UploadBlobToUserContainer(User.Identity.Name, fileName, basePath);
+                        {   //uploaded file is not fbx -- convert
+                            ConvertAndUploadToBlob(fileName, AltFileName, subDir, FileDescription, publicFile);
                         }
-                        System.IO.File.Delete(Path.Combine(basePath, fileName));
                     }
-                    //uploaded file is not fbx -- convert
-                    else
-                    {
-                        FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
+                    else { /*ViewBag message*/ }
+                }
+                catch { uploadMessage = "Account error, please contact administrator."; }
 
-                        if (converter.ConvertToFBX(fileName))
-                        {   //convert, upload, delete converted, delete original
-                            if (publicFile)
-                            {
-                                blobManager.UploadBlobToPublicContainer(User.Identity.Name, $"{fileNameWithoutExtension}.fbx", basePath);
-                            }
-                            else
-                            {
-                                blobManager.UploadBlobToUserContainer(User.Identity.Name, $"{fileNameWithoutExtension}.fbx", basePath);
-                            }
-                            System.IO.File.Delete(Path.Combine(basePath, $"{fileNameWithoutExtension}.fbx"));
-                            System.IO.File.Delete(Path.Combine(basePath, fileName));
-                        }
-                        else
-                        {   //didn't convert - delete from how was originally saved
-                            uploadMessage = "Upload Failed. Accepted file types: FBX, DAE, OBJ, STL, PLY.";
-                            System.IO.File.Delete(Path.Combine(basePath, fileName));
-                        }
-                    }
-                }
-                catch
-                {
-                    uploadMessage = "Account error, please contact administrator.";
-                    if (System.IO.File.Exists(Path.Combine(basePath, fileName)))
-                    {
-                        System.IO.File.Delete(Path.Combine(basePath, fileName));
-                    }
-                    if (System.IO.File.Exists(Path.Combine(basePath, $"{fileNameWithoutExtension}.fbx")))
-                    {
-                        System.IO.File.Delete(Path.Combine(basePath, $"{fileNameWithoutExtension}.fbx"));
-                    }
-                }
+                //if file wasn't saved - does nothing, 
+                //else marks subdirectory containing file for deletion
+                uploadedFiles.MarkForDelete(User.Identity.Name, fileName);
             }
 
             ViewBag.Message = uploadMessage;
             return View();
         }
 
-        public ActionResult OverWriteUpload(string overWrite, string filename)
+        public ActionResult OverWriteUpload(string overWrite, string fileName)
         {
-            if(overWrite == "Yes")
+            string userName = User.Identity.Name;
+            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance(s_BasePath);
+
+            if (overWrite == "Yes")
             {
-                
+                //files are stored in subdir named by GUIDs
+                string subDir = uploadedFiles.FindContainingFolderGUIDForFile(userName, fileName).ToString();
+                string description = uploadedFiles.GetFileDescription(userName, fileName);
+                bool isPublic = uploadedFiles.IsSavedFilePublic(userName, fileName);
+
+                UploadToBlob(fileName, subDir, description, isPublic, true);
             }
             else
             {
-
+                uploadedFiles.DeleteAndRemoveFile(User.Identity.Name, fileName);
             }
 
             return View();
         }
 
 
+
+        #region Private Methods
+        
+        private string UploadToBlob(string fileName, string subDir, string description, bool publicFile, bool overwrite = false)
+        {
+            BlobManager blobManager = new BlobManager();
+            string path = Path.Combine(s_BasePath, subDir);
+
+            if (publicFile)
+            {
+                if (!blobManager.UploadBlobToPublicContainer(User.Identity.Name, fileName, path, description, overwrite))
+                { return fileName; }
+            }
+            else
+            {
+                if (!blobManager.UploadBlobToUserContainer(User.Identity.Name, fileName, path, description, overwrite))
+                { return fileName; }
+            }
+
+            return string.Empty;
+        }
+
+        private string ConvertAndUploadToBlob(string fileName, string altFileName, string subDir, string description, bool publicFile)
+        {
+            char sep = Path.DirectorySeparatorChar;
+            string path = Path.Combine(s_BasePath, subDir);
+            string fileNoExt = fileName.Substring(0, fileName.LastIndexOf('.') + 1);
+            FileConverter converter = new FileConverter($"UploadedFiles{sep}{subDir}", $"UploadedFiles{sep}{subDir}");
+
+            if (converter.ConvertToFBX(fileName))
+            {   //convert, upload, delete converted, delete original
+                if (!string.IsNullOrEmpty(altFileName))
+                {
+                    //rename converted file to provided altFileName
+                    System.IO.File.Move(Path.Combine(path, $"{fileNoExt}.fbx"), Path.Combine(path, $"{altFileName}.fbx"));
+                    fileNoExt = altFileName;
+                }
+
+                //Call upload with converted file
+                return UploadToBlob($"{fileNoExt}.fbx", subDir, description, publicFile);
+            }
+            else
+            { 
+                return "Upload Failed. Accepted file types: FBX, DAE, OBJ, STL, PLY.";
+            }
+        }
+        
+        #endregion
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Web;
+using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 
 namespace ARFE
@@ -21,7 +23,7 @@ namespace ARFE
         #region Constructor
 
         //singleton
-        public UploadedFileCache Init(string basePath)
+        public static UploadedFileCache GetInstance(string basePath)
         {
             if (s_Instance == null)
             {
@@ -42,20 +44,22 @@ namespace ARFE
 
         #region Public Methods
 
-        public string SaveFile(HttpPostedFileBase file, string userName, string fileName, string description = "", bool isPublic = false)
+        public bool SaveFile(HttpPostedFileBase file, string userName, string fileName, string description = "", bool isPublic = false)
         {
-            string errorMsg = string.Empty;
             Guid fileGuid = GetGuidForSavingFile();
+            string path = Path.Combine(s_BasePath, fileGuid.ToString());
             FileData fileData = new FileData(fileGuid, userName, fileName, description, isPublic);
 
-            s_FileDataByGuid.Add(fileGuid, fileData);
-            try
-            {
-                file.SaveAs(Path.Combine(s_BasePath, fileData.SavedFileName));
-            }
-            catch(Exception ex) { errorMsg = $"Exception: \r\n{ex.ToString()}"; }
+            Directory.CreateDirectory(path);
+            file.SaveAs(Path.Combine(path, fileData.FileName));
 
-            return errorMsg;
+            if (File.Exists(Path.Combine(path, fileData.FileName)))
+            {
+                s_FileDataByGuid.Add(fileGuid, fileData);
+                return true;
+            }
+
+            return false;
         }
 
 
@@ -69,17 +73,20 @@ namespace ARFE
         }
 
 
-        public Guid FindSavedFile(string userName, string origFileName)
+        public Guid FindContainingFolderGUIDForFile(string userName, string fileName)
         {
-            Guid fileGuid = s_UsedGuids[0];
-            DateTime mostRecent = DateTime.Now;
             List<FileData> fileDataGuids = new List<FileData>();
+            DateTime mostRecent = DateTime.Now;
+
+            //ensure unique GUID - not using it
+            Guid defaultGuid = GetGuidForSavingFile();
+            Guid fileGuid = defaultGuid;
 
             foreach (FileData data in s_FileDataByGuid.Values)
             {
                 //belongs to user, has matching name, is most recent
                 if (data.OwnerName == userName
-                && data.OrigFileName == origFileName
+                && data.FileName == fileName
                 && data.FileExpirationTime < mostRecent)
                 {
                     fileGuid = data.FileGuid;
@@ -87,33 +94,83 @@ namespace ARFE
                 }
             }
 
+            //remove unused GUID
+            s_UsedGuids.Remove(defaultGuid);
             return fileGuid;
         }
 
 
-        public string DeleteFile(string userName, string origFileName)
+        public string GetFileDescription(string userName, string fileName)
         {
-            string errorMsg = string.Empty;
-            string savedFileName = string.Empty;
-            Guid fileGuid = FindSavedFile(userName, origFileName);
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
 
-            savedFileName = s_FileDataByGuid[fileGuid].SavedFileName;
-
-            try
+            if (s_FileDataByGuid.ContainsKey(fileGuid))
             {
-                File.Delete(Path.Combine(s_BasePath, savedFileName));
-                RemoveFile(fileGuid);
+                return s_FileDataByGuid[fileGuid].Description;
             }
-            catch (Exception ex) { errorMsg = $"Exception: \r\n{ex.ToString()}"; }
 
-            return errorMsg;
+            return string.Empty;
         }
 
 
-        public static string DeleteOldFiles()
+        public bool IsSavedFilePublic(string userName, string fileName)
+        {
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+
+            if(s_FileDataByGuid.ContainsKey(fileGuid))
+            {
+                return s_FileDataByGuid[fileGuid].IsPublic;
+            }
+
+            return false;
+        }
+
+
+        public bool DeleteFile(string userName, string fileName)
+        {
+            string savedFileName = string.Empty;
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+
+            if (DeleteDirectory(Path.Combine(s_BasePath, fileGuid.ToString())))
+            {
+                return true;
+            }
+
+            MarkForDelete(userName, fileName);
+            return false;
+        }
+
+
+        public bool DeleteAndRemoveFile(string userName, string fileName)
+        {
+            string savedFileName = string.Empty;
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+
+            if (DeleteDirectory(Path.Combine(s_BasePath, fileGuid.ToString())))
+            {
+                RemoveFile(fileGuid);
+                return true;
+            }
+
+            MarkForDelete(userName, fileName);
+            return false;
+        }
+
+
+        public void MarkForDelete(string userName, string fileName)
+        {
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+
+            if (s_FileDataByGuid.ContainsKey(fileGuid))
+            {
+                s_FileDataByGuid[fileGuid].MarkForDelete();
+            }
+        }
+
+
+        public static void DeleteOldFiles()
         {
             DateTime now = DateTime.Now;
-            string errorMsg = string.Empty;
             List<Guid> removed = new List<Guid>();
 
             foreach (Guid g in s_FileDataByGuid.Keys)
@@ -121,23 +178,31 @@ namespace ARFE
                 FileData data = s_FileDataByGuid[g];
                 if (now > data.FileExpirationTime)
                 {
-                    removed.Add(g);
-
-                    try
-                    {
-                        File.Delete(Path.Combine(s_BasePath, data.SavedFileName));
-                    }
-                    catch (Exception ex) { errorMsg = $"Exception: \r\n{ex.ToString()}"; }
-
+                    if (s_Instance.DeleteFile(data.OwnerName, data.FileName))
+                        removed.Add(g);
+                    else
+                        s_Instance.MarkForDelete(data.OwnerName, data.FileName);
                 }
             }
 
-            foreach(Guid g in removed)
+            //get all UploadedFiles/<GUID> directory names
+            List<string> subDirs = Directory.GetDirectories(s_BasePath).ToList();
+            foreach(Guid g in s_UsedGuids)
+            {   //guid exists as UsedGuid but not as subdir name
+                if(!subDirs.Contains(g.ToString()))
+                {
+                    //add guid to list of tracked items to be removed
+                    if(!removed.Contains(g))
+                        removed.Add(g);
+                }
+            }
+
+            //remove old tracked items
+            foreach (Guid g in removed)
             {
                 s_Instance.RemoveFile(g);
             }
 
-            return errorMsg;
         }
 
         #endregion
@@ -159,6 +224,20 @@ namespace ARFE
             return g;
         }
 
+
+        private bool DeleteDirectory(string path)
+        {
+            int retryCount = 15;
+
+            while (retryCount-- > 0 && Directory.Exists(path))
+            {
+                try { Directory.Delete(path, true); }
+                catch { Thread.Sleep(500); }
+            }
+
+            return !(Directory.Exists(path));
+        }
+
         #endregion
 
 
@@ -172,7 +251,7 @@ namespace ARFE
             private Guid _FileGuid;
             private string _OwnerName;
             private string _Description;
-            private string _OrigFileName;
+            private string _FileName;
             private DateTime _FileExpirationTime;
 
             #endregion
@@ -185,7 +264,7 @@ namespace ARFE
                 _IsPublic = isPublic;
                 _FileGuid = fileGuid;
                 _OwnerName = ownerName;
-                _OrigFileName = fileName;
+                _FileName = fileName;
                 _Description = description;
                 _FileExpirationTime = DateTime.Now.AddMinutes(s_PreserveMinutes);
             }
@@ -198,10 +277,19 @@ namespace ARFE
             public bool IsPublic => _IsPublic;
             public Guid FileGuid => _FileGuid;
             public string OwnerName => _OwnerName;
+            public string FileName => _FileName;
             public string Description => _Description;
-            public string OrigFileName => _OrigFileName;
             public DateTime FileExpirationTime => _FileExpirationTime;
-            public string SavedFileName => $"{FileGuid}__{OrigFileName}";
+
+            #endregion
+
+
+            #region Public Methods
+
+            public void MarkForDelete()
+            {
+                _FileExpirationTime = DateTime.Now.AddHours(-1);
+            }
 
             #endregion
         }

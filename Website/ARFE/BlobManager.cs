@@ -65,6 +65,7 @@ namespace ARFE
             return formattedName;
         }
 
+
         #region privately owned containers
 
 
@@ -77,34 +78,23 @@ namespace ARFE
         /// <param name="fileName"></param>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public bool UploadBlobToUserContainer(string userName, string fileName, string filePath, bool overwrite = false)
+        public bool UploadBlobToUserContainer(string userName, string fileName, string filePath, string description = "", bool overwrite = false)
         {
             CloudBlobContainer container = GetOrCreateBlobContainer(userName);
             CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
             string extension = fileName.Substring(fileName.LastIndexOf('.'));
 
-            if (!blob.Exists())
+            if (overwrite || !blob.Exists())
             {
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
-               
-                //overwrite same blob will keep key
-                if (!blob.Metadata.ContainsKey("OwnerName"))
-                {
-                    blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
-                    blob.SetMetadata();
-                }
+
+                UpdateOwnerNameMetaData(blob, userName);
+                UpdateDescriptionMetaData(blob, description);
+
                 //primarily want to store .fbx due to small size
                 if (extension != ".fbx")
                 {
-                    if (!blob.Metadata.ContainsKey("LastAccessed"))
-                    {
-                        blob.Metadata.Add(new KeyValuePair<string, string>("LastAccessed", DateTime.UtcNow.ToString()));
-                    }
-                    else
-                    {
-                        blob.Metadata["LastAccessed"] = DateTime.UtcNow.ToString();
-                    }
-                    blob.SetMetadata();
+                    UpdateLastAccessedMetaData(blob);
                 }
 
                 return true;
@@ -121,6 +111,7 @@ namespace ARFE
 
             return blob.DeleteIfExists(DeleteSnapshotsOption.IncludeSnapshots);
         }
+
 
         /// <summary>
         /// Given the current Identity logged in user name and the name of the file to download,
@@ -266,16 +257,25 @@ namespace ARFE
         /// <param name="fileName">Name of the file</param>
         /// <param name="filePath">Path to the file</param>
         /// <returns></returns>
-        public bool UploadBlobToPublicContainer(string userName, string fileName, string filePath, bool overwrite = false)
+        public bool UploadBlobToPublicContainer(string userName, string fileName, string filePath, string description = "", bool overwrite = false)
         {
+            string extension = fileName.Substring(fileName.LastIndexOf('.'));
             CloudBlobContainer container = GetOrCreateBlobContainer("public");
             CloudBlockBlob blob = container.GetBlockBlobReference($"{FormatBlobContainerName(userName)}-{fileName}");
 
-            if (!blob.Exists())
+            if (overwrite || !blob.Exists())
             {
                 blob.UploadFromFile(Path.Combine(filePath, fileName));
-                blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
-                blob.SetMetadata();
+
+                UpdateOwnerNameMetaData(blob, userName);
+                UpdateDescriptionMetaData(blob, description);
+
+                //primarily want to store .fbx due to small size
+                if (extension != ".fbx")
+                {
+                    UpdateLastAccessedMetaData(blob);
+                }
+                
                 return true;
             }
 
@@ -412,7 +412,7 @@ namespace ARFE
 
         #endregion
 
-        
+
         #region Private
 
         /// <summary>
@@ -512,6 +512,43 @@ namespace ARFE
             CleanupUploadedFiles(path, fileName, folderName, zipFolderName);
 
             return returnMessage;
+        }
+
+
+        private void UpdateOwnerNameMetaData(CloudBlockBlob blob, string userName)
+        {
+            //overwrite same blob will keep key
+            if (!blob.Metadata.ContainsKey("OwnerName"))
+            {
+                blob.Metadata.Add(new KeyValuePair<string, string>("OwnerName", userName));
+                blob.SetMetadata();
+            }
+        }
+
+        private void UpdateLastAccessedMetaData(CloudBlockBlob blob)
+        {
+            if (!blob.Metadata.ContainsKey("LastAccessed"))
+            {
+                blob.Metadata.Add(new KeyValuePair<string, string>("LastAccessed", DateTime.UtcNow.ToString()));
+            }
+            else
+            {
+                blob.Metadata["LastAccessed"] = DateTime.UtcNow.ToString();
+            }
+            blob.SetMetadata();
+        }
+
+        private void UpdateDescriptionMetaData(CloudBlockBlob blob, string description)
+        {
+            if (!blob.Metadata.ContainsKey("Description"))
+            {
+                blob.Metadata.Add(new KeyValuePair<string, string>("Description", description));
+            }
+            else
+            {
+                blob.Metadata["LastAccessed"] = description;
+            }
+            blob.SetMetadata();
         }
 
 
