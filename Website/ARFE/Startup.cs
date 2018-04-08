@@ -28,7 +28,7 @@ namespace ARFE
 
             timer.AutoReset = true;
             timer.Elapsed += Timer_Elapsed;
-            timer.Interval = (.5 * 60 * 1000); //5 min in milliseconds
+            timer.Interval = (5 * 60 * 1000); //5 min in milliseconds
 
             timer.Enabled = true;
         }

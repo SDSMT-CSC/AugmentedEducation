@@ -37,7 +37,7 @@ namespace ARFE.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult UploadFile(HttpPostedFileBase BaseFile, HttpPostedFileBase MatFile, bool publicFile, string AltFileName, string FileDescription)
+        public ActionResult UploadFile(HttpPostedFileBase baseFile, HttpPostedFileBase matFile, bool publicFile, string altFileName, string fileDescription)
         {
             string subDir = string.Empty;
             string uploadMessage = "File Uploaded Successfully.";
@@ -46,21 +46,21 @@ namespace ARFE.Controllers
             if(string.IsNullOrEmpty(s_BasePath))
                 s_BasePath = uploadedFiles.BasePath;
 
-            if (BaseFile.ContentLength > 0)
+            if (baseFile.ContentLength > 0)
             {
                 string matFileName = string.Empty;
-                string fileName = Path.GetFileName(BaseFile.FileName);
+                string fileName = Path.GetFileName(baseFile.FileName);
                 string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
 
-                if (MatFile != null)
-                    matFileName = Path.GetFileName(MatFile.FileName);
+                if (matFile != null)
+                    matFileName = Path.GetFileName(matFile.FileName);
 
                 try
                 {
-                    if (uploadedFiles.SaveFile(BaseFile, User.Identity.Name, fileName, FileDescription, publicFile))
+                    if (uploadedFiles.SaveFile(baseFile, User.Identity.Name, fileName, altFileName, fileDescription, publicFile))
                     {
                         if (!string.IsNullOrEmpty(matFileName))
-                            if (!uploadedFiles.SaveFile(MatFile, User.Identity.Name, matFileName, FileDescription, publicFile))
+                            if (!uploadedFiles.SaveFile(matFile, User.Identity.Name, matFileName, "", fileDescription, publicFile))
                             { /*ViewBag message*/ }
 
                         BlobManager blobManager = new BlobManager();
@@ -68,11 +68,11 @@ namespace ARFE.Controllers
 
                         if (fileExt == ".fbx")
                         {   //no conversion necessary - upload
-                            UploadToBlob(fileName, subDir, FileDescription, publicFile);
+                            UploadToBlob(fileName, altFileName, subDir, fileDescription, publicFile);
                         }
                         else
                         {   //uploaded file is not fbx -- convert
-                            ConvertAndUploadToBlob(fileName, AltFileName, subDir, FileDescription, publicFile);
+                            ConvertAndUploadToBlob(fileName, altFileName, subDir, fileDescription, publicFile);
                         }
                     }
                     else { /*ViewBag message*/ }
@@ -101,9 +101,10 @@ namespace ARFE.Controllers
                 //files are stored in subdir named by GUIDs
                 string subDir = uploadedFiles.FindContainingFolderGUIDForFile(userName, fileName).ToString();
                 string description = uploadedFiles.GetFileDescription(userName, fileName);
+                string altFileName = uploadedFiles.GetAltFileName(userName, fileName);
                 bool isPublic = uploadedFiles.IsSavedFilePublic(userName, fileName);
 
-                UploadToBlob(fileName, subDir, description, isPublic, true);
+                UploadToBlob(fileName, altFileName, subDir, description, isPublic, true);
             }
             else
             {
@@ -117,14 +118,23 @@ namespace ARFE.Controllers
 
         #region Private Methods
         
-        private string UploadToBlob(string fileName, string subDir, string description, bool publicFile, bool overwrite = false)
+        private string UploadToBlob(string fileName, string altFileName, string subDir, string description, bool publicFile, bool overwrite = false)
         {
             BlobManager blobManager = new BlobManager();
             string path = Path.Combine(s_BasePath, subDir);
+            string fileNoExt = fileName.Substring(0, fileName.LastIndexOf('.'));
+
+            //convert, upload, delete converted, delete original
+            if (!string.IsNullOrEmpty(altFileName))
+            {
+                //rename converted file to provided altFileName
+                System.IO.File.Move(Path.Combine(path, $"{fileNoExt}.fbx"), Path.Combine(path, $"{altFileName}.fbx"));
+                fileNoExt = altFileName;
+            }
 
             if (publicFile)
             {
-                if (!blobManager.UploadBlobToPublicContainer(User.Identity.Name, fileName, path, description, overwrite))
+                if (!blobManager.UploadBlobToPublicContainer(User.Identity.Name, $"{fileNoExt}.fbx", path, description, overwrite))
                 { return fileName; }
             }
             else
@@ -139,21 +149,11 @@ namespace ARFE.Controllers
         private string ConvertAndUploadToBlob(string fileName, string altFileName, string subDir, string description, bool publicFile)
         {
             char sep = Path.DirectorySeparatorChar;
-            string path = Path.Combine(s_BasePath, subDir);
-            string fileNoExt = fileName.Substring(0, fileName.LastIndexOf('.') + 1);
             FileConverter converter = new FileConverter($"UploadedFiles{sep}{subDir}", $"UploadedFiles{sep}{subDir}");
 
             if (converter.ConvertToFBX(fileName))
-            {   //convert, upload, delete converted, delete original
-                if (!string.IsNullOrEmpty(altFileName))
-                {
-                    //rename converted file to provided altFileName
-                    System.IO.File.Move(Path.Combine(path, $"{fileNoExt}.fbx"), Path.Combine(path, $"{altFileName}.fbx"));
-                    fileNoExt = altFileName;
-                }
-
-                //Call upload with converted file
-                return UploadToBlob($"{fileNoExt}.fbx", subDir, description, publicFile);
+            {   //Call upload with converted file
+                return UploadToBlob(fileName, altFileName, subDir, description, publicFile);
             }
             else
             { 

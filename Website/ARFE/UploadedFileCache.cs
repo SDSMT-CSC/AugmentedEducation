@@ -54,11 +54,11 @@ namespace ARFE
 
         #region Public Methods
 
-        public bool SaveFile(HttpPostedFileBase file, string userName, string fileName, string description = "", bool isPublic = false)
+        public bool SaveFile(HttpPostedFileBase file, string userName, string fileName, string altFileName = "", string description = "", bool isPublic = false)
         {
             Guid fileGuid = GetGuidForSavingFile();
             string path = Path.Combine(s_BasePath, fileGuid.ToString());
-            FileData fileData = new FileData(fileGuid, userName, fileName, description, isPublic);
+            FileData fileData = new FileData(fileGuid, userName, fileName, altFileName, description, isPublic);
 
             Directory.CreateDirectory(path);
             file.SaveAs(Path.Combine(path, fileData.FileName));
@@ -99,7 +99,7 @@ namespace ARFE
                     //belongs to user, has matching name, is most recent
                     if (data.OwnerName == userName
                     && data.FileName == fileName
-                    && data.FileExpirationTime < mostRecent)
+                    && data.FileExpirationTime > mostRecent)
                     {
                         fileGuid = data.FileGuid;
                         mostRecent = data.FileExpirationTime;
@@ -125,6 +125,17 @@ namespace ARFE
             return string.Empty;
         }
 
+        public string GetAltFileName(string userName, string fileName)
+        {
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+
+            if (s_FileDataByGuid.ContainsKey(fileGuid))
+            {
+                return s_FileDataByGuid[fileGuid].AltFileName;
+            }
+
+            return string.Empty;
+        }
 
         public bool IsSavedFilePublic(string userName, string fileName)
         {
@@ -232,7 +243,7 @@ namespace ARFE
 
             do
             {
-                g = new Guid();
+                g = Guid.NewGuid();
             } while (s_UsedGuids.Contains(g));
 
             s_UsedGuids.Add(g);
@@ -265,22 +276,24 @@ namespace ARFE
 
             private bool _IsPublic;
             private Guid _FileGuid;
+            private string _FileName;
             private string _OwnerName;
             private string _Description;
-            private string _FileName;
+            private string _AltFileName;
             private DateTime _FileExpirationTime;
 
             #endregion
 
 
-            #region Constructors 
+            #region Constructors
 
-            public FileData(Guid fileGuid, string ownerName, string fileName, string description = "", bool isPublic = false)
+            public FileData(Guid fileGuid, string ownerName, string fileName, string altFileName = "", string description = "", bool isPublic = false)
             {
                 _IsPublic = isPublic;
                 _FileGuid = fileGuid;
-                _OwnerName = ownerName;
                 _FileName = fileName;
+                _OwnerName = ownerName;
+                _AltFileName = altFileName;
                 _Description = description;
                 _FileExpirationTime = DateTime.Now.AddMinutes(s_PreserveMinutes);
             }
@@ -292,9 +305,10 @@ namespace ARFE
 
             public bool IsPublic => _IsPublic;
             public Guid FileGuid => _FileGuid;
-            public string OwnerName => _OwnerName;
             public string FileName => _FileName;
+            public string OwnerName => _OwnerName;
             public string Description => _Description;
+            public string AltFileName => _AltFileName;
             public DateTime FileExpirationTime => _FileExpirationTime;
 
             #endregion
