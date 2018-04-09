@@ -51,6 +51,10 @@ public class ModelListView extends ListView
 	 */
 	private Boolean isLocal = false;
 
+	public void setFileManager(FileManager manager) {
+		fileManager = manager;
+	}
+
 	/**
 	 * Setter to only load local models, or show remote as well.
 	 * @param isLocal Set whether to show only local models or not
@@ -58,6 +62,13 @@ public class ModelListView extends ListView
 	public void setIsLocal(Boolean isLocal) {
 		this.isLocal = isLocal;
 	}
+
+	/**
+	 * A getter for the isLocal member variable.  Variable used to denote only
+	 * viewing local or all models.
+	 * @return isLocal member variable
+	 */
+	public Boolean getIsLocal() {return this.isLocal;}
 
 	/**
 	 * Constructor that initializes the context
