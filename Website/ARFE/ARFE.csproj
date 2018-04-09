@@ -244,6 +244,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\logo.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -279,7 +280,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -335,6 +335,10 @@
     <ProjectReference Include="..\AuthenticationTokenCache\AuthenticationTokenCache.csproj">
       <Project>{957d847a-4515-409a-8441-092458f9cf2a}</Project>
       <Name>AuthenticationTokenCache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9ff255dd-071b-474a-b25a-b252e50670ca}</Project>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

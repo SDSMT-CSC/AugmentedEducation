@@ -1,6 +1,7 @@
-﻿using Microsoft.Owin;
+﻿using System.Timers;
+
 using Owin;
-using System.Timers;
+using Microsoft.Owin;
 
 [assembly: OwinStartupAttribute(typeof(ARFE.Startup))]
 namespace ARFE
@@ -10,8 +11,14 @@ namespace ARFE
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            string uploadDir = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "UploadedFiles");
+            //news up a static instance
+            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance();
+            uploadedFiles.BasePath = uploadDir;
+
             BlobManager blobManager = new BlobManager();
             blobManager.GetOrCreateBlobContainer("public");
+
             TimerInit();
         }
 

@@ -319,6 +319,35 @@ namespace ARFE
         }
 
 
+        public List<Common.FileUIInfo> ListPublicBlobInfoForUI()
+        {
+            List<Common.FileUIInfo> list = new List<Common.FileUIInfo>();
+            CloudBlobContainer container = GetOrCreateBlobContainer("public");
+                
+
+            foreach (IListBlobItem blobItem in container.ListBlobs(null, true))
+            {
+                Common.FileUIInfo info;
+                CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                blob.FetchAttributes();
+                string author, description = string.Empty;
+
+                if (blob.Metadata.ContainsKey("OwnerName"))
+                    author = blob.Metadata["OwnerName"];
+                else
+                    author = "Not recorded";
+
+                if (blob.Metadata.ContainsKey("Description"))
+                    description = blob.Metadata["Description"];
+
+                info = new Common.FileUIInfo(blob.Name, author, description, blob.Properties.LastModified.Value.DateTime);
+                list.Add(info);
+            }
+
+            return list;
+        }
+
+
         /// <summary>
         /// Get a list of blob Uris within the public blob container
         /// </summary>
@@ -541,7 +570,7 @@ namespace ARFE
             }
             else
             {
-                blob.Metadata["LastAccessed"] = description;
+                blob.Metadata["Description"] = description;
             }
             blob.SetMetadata();
         }

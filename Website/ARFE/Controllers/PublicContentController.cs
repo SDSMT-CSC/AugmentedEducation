@@ -20,20 +20,27 @@ namespace ARFE.Controllers
             int index;
             BlobManager blob = new BlobManager();
 
-            var fileList = blob.ListBlobNamesInPublicContainer();
-            List<string> filenames = new List<string>();
-            foreach (string x in fileList)
+            var fileList = blob.ListPublicBlobInfoForUI();
+            List<Common.FileUIInfo> fileObjects = new List<Common.FileUIInfo>();
+
+            foreach (Common.FileUIInfo x in fileList)
             {
-                if(!x.Contains(".zip"))
+                if(!x.FileName.Contains(".zip"))
                 {
-                    index = x.LastIndexOf(".");
-                    filenames.Add(x.Substring(0, index));
+                    index = x.FileName.LastIndexOf(".");
+                    x.FileName = x.FileName.Substring(0, index);
+
+                    index = x.Author.IndexOf('@');
+                    x.Author = x.Author.Substring(0, index);
+                    x.UploadDate = x.UploadDate.ToLocalTime();
+
+                    fileObjects.Add(x);
                 }
 
             }
 
 
-            ViewBag.filenames = filenames;
+            ViewBag.fileObjects = fileObjects;
 
             var filestypes = GetAllFileTypes();
 
