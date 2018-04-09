@@ -49,7 +49,7 @@ namespace ARFE
                     process.Close();
                     return true;
                 }
-                catch (Exception ex)
+                catch 
                 {
                     return false;
                 }
@@ -90,7 +90,7 @@ namespace ARFE
                     process.Close();
                     return true;
                 }
-                catch (Exception ex)
+                catch 
                 {
                     return false;
                 }
@@ -131,7 +131,7 @@ namespace ARFE
                     process.Close();
                     return true;
                 }
-                catch (Exception ex)
+                catch 
                 {
                     return false;
                 }
@@ -172,7 +172,7 @@ namespace ARFE
                     process.Close();
                     return true;
                 }
-                catch (Exception ex)
+                catch 
                 {
                     return false;
                 }
@@ -213,7 +213,7 @@ namespace ARFE
                     process.Close();
                     return true;
                 }
-                catch (Exception ex)
+                catch 
                 {
                     return false;
                 }
