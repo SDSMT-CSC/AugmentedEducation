@@ -173,6 +173,8 @@ namespace ARFE
             DateTime now = DateTime.Now;
             List<Guid> removed = new List<Guid>();
 
+            //won't touch fileConverter.exe or assimp.dll
+            //since those files won't be contained in a GUID folder
             foreach (Guid g in s_FileDataByGuid.Keys)
             {
                 FileData data = s_FileDataByGuid[g];
