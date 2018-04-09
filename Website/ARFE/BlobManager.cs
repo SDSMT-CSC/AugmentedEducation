@@ -575,7 +575,7 @@ namespace ARFE
             }
             else
             {
-                blob.Metadata["LastAccessed"] = description;
+                blob.Metadata["Description"] = description;
             }
             blob.SetMetadata();
         }

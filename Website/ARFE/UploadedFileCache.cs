@@ -34,8 +34,9 @@ namespace ARFE
 
         private UploadedFileCache()
         {
-            s_UsedGuids = new List<Guid>();
             s_FileDataByGuid = new Dictionary<Guid, FileData>();
+            s_UsedGuids = new List<Guid>();
+            //Restore();
         }
 
         #endregion
@@ -46,7 +47,12 @@ namespace ARFE
         public string BasePath
         {
             get { return s_BasePath; }
-            set { if (string.IsNullOrEmpty(s_BasePath)) s_BasePath = value; }
+            set
+            {
+                if (string.IsNullOrEmpty(s_BasePath))
+                    s_BasePath = value;
+                CleanupUploadDirectory();
+            }
         }
 
         #endregion
@@ -68,6 +74,11 @@ namespace ARFE
                 s_FileDataByGuid.Add(fileGuid, fileData);
                 return true;
             }
+            else
+            {
+                //file didn't save, don't keep subDir
+                DeleteDirectory(path);
+            }
 
             return false;
         }
@@ -83,10 +94,10 @@ namespace ARFE
         }
 
 
-        public Guid FindContainingFolderGUIDForFile(string userName, string fileName)
+        public Guid FindContainingFolderGUIDForFile(string userName, string uploadFileName)
         {
             List<FileData> fileDataGuids = new List<FileData>();
-            DateTime mostRecent = DateTime.Now;
+            DateTime mostRecent = DateTime.MinValue;
 
             //ensure unique GUID - not using it
             Guid defaultGuid = GetGuidForSavingFile();
@@ -98,7 +109,8 @@ namespace ARFE
                 {
                     //belongs to user, has matching name, is most recent
                     if (data.OwnerName == userName
-                    && data.FileName == fileName
+                    //if AltFileName == "" : AltFileName == FileName
+                    && data.AltFileName == uploadFileName
                     && data.FileExpirationTime > mostRecent)
                     {
                         fileGuid = data.FileGuid;
@@ -109,13 +121,17 @@ namespace ARFE
 
             //remove unused GUID
             s_UsedGuids.Remove(defaultGuid);
+
+            if (fileGuid == defaultGuid)
+                fileGuid = Guid.Empty;
+
             return fileGuid;
         }
 
 
-        public string GetFileDescription(string userName, string fileName)
+        public string GetFileDescription(string userName, string uploadFileName)
         {
-            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, uploadFileName);
 
             if (s_FileDataByGuid.ContainsKey(fileGuid))
             {
@@ -125,21 +141,10 @@ namespace ARFE
             return string.Empty;
         }
 
-        public string GetAltFileName(string userName, string fileName)
+
+        public bool IsSavedFilePublic(string userName, string uploadFileName)
         {
-            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
-
-            if (s_FileDataByGuid.ContainsKey(fileGuid))
-            {
-                return s_FileDataByGuid[fileGuid].AltFileName;
-            }
-
-            return string.Empty;
-        }
-
-        public bool IsSavedFilePublic(string userName, string fileName)
-        {
-            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, uploadFileName);
 
             if (s_FileDataByGuid.ContainsKey(fileGuid))
             {
@@ -150,25 +155,31 @@ namespace ARFE
         }
 
 
-        public bool DeleteFile(string userName, string fileName)
+        public bool DeleteFile(string userName, string uploadFileName)
         {
             string savedFileName = string.Empty;
-            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, uploadFileName);
 
-            if (DeleteDirectory(Path.Combine(s_BasePath, fileGuid.ToString())))
+            if (fileGuid != Guid.Empty)
             {
-                return true;
-            }
+                if (DeleteDirectory(Path.Combine(s_BasePath, fileGuid.ToString())))
+                {
+                    return true;
+                }
 
-            MarkForDelete(userName, fileName);
+                MarkForDelete(userName, uploadFileName);
+            }
+            //doesn't exist - like deleting
+            else return true;
+
             return false;
         }
 
 
-        public bool DeleteAndRemoveFile(string userName, string fileName)
+        public bool DeleteAndRemoveFile(string userName, string uploadFileName)
         {
             string savedFileName = string.Empty;
-            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, uploadFileName);
 
             if (DeleteDirectory(Path.Combine(s_BasePath, fileGuid.ToString())))
             {
@@ -176,14 +187,14 @@ namespace ARFE
                 return true;
             }
 
-            MarkForDelete(userName, fileName);
+            MarkForDelete(userName, uploadFileName);
             return false;
         }
 
 
-        public void MarkForDelete(string userName, string fileName)
+        public void MarkForDelete(string userName, string uploadFileName)
         {
-            Guid fileGuid = FindContainingFolderGUIDForFile(userName, fileName);
+            Guid fileGuid = FindContainingFolderGUIDForFile(userName, uploadFileName);
 
             if (s_FileDataByGuid.ContainsKey(fileGuid))
             {
@@ -265,11 +276,23 @@ namespace ARFE
             return !(Directory.Exists(path));
         }
 
+
+        private void CleanupUploadDirectory()
+        {
+            List<string> subDirs = Directory.GetDirectories(s_BasePath).ToList();
+
+            foreach (string dir in subDirs)
+            {
+                DeleteDirectory(Path.Combine(s_BasePath, dir));
+            }
+        }
+
         #endregion
 
 
         #region Internal Classes
 
+        [Serializable]
         private class FileData
         {
             #region Members
@@ -308,7 +331,11 @@ namespace ARFE
             public string FileName => _FileName;
             public string OwnerName => _OwnerName;
             public string Description => _Description;
-            public string AltFileName => _AltFileName;
+            public string AltFileName
+            {   //no altName -> return fileName
+                get { return string.IsNullOrEmpty(_AltFileName) ? _FileName : _AltFileName; }
+            }
+
             public DateTime FileExpirationTime => _FileExpirationTime;
 
             #endregion
@@ -324,7 +351,14 @@ namespace ARFE
             #endregion
         }
 
+        [Serializable]
+        private class PersistedFileData
+        {
+            public PersistedFileData() { }
 
+            //property
+            public Dictionary<Guid, FileData> FileDataByGuid { get; set; }
+        }
         #endregion
     }
 }

@@ -5,15 +5,15 @@
     ViewBag.Title = "UploadFile";
 }
 
-@if (ViewBag.FileName != null)
+@if (!string.IsNullOrEmpty(ViewBag.FileExists))
 {
-
+    ViewBag.uploadFileName = ViewBag.FileExists;
     using (Html.BeginForm("OverWriteUpload", "Upload", FormMethod.Post, new { role = "form" }))
     {
         <br/>
         <div id="OverwriteReq" style = "border-radius: 25px; background: #d2def2; padding: 20px; width: auto">
-            <input name="fileName" type="text" value="@ViewBag.FileName" style="visibility:hidden" />
-            <p>The file @ViewBag.FileName already exists in storage.</p>
+            <input name="uploadFileName" type="hidden" value="@ViewBag.uploadFileName" style="visibility:hidden" />
+            <p>The file @ViewBag.uploadFileName already exists in storage.</p>
             <p>Would you like to overwrite it?</p>
             <button name="overWrite" type="submit" value="Yes">Yes</button>
             <button name="overWrite" type="submit" value="No">No</button>
@@ -122,7 +122,7 @@
 
             $('#AltFileName').on('keyup', function () {
                 var altName = $('#AltFileName').val();
-                var badString = "!@@#$%^&*()?><,./\"\'{]}\\|`~=+";
+                var badString = " !@@#$%^&*()?><,./\"\'{]}\\|`~=+";
 
                 for (var i = 0; i < altName.length; i++) {
                     
