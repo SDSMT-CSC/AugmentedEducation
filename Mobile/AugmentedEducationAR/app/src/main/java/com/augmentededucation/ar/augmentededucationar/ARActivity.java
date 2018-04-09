@@ -40,33 +40,81 @@ import java.util.concurrent.ArrayBlockingQueue;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+/**
+ * The activity to host the ObjectRenderer to display a selected model.  The user should
+ * have entered this activity through the HomeActivity where they choose a model they
+ * would like to view.
+ *
+ * A large portion of this code was based on the sample provided by Google to learn
+ * ARCore.
+ */
 public class ARActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
+
+    /**
+     * The tag used to store the model name to render in the bundle.
+     */
     public static final String FILENAME_TAG = "filename_tag";
 
+    /**
+     * Tag used for logging
+     */
     private static final String TAG = ARActivity.class.getSimpleName();
 
-
+    /**
+     * The surface view of where to draw the model
+     */
     private GLSurfaceView surfaceView;
+
+    /**
+     * The AR Core session
+     */
     private Session session;
+
+    /**
+     * Used to detect taps to put the model on the screen
+     */
     private GestureDetector gestureDetector;
+
+    /**
+     * Helps handle screen rotations
+     */
     private DisplayRotationHelper displayRotationHelper;
 
+    /**
+     * AR Core and other instances used to draw the model
+     */
     private final BackgroundRenderer backgroundRenderer = new BackgroundRenderer();
     private final ObjectRenderer virtualObject = new ObjectRenderer();
     private final PlaneRenderer planeRenderer = new PlaneRenderer();
     private final PointCloudRenderer pointCloudRenderer = new PointCloudRenderer();
 
+    /**
+     * Anchor information of where the model is located
+     */
     private Anchor anchor;
     private final float[] anchorMatrix = new float[16];
 
+    /**
+     * Scale factor information that is modified when the user hits the "+" and "-" buttons
+     */
     private float scaleFactor = .1f;
     private float defaultScaleFactorDiff = 1f;
     private float scaleFactorDiff = defaultScaleFactorDiff;
 
+    /**
+     * Queue of taps
+     */
     private final ArrayBlockingQueue<MotionEvent> queuedSingleTaps = new ArrayBlockingQueue<MotionEvent>(16);
 
+    /**
+     * Name of the file to draw
+     */
     private String objectFileName;
 
+    /**
+     * Creates the activity by setting up the member variables and registering event handlers.
+     * @param savedInstanceState Bundle to hold saved data
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,12 +164,7 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
             }
         });
 
-        surfaceView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        });
+        surfaceView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
 
         // Set up renderer
         surfaceView.setPreserveEGLContextOnPause(true);
@@ -169,10 +212,19 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         }
     }
 
+    /**
+     * Handles single taps to the screen
+     * @param e The MotionEvent that is generated
+     */
     private void onSingleTap(MotionEvent e) {
         queuedSingleTaps.offer(e);
     }
 
+    /**
+     * Loads in the model nd sets up the surface view for Open GL.
+     * @param gl GL object
+     * @param config Configuration
+     */
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -209,12 +261,22 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         }
     }
 
+    /**
+     * When the surface is changed
+     * @param gl GL object
+     * @param width The Width
+     * @param height The Height
+     */
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         displayRotationHelper.onSurfaceChanged(width, height);
         GLES20.glViewport(0, 0, width, height);
     }
 
+    /**
+     * Draws the screen
+     * @param gl The gl object used to draw
+     */
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -222,7 +284,6 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         if (session == null) {
             return;
         }
-
 
         displayRotationHelper.updateSessionIfNeeded(session);
 
@@ -278,6 +339,10 @@ public class ARActivity extends AppCompatActivity implements GLSurfaceView.Rende
         }
     }
 
+    /**
+     * When the activity resumes after calling onPause()
+     * Resumes the session and viewers.
+     */
     @Override
     protected void onResume() {
         super.onResume();

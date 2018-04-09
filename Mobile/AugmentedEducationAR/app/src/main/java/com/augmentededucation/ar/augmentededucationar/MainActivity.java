@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Authenticate with the website and move to the MainActivity with the auth token.
+     * Authenticate with the website and move to the HomeActivity with the auth token.
      * Saves the username and password in the preferences if the remember me box is checked.
      *
      * TODO: Make better error statements/toasts
