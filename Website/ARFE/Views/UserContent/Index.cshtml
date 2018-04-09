@@ -10,26 +10,26 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Date</b></h5></th>
                 <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Name</b></h5></th>
+                <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Date</b></h5></th>
                 <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Author</b></h5></th>
                 <th class="col-md-5" style="text-align:center;color:#071D49;"><h5><b>Description</b></h5></th>
                 <th class="col-md-1" style="text-align:center;color:#071D49;"><h5><b></b></h5></th><!-- Empty column for delete button-->
             </tr>
         </thead>
         <tbody>
-            @foreach (string file in ViewBag.privatefilenames)
+       @foreach (Common.FileUIInfo file in ViewBag.privateFiles)
         {
             using (Html.BeginForm("ContentSelect", "PrivateContent", FormMethod.Post, new { role = "form" }))
             {
-                <tr data-toggle="collapse" data-target="#@{@file}" class="clickable" style="background-color:">
-                    <td class="col-md-2" style="text-align:center; height:100%; padding-top:10px;padding-bottom:10px;margin-bottom:10px;"><h5 style="margin:auto">@file</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
-                    <td class="col-md-5" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
+                <tr data-toggle="collapse" data-target="#@{@file.FileName}" class="clickable" style="background-color:">
+                    <td class="col-md-2" style="text-align:center; height:100%; padding-top:10px;padding-bottom:10px;margin-bottom:10px;"><h5 style="margin:auto">@file.FileName</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.UploadDate</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Author</h5></td>
+                    <td class="col-md-5" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Description</h5></td>
                     <td class="col-md-1" style="text-align:center; height:100%;"><h5 style="margin:auto"></h5></td> <!-- Empty column for delete button-->
                 </tr>
-                <tr id="@{@file}" class="collapse" style="background-color:#ddd6bb; margin-top:10px;margin-bottom:10px;">
+                <tr id="@{@file.FileName}" class="collapse" style="background-color:#ddd6bb; margin-top:10px;margin-bottom:10px;">
                     <td class="col-md-2" style="height:100%; text-align:center;">
                         @Html.DropDownListFor(m => m.FileType, // 1. Store selected value in Model.State;
                                                                 // when page is rendered after postback,
@@ -41,10 +41,10 @@
                                                                                                            // 3. Text for the first 'default' option
                                                                                                            "- Select a File Type -")
                     </td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--Download">Download File</button></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--GeneralQR">General QR Code</button></td>
-                    <td class="col-md-5" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--MobileQR">Mobile QR Code</button></td>
-                    <td class="col-md-1" style="text-align:center; height:100%;"><button type="submit" style="background-color:red" name="downloadType" value="@file--Delete">Delete</button></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--Download">Download File</button></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--GeneralQR">General QR Code</button></td>
+                    <td class="col-md-5" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--MobileQR">Mobile QR Code</button></td>
+                    <td class="col-md-1" style="text-align:center; height:100%;"><button type="submit" style="background-color:red" name="downloadType" value="@file.FileName--Delete">Delete</button></td>
                 </tr>
         }
 
@@ -68,26 +68,26 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Date</b></h5></th>
             <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Name</b></h5></th>
+            <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Date</b></h5></th>
             <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Author</b></h5></th>
             <th class="col-md-5" style="text-align:center;color:#071D49;"><h5><b>Description</b></h5></th>
             <th class="col-md-1" style="text-align:center;color:#071D49;"><h5><b></b></h5></th><!-- Empty column for delete button-->
         </tr>
     </thead>
     <tbody>
-        @foreach (string file in ViewBag.publicfilenames)
+       @foreach (Common.FileUIInfo file in ViewBag.publicFiles)
         {
             using (Html.BeginForm("ContentSelect", "PublicContent", FormMethod.Post, new { role = "form" }))
             {
-                <tr data-toggle="collapse" data-target="#@{@file}" class="clickable" style="background-color:">
-                    <td class="col-md-2" style="text-align:center; height:100%; padding-top:10px;padding-bottom:10px;margin-bottom:10px;"><h5 style="margin:auto">@file</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
-                    <td class="col-md-5" style="text-align:center; height:100%;"><h5 style="margin:auto">@file</h5></td>
+                <tr data-toggle="collapse" data-target="#@{@file.FileName}" class="clickable" style="background-color:">
+                    <td class="col-md-2" style="text-align:center; height:100%; padding-top:10px;padding-bottom:10px;margin-bottom:10px;"><h5 style="margin:auto">@file.FileName</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.UploadDate</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Author</h5></td>
+                    <td class="col-md-5" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Description</h5></td>
                     <td class="col-md-1" style="text-align:center; height:100%;"><h5 style="margin:auto"></h5></td> <!-- Empty column for delete button-->
                 </tr>
-                <tr id="@{@file}" class="collapse" style="background-color:#ddd6bb; margin-top:10px;margin-bottom:10px;">
+                <tr id="@{@file.FileName}" class="collapse" style="background-color:#ddd6bb; margin-top:10px;margin-bottom:10px;">
                     <td class="col-md-2" style="height:100%; text-align:center;">
                         @Html.DropDownListFor(m => m.FileType, // 1. Store selected value in Model.State;
                                                                     // when page is rendered after postback,
@@ -99,10 +99,10 @@
                                                                                                           // 3. Text for the first 'default' option
                                                                                                           "- Select a File Type -")
                     </td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--Download">Download File</button></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--GeneralQR">General QR Code</button></td>
-                    <td class="col-md-5" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file--MobileQR">Mobile QR Code</button></td>
-                    <td class="col-md-1" style="text-align:center; height:100%;"><button type="submit" style="background-color:red" name="downloadType" value="@file--Delete">Delete</button></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--Download">Download File</button></td>
+                    <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--GeneralQR">General QR Code</button></td>
+                    <td class="col-md-5" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--MobileQR">Mobile QR Code</button></td>
+                    <td class="col-md-1" style="text-align:center; height:100%;"><button type="submit" style="background-color:red" name="downloadType" value="@file.FileName--Delete">Delete</button></td>
                 </tr>
             }
 

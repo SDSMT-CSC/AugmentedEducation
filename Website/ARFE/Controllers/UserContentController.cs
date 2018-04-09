@@ -20,40 +20,54 @@ namespace ARFE.Controllers
             int index;
             BlobManager blob = new BlobManager();
 
-            var privatefileList = blob.ListBlobNamesInUserContainer(User.Identity.Name);
-            List<string> privatenames = new List<string>();
-            foreach (string x in privatefileList)
-            {
-                if(!x.Contains(".zip"))
-                {
-                    index = x.LastIndexOf(".");
-                    privatenames.Add(x.Substring(0, index));
-                }
-
-            }
-
-            var publicfileList = blob.ListBlobNamesInPublicContainerOwnedBy(User.Identity.Name);
-            List<string> publicnames = new List<string>();
-            foreach (string x in publicfileList)
-            {
-                if(!x.Contains(".zip"))
-                {
-                    index = x.LastIndexOf(".");
-                    publicnames.Add(x.Substring(0, index));
-                }
-            }
-
-            ViewBag.privatefilenames = privatenames;
-            ViewBag.publicfilenames = publicnames;
-            
-            var filestypes = GetAllFileTypes();
-
             var model = new FileTypeModel();
+            List<Common.FileUIInfo> publicFileList = blob.ListPublicBlobInfoForUI();
+            List<Common.FileUIInfo> publicFileObjects = new List<Common.FileUIInfo>();
+            List<Common.FileUIInfo> privateFileObjects = new List<Common.FileUIInfo>();
+            List<Common.FileUIInfo> privateFileList = blob.ListPrivateBlobInfoForUI(User.Identity.Name);
+
+            foreach (Common.FileUIInfo x in privateFileList)
+            {
+                if (!x.FileName.Contains(".zip"))
+                {
+                    index = x.FileName.LastIndexOf(".");
+                    x.FileName = x.FileName.Substring(0, index);
+
+                    index = x.Author.IndexOf('@');
+                    x.Author = x.Author.Substring(0, index);
+                    x.UploadDate = x.UploadDate.ToLocalTime();
+
+                    privateFileObjects.Add(x);
+                }
+
+            }
+
+            foreach (Common.FileUIInfo x in publicFileList)
+            {
+                if (!x.FileName.Contains(".zip"))
+                {
+                    if (x.Author == User.Identity.Name)
+                    {
+                        index = x.FileName.LastIndexOf(".");
+                        x.FileName = x.FileName.Substring(0, index);
+
+                        index = x.Author.IndexOf('@');
+                        x.Author = x.Author.Substring(0, index);
+                        x.UploadDate = x.UploadDate.ToLocalTime();
+
+                        publicFileObjects.Add(x);
+                    }
+                }
+            }
+
+            var filestypes = GetAllFileTypes();
+            ViewBag.publicFiles = publicFileObjects;
+            ViewBag.privateFiles = privateFileObjects;
 
             // Create a list of SelectListItems so these can be rendered on the page
             model.FileTypes = GetSelectListItems(filestypes);
 
-            return View("Index",model);
+            return View("Index", model);
         }
 
         [Authorize]
@@ -79,7 +93,7 @@ namespace ARFE.Controllers
                     ViewBag.FileName = filename.Substring(0, filename.Length - 4) + model.FileType;
                     return DisplayQRCode(downloadLink);
                 }
-                else if(selectionType == "MobileQR")
+                else if (selectionType == "MobileQR")
                 {
                     CloudBlobContainer container = blobManager.GetOrCreateBlobContainer(User.Identity.Name);
                     CloudBlockBlob blob = container.GetBlockBlobReference(filename);
@@ -90,7 +104,7 @@ namespace ARFE.Controllers
                     ViewBag.FileName = filename.Substring(0, filename.Length - 4) + model.FileType;
                     return DisplayQRCode(mobileLink);
                 }
-                else if(selectionType == "Delete")
+                else if (selectionType == "Delete")
                 {
                     bool deleted = blobManager.DeleteBlobByNameInUserContainer(User.Identity.Name, filename);
                     return Index();

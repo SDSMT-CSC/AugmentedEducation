@@ -319,18 +319,18 @@ namespace ARFE
         }
 
 
-        public List<Common.FileUIInfo> ListPublicBlobInfoForUI()
+        public List<Common.FileUIInfo> ListPrivateBlobInfoForUI(string userName)
         {
             List<Common.FileUIInfo> list = new List<Common.FileUIInfo>();
-            CloudBlobContainer container = GetOrCreateBlobContainer("public");
-                
+            CloudBlobContainer container = GetOrCreateBlobContainer(userName);
+
 
             foreach (IListBlobItem blobItem in container.ListBlobs(null, true))
             {
                 Common.FileUIInfo info;
                 CloudBlockBlob blob = (CloudBlockBlob)blobItem;
                 blob.FetchAttributes();
-                string author, description = string.Empty;
+                string author, description = "No description";
 
                 if (blob.Metadata.ContainsKey("OwnerName"))
                     author = blob.Metadata["OwnerName"];
@@ -340,11 +340,18 @@ namespace ARFE
                 if (blob.Metadata.ContainsKey("Description"))
                     description = blob.Metadata["Description"];
 
+
                 info = new Common.FileUIInfo(blob.Name, author, description, blob.Properties.LastModified.Value.DateTime);
                 list.Add(info);
             }
 
             return list;
+        }
+
+
+        public List<Common.FileUIInfo> ListPublicBlobInfoForUI()
+        {
+            return ListPrivateBlobInfoForUI("public");
         }
 
 
@@ -508,7 +515,7 @@ namespace ARFE
             string zipFolderName = $"{folderName}.zip";
 
 
-            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance(path);
+            UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance();
             if (!uploadedFiles.DeleteAndRemoveFile(userName, fileName))
             {
                 returnMessage = "Error: Unable to download .fbx blob for conversion.";
