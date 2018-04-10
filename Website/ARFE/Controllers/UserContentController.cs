@@ -168,6 +168,8 @@ namespace ARFE.Controllers
             }
         }
 
+
+
         private ActionResult DisplayQRCode(string downloadLink)
         {
             using (MemoryStream ms = new MemoryStream())

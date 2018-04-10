@@ -308,6 +308,7 @@
     <Content Include="Views\UserContent\Index.cshtml" />
     <Content Include="Views\Help\Help.cshtml" />
     <Content Include="Views\PublicContent\Index.cshtml" />
+    <Content Include="Views\PublicContent\DisplayQRCode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
