@@ -7,7 +7,7 @@
     <p style="color:red">Must Select a File Type</p>
 }
 
-    <table class="table table-hover">
+    <table class="table table-hover" style="table-layout: fixed; width: 100%">
         <thead>
             <tr>
                 <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Name</b></h5></th>
@@ -23,11 +23,11 @@
             using (Html.BeginForm("PrivateContentSelect", "UserContent", FormMethod.Post, new { role = "form" }))
             {
                 <tr data-toggle="collapse" data-target="#@{@file.FileName}" class="clickable" style="background-color:">
-                    <td class="col-md-2" style="text-align:center; height:100%; padding-top:10px;padding-bottom:10px;margin-bottom:10px;"><h5 style="margin:auto">@file.FileName</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.UploadDate</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Author</h5></td>
-                    <td class="col-md-5" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Description</h5></td>
-                    <td class="col-md-1" style="text-align:center; height:100%;"><h5 style="margin:auto"></h5></td> <!-- Empty column for delete button-->
+                    <td class="col-md-2" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.FileName</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.UploadDate</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.Author</h5></td>
+                    <td class="col-md-5" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.Description</h5></td>
+                    <td class="col-md-1" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto"></h5></td> <!-- Empty column for delete button-->
                 </tr>
                 <tr id="@{@file.FileName}" class="collapse" style="background-color:#ddd6bb; margin-top:10px;margin-bottom:10px;">
                     <td class="col-md-2" style="height:100%; text-align:center;">
@@ -65,7 +65,7 @@
     <p style="color:red">Must Select a File Type</p>
 }
 
-<table class="table table-hover">
+<table class="table table-hover" style="table-layout: fixed; width: 100%">
     <thead>
         <tr>
             <th class="col-md-2" style="text-align:center;color:#071D49;"><h5><b>Name</b></h5></th>
@@ -81,11 +81,11 @@
             using (Html.BeginForm("PublicContentSelect", "UserContent", FormMethod.Post, new { role = "form" }))
             {
                 <tr data-toggle="collapse" data-target="#@{@file.FileName}" class="clickable" style="background-color:">
-                    <td class="col-md-2" style="text-align:center; height:100%; padding-top:10px;padding-bottom:10px;margin-bottom:10px;"><h5 style="margin:auto">@file.FileName</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.UploadDate</h5></td>
-                    <td class="col-md-2" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Author</h5></td>
-                    <td class="col-md-5" style="text-align:center; height:100%;"><h5 style="margin:auto">@file.Description</h5></td>
-                    <td class="col-md-1" style="text-align:center; height:100%;"><h5 style="margin:auto"></h5></td> <!-- Empty column for delete button-->
+                    <td class="col-md-2" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.FileName</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.UploadDate</h5></td>
+                    <td class="col-md-2" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.Author</h5></td>
+                    <td class="col-md-5" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.Description</h5></td>
+                    <td class="col-md-1" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto"></h5></td> <!-- Empty column for delete button-->
                 </tr>
                 <tr id="@{@file.FileName}" class="collapse" style="background-color:#ddd6bb; margin-top:10px;margin-bottom:10px;">
                     <td class="col-md-2" style="height:100%; text-align:center;">
