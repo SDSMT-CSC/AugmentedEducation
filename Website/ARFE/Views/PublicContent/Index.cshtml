@@ -3,6 +3,9 @@
     ViewBag.Title = "Index";
 }
 
+<link rel="icon" href="..\..\..\Content\bootstrap.css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
+
 <h2 class="text-center" style="margin-top:60px;margin-bottom:40px;" ">Public Files</h2>
 
 @if (ViewBag.invalid != null && ViewBag.invalid == true)
@@ -22,8 +25,8 @@
     <tbody>
         @foreach (Common.FileUIInfo file in ViewBag.fileObjects)
         {
-                using (Html.BeginForm("ContentSelect", "PublicContent", FormMethod.Post, new { role = "form" }))
-                {
+            using (Html.BeginForm("ContentSelect", "PublicContent", FormMethod.Post, new { role = "form" }))
+            {
                 <tr data-toggle="collapse" data-target="#@{@file.FileName}" class="clickable" style="background-color:">
                     <td class="col-md-3" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.FileName</h5></td>
                     <td class="col-md-3" style="text-align:center; height:100%; word-wrap: break-word; padding-top:10px; padding-bottom:10px; margin-bottom:10px;"><h5 style="margin:auto">@file.UploadDate</h5></td>
@@ -36,11 +39,11 @@
                                                                     // when page is rendered after postback,
                                                                     // take selected value from Model.State.
 
-                                                                                                           // 2. Take list of values from Model.States
-                                                                                                           Model.FileTypes,
+                                                                                                                // 2. Take list of values from Model.States
+                                                                                                                Model.FileTypes,
 
-                                                                                                           // 3. Text for the first 'default' option
-                                                                                                           "- Select a File Type -")
+                                                                                                                // 3. Text for the first 'default' option
+                                                                                                                "- Select a File Type -")
                     </td>
                     <td class="col-md-3" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--Download">Download File</button></td>
                     <td class="col-md-3" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--GeneralQR">General QR Code</button></td>
