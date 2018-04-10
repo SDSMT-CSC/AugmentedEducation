@@ -1,14 +1,14 @@
-﻿using Microsoft.WindowsAzure.Storage.Blob;
-using QRCoder;
-using System;
+﻿using System;
+using System.IO;
+using System.Drawing;
+using System.Web.Mvc;
+using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+
+using Microsoft.WindowsAzure.Storage.Blob;
+
+using QRCoder;
 
 namespace ARFE.Controllers
 {
@@ -18,8 +18,9 @@ namespace ARFE.Controllers
         public ActionResult Index()
         {
             int index;
+            var model = new FileTypeModel();
+            var filestypes = GetAllFileTypes();
             BlobManager blob = new BlobManager();
-
             var fileList = blob.ListPublicBlobInfoForUI();
             List<Common.FileUIInfo> fileObjects = new List<Common.FileUIInfo>();
 
@@ -36,16 +37,9 @@ namespace ARFE.Controllers
 
                     fileObjects.Add(x);
                 }
-
             }
 
-
             ViewBag.fileObjects = fileObjects;
-
-            var filestypes = GetAllFileTypes();
-
-            var model = new FileTypeModel();
-
             // Create a list of SelectListItems so these can be rendered on the page
             model.FileTypes = GetSelectListItems(filestypes);
 

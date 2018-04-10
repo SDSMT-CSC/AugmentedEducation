@@ -70,6 +70,7 @@ namespace ARFE.Controllers
             return View("Index", model);
         }
 
+
         [Authorize]
         [HttpPost]
         public ActionResult PrivateContentSelect(FileTypeModel model, string downloadType)
