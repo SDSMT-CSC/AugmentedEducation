@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 
 namespace AuthenticationTokenCache
 {
@@ -10,8 +9,8 @@ namespace AuthenticationTokenCache
         #region Members
 
         private static TokenCache s_Instance = null;
-        private Dictionary<string, Tuple<string,string>> _TokenToUser;
-        private Dictionary<string, DateTime> _TokenToExpirationTime;
+        private Dictionary<string, DateTime> _TokenToExpirationTime = null;
+        private Dictionary<string, Tuple<string,string>> _TokenToUser = null;
 
         #endregion
 
@@ -31,15 +30,9 @@ namespace AuthenticationTokenCache
         private TokenCache()
         {
             //If service/site goes down, destroy all active tokens
-            _TokenToUser = new Dictionary<string, Tuple<string, string>>();
             _TokenToExpirationTime = new Dictionary<string, DateTime>();
+            _TokenToUser = new Dictionary<string, Tuple<string, string>>();
         }
-
-        #endregion
-
-
-        #region Properties
-
 
         #endregion
 
@@ -66,11 +59,12 @@ namespace AuthenticationTokenCache
             return token;
         }
 
+
         public Tuple<string, string> ValidateToken(string token)
         {
             string userName = string.Empty;
-            DateTime expirationTime = DateTime.UtcNow.AddDays(-1);
             Tuple<string, string> userInfo;
+            DateTime expirationTime = DateTime.UtcNow.AddDays(-1);
 
             if (_TokenToUser.TryGetValue(token, out userInfo))
             {
@@ -79,9 +73,9 @@ namespace AuthenticationTokenCache
 
             ClearExpiredTokens();
 
-            //hasn't expired yet
-            return DateTime.UtcNow < expirationTime
-                ? userInfo : null;
+            //hasn't expired yet : return token
+            //else : null
+            return (DateTime.UtcNow < expirationTime ? userInfo : null);
         }
 
 
