@@ -219,3 +219,12 @@ showstringspaces=false,tabsize = 3}
 
 
 
+
+% Make \paragraph{}s end with newlines and no indents
+\titleformat{\paragraph}
+    {\normalfont\bfseries}
+    {}
+    {0pt}
+    {}
+% Make \paragraph{}s not have a space between the title and the text
+\titlespacing*{\paragraph}{0pt}{1ex}{-\parskip}
