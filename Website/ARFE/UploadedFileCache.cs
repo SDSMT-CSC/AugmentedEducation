@@ -4,6 +4,8 @@ using System.Web;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System.Collections.Concurrent;
 
 namespace ARFE
 {
@@ -11,11 +13,11 @@ namespace ARFE
     {
         #region Members
 
-        private static List<Guid> s_UsedGuids;
+        private static ConcurrentBag<Guid> s_UsedGuids;
         private static int s_PreserveMinutes = 15;
         private static string s_BasePath = string.Empty;
         private static UploadedFileCache s_Instance = null;
-        private static Dictionary<Guid, FileData> s_FileDataByGuid;
+        private static ConcurrentDictionary<Guid, FileData> s_FileDataByGuid;
 
         #endregion
 
@@ -34,9 +36,8 @@ namespace ARFE
 
         private UploadedFileCache()
         {
-            s_FileDataByGuid = new Dictionary<Guid, FileData>();
-            s_UsedGuids = new List<Guid>();
-            //Restore();
+            s_FileDataByGuid = new ConcurrentDictionary<Guid, FileData>();
+            s_UsedGuids = new ConcurrentBag<Guid>();
         }
 
         #endregion
@@ -60,6 +61,58 @@ namespace ARFE
 
         #region Public Methods
 
+
+        public static void DeleteOldFiles()
+        {
+            DateTime now = DateTime.Now;
+            List<Guid> removed = new List<Guid>();
+
+            if (s_FileDataByGuid != null)
+            {
+                foreach (Guid g in s_FileDataByGuid.Keys)
+                {
+                    FileData data = s_FileDataByGuid[g];
+                    if (now > data.FileExpirationTime)
+                    {
+                        if (s_Instance.DeleteFile(data.OwnerName, data.FileName))
+                            removed.Add(g);
+                        else
+                            s_Instance.MarkForDelete(data.OwnerName, data.FileName);
+                    }
+                }
+            }
+
+            s_Instance.CleanExtraFilesFromUploadDirectory();
+
+            //get all UploadedFiles/<GUID> directory names
+            List<string> subDirs = Directory.GetDirectories(s_BasePath).ToList();
+            foreach (Guid g in s_UsedGuids)
+            {
+                //not a tracked subdir - delete it
+                if (!s_FileDataByGuid.ContainsKey(g))
+                {
+                    s_Instance.DeleteDirectory(Path.Combine(s_BasePath, g.ToString()));
+                    //add guid to list of tracked items to be removed
+                    if (!removed.Contains(g))
+                        removed.Add(g);
+                }
+                //guid exists as UsedGuid but not as subdir name
+                else if (!subDirs.Contains(g.ToString()))
+                {
+                    //add guid to list of tracked items to be removed
+                    if (!removed.Contains(g))
+                        removed.Add(g);
+                }
+            }
+
+            //remove old tracked items
+            foreach (Guid g in removed)
+            {
+                s_Instance.RemoveFile(g);
+            }
+        }
+
+
         public bool SaveFile(HttpPostedFileBase file, string userName, string fileName, string altFileName = "", string description = "", bool isPublic = false)
         {
             Guid fileGuid = GetGuidForSavingFile();
@@ -71,7 +124,7 @@ namespace ARFE
 
             if (File.Exists(Path.Combine(path, fileData.FileName)))
             {
-                s_FileDataByGuid.Add(fileGuid, fileData);
+                s_FileDataByGuid.TryAdd(fileGuid, fileData);
                 return true;
             }
             else
@@ -83,14 +136,36 @@ namespace ARFE
             return false;
         }
 
+        public Guid SaveFile(CloudBlockBlob file, string userName, string fileName)
+        {
+            Guid fileGuid = GetGuidForSavingFile();
+            string path = Path.Combine(s_BasePath, fileGuid.ToString());
+
+            Directory.CreateDirectory(path);
+
+            //path parameter is absolute
+            using (Stream fileStream = File.OpenWrite(Path.Combine(path, fileName)))
+            {   //Have to use DownloadToStream - DownloadToFile results in access denied error
+                file.DownloadToStream(fileStream);
+            }
+
+            if (!File.Exists(Path.Combine(path, fileName)))
+            {   //file didn't save, don't keep subDir
+                DeleteDirectory(path);
+                return Guid.Empty;
+            }
+
+            return fileGuid;
+        }
+
 
         public void RemoveFile(Guid fileGuid)
         {
-            if (s_UsedGuids.Contains(fileGuid))
-            {
-                s_UsedGuids.Remove(fileGuid);
-                s_FileDataByGuid.Remove(fileGuid);
-            }
+                while(s_UsedGuids.Contains(fileGuid)
+                      && !s_UsedGuids.TryTake(out Guid guid));
+
+                while(s_FileDataByGuid.ContainsKey(fileGuid)
+                      && s_FileDataByGuid.TryRemove(fileGuid, out FileData fd));
         }
 
 
@@ -99,9 +174,8 @@ namespace ARFE
             List<FileData> fileDataGuids = new List<FileData>();
             DateTime mostRecent = DateTime.MinValue;
 
-            //ensure unique GUID - not using it
-            Guid defaultGuid = GetGuidForSavingFile();
-            Guid fileGuid = defaultGuid;
+            //default to unusable guid
+            Guid fileGuid = Guid.Empty;
 
             if (s_FileDataByGuid != null)
             {
@@ -118,12 +192,6 @@ namespace ARFE
                     }
                 }
             }
-
-            //remove unused GUID
-            s_UsedGuids.Remove(defaultGuid);
-
-            if (fileGuid == defaultGuid)
-                fileGuid = Guid.Empty;
 
             return fileGuid;
         }
@@ -202,47 +270,6 @@ namespace ARFE
             }
         }
 
-
-        public static void DeleteOldFiles()
-        {
-            DateTime now = DateTime.Now;
-            List<Guid> removed = new List<Guid>();
-
-            if (s_FileDataByGuid != null)
-            {
-                foreach (Guid g in s_FileDataByGuid.Keys)
-                {
-                    FileData data = s_FileDataByGuid[g];
-                    if (now > data.FileExpirationTime)
-                    {
-                        if (s_Instance.DeleteFile(data.OwnerName, data.FileName))
-                            removed.Add(g);
-                        else
-                            s_Instance.MarkForDelete(data.OwnerName, data.FileName);
-                    }
-                }
-            }
-
-            //get all UploadedFiles/<GUID> directory names
-            List<string> subDirs = Directory.GetDirectories(s_BasePath).ToList();
-            foreach (Guid g in s_UsedGuids)
-            {   //guid exists as UsedGuid but not as subdir name
-                if (!subDirs.Contains(g.ToString()))
-                {
-                    //add guid to list of tracked items to be removed
-                    if (!removed.Contains(g))
-                        removed.Add(g);
-                }
-            }
-
-            //remove old tracked items
-            foreach (Guid g in removed)
-            {
-                s_Instance.RemoveFile(g);
-            }
-
-        }
-
         #endregion
 
 
@@ -279,12 +306,39 @@ namespace ARFE
 
         private void CleanupUploadDirectory()
         {
-            List<string> subDirs = Directory.GetDirectories(s_BasePath).ToList();
+            List<string> subDirs = new List<string>();
+
+            CleanExtraFilesFromUploadDirectory();                
+            subDirs = Directory.GetDirectories(s_BasePath).ToList();
 
             foreach (string dir in subDirs)
             {
                 DeleteDirectory(Path.Combine(s_BasePath, dir));
             }
+
+        }
+
+
+        private void CleanExtraFilesFromUploadDirectory()
+        {
+            string extrasPath = Path.Combine(s_BasePath, "Extras");
+            List<string> extraFiles = Directory.GetFiles(s_BasePath).ToList();
+
+            if(!Directory.Exists(extrasPath))
+                Directory.CreateDirectory(extrasPath);
+
+            for (int fileIdx = 0; fileIdx < extraFiles.Count; fileIdx++)
+            {
+                string file = extraFiles[fileIdx];
+                string ext = file.Substring(file.LastIndexOf('.'));
+                if (ext != ".exe" && ext != ".dll")
+                {                                            
+                    File.Move(file, Path.Combine(extrasPath, $"{fileIdx}{ext}"));
+                    //0.txt, 1.fbx, 2.dae - name doesn't matter, files are going to be deleted
+                }
+            }
+
+            DeleteDirectory(extrasPath);
         }
 
         #endregion
@@ -292,7 +346,6 @@ namespace ARFE
 
         #region Internal Classes
 
-        [Serializable]
         private class FileData
         {
             #region Members
@@ -349,15 +402,6 @@ namespace ARFE
             }
 
             #endregion
-        }
-
-        [Serializable]
-        private class PersistedFileData
-        {
-            public PersistedFileData() { }
-
-            //property
-            public Dictionary<Guid, FileData> FileDataByGuid { get; set; }
         }
         #endregion
     }
