@@ -6,12 +6,20 @@ using System.Collections.Generic;
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Text;
 
 namespace ARFE
 {
     public class BlobManager
     {
-        #region Public
+        #region Constructor
+
+        public BlobManager() { }
+
+        #endregion
+
+
+        #region Public Methods
 
         /// <summary>
         /// Given the current Identity logged in user name, get a reference to the users
@@ -42,25 +50,40 @@ namespace ARFE
 
         /// <summary>
         /// Azure Blob Containers have a rigid rule set on Container name format.
+        /// https://blogs.msdn.microsoft.com/jmstall/2014/06/12/azure-storage-naming-rules/
         /// Only lowercase letters, numbers, and dashes are allowed.
         /// Only one consecutive dash allowed.
         /// Dash must be surrounded by numers or letters.
+        /// Name must be between 3 and 63 characters in length
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="userName">Container names are created from the user's user name.</param>
         /// <returns></returns>
         public string FormatBlobContainerName(string userName)
         {
-            string formattedName = userName.ToLower();
+            if (userName.Length < 3) return string.Empty;
+            if (userName.Length > 62) userName = userName.Substring(0, 62);
 
-            formattedName = formattedName.Replace('@', '-');
-            formattedName = formattedName.Replace('.', '-');
-            formattedName = formattedName.Replace("--", "-");
+            StringBuilder formattedName = new StringBuilder(); 
+
+            foreach (char c in userName.ToLower())
+            {
+                formattedName.Append((char.IsLetterOrDigit(c)) ? c : '-');
+            }
+
+            //remove all cases of --
+            while(formattedName.ToString().Contains("--"))
+                formattedName = formattedName.Replace("--", "-");
+            
+            //can't start with -
             if (formattedName[0] == '-')
                 formattedName.Remove(0, 1);
+            //can't end with -
             if (formattedName[(formattedName.Length - 1)] == '-')
-                formattedName.Remove(formattedName.Length - 1);
+                formattedName.Remove(formattedName.Length - 1, 1);
 
-            return formattedName;
+            if (formattedName.Length < 3) return string.Empty;
+
+            return formattedName.ToString();
         }
 
 
@@ -157,7 +180,7 @@ namespace ARFE
                     //see if conversion exists in storage and download
                     if (getBlob.Exists()) { return GetBlobDownloadLink(getBlob); }
 
-                    //conversion Result may be converted blob name or error
+                    //conversionResult = [converted blob name | error]
                     string conversionResult = ConvertBlobToBlob(blob, userName, fileName, path, requestExtension);
                     getBlob = container.GetBlockBlobReference(conversionResult);
 
@@ -447,7 +470,7 @@ namespace ARFE
         #endregion
 
 
-        #region Private
+        #region Private Methods
 
         /// <summary>
         /// Given the signed in Identity username, get or create the associated Blob Container
@@ -507,28 +530,21 @@ namespace ARFE
 
         private string ConvertBlobToBlob(CloudBlockBlob fromBlob, string userName, string fileName, string path, string requestExtension)
         {
+            Guid subDir;
             CloudBlockBlob toBlob = null;
             string returnMessage = string.Empty;
             CloudBlobContainer container = fromBlob.Parent.Container;
             string getFileName = $"{fileName.Remove(fileName.LastIndexOf('.'))}";
-            string folderName = $"{fileName.Remove(fileName.LastIndexOf('.'))}-{requestExtension.Substring(1)}";
-            string zipFolderName = $"{folderName}.zip";
-
+            string zipFolderName = $"{getFileName}-{requestExtension.Substring(1)}.zip";
 
             UploadedFileCache uploadedFiles = UploadedFileCache.GetInstance();
             if (!uploadedFiles.DeleteAndRemoveFile(userName, fileName))
             {
                 returnMessage = "Error: Unable to download .fbx blob for conversion.";
             }
-            else
+            else if ((subDir = uploadedFiles.SaveFile(fromBlob, userName, fileName)) != Guid.Empty)
             {
-                //path parameter is absolute
-                using (Stream fileStream = File.OpenWrite(Path.Combine(path, fileName)))
-                {   //Have to use DownloadToStream - DownloadToFile results in access denied error
-                    fromBlob.DownloadToStream(fileStream);
-                }
-
-                if (ConvertAndZip(path, requestExtension, fileName, folderName, getFileName, zipFolderName))
+                if (ConvertAndZip(path, subDir.ToString(), requestExtension, fileName, zipFolderName))
                 {
                     //upload converted file to blob storage
                     if (UploadBlobToUserContainer(userName, zipFolderName, path))
@@ -541,6 +557,7 @@ namespace ARFE
                 }
                 else { returnMessage = $"Error: unable to convert {fileName} to type {requestExtension}."; }
             }
+            else { returnMessage = "Error: Unable to download .fbx blob for conversion."; }
 
             return returnMessage;
         }
@@ -571,45 +588,39 @@ namespace ARFE
 
         private void UpdateDescriptionMetaData(CloudBlockBlob blob, string description)
         {
+            description = (string.IsNullOrEmpty(description) ? "No description" : description);
+
             if (!blob.Metadata.ContainsKey("Description"))
-            {
                 blob.Metadata.Add(new KeyValuePair<string, string>("Description", description));
-            }
             else
-            {
                 blob.Metadata["Description"] = description;
-            }
+
             blob.SetMetadata();
         }
 
 
-        private bool ConvertAndZip(string path, string requestExtension, string fileName, string folderName, string getFileName, string zipFolderName)
+        private bool ConvertAndZip(string path, string subDir, string requestExtension, string fileName, string zipFolderName)
         {
             bool converted = false;
-            List<string> producedExtensions = new List<string>();
-            FileConverter converter = new FileConverter("UploadedFiles", "UploadedFiles");
+            char sep = Path.DirectorySeparatorChar;
+            string noExtension = fileName.Remove(fileName.LastIndexOf('.'));
+            FileConverter converter = new FileConverter($"UploadedFiles{sep}{subDir}", $"UploadedFiles{sep}{subDir}");
 
             switch (requestExtension) //extensible for more filetype conversion download options
             {
                 case ".obj": // convert to .obj
-                    producedExtensions.Add(".obj");
-                    producedExtensions.Add(".mtl");
                     converted = converter.ConvertToOBJ(fileName);
                     break;
                 case ".dae": // convert to .dae
-                    producedExtensions.Add(".dae");
                     converted = converter.ConvertToDAE(fileName);
                     break;
                 case ".fbx": // convert to .fbx
-                    producedExtensions.Add(".fbx");
                     converted = converter.ConvertToFBX(fileName);
                     break;
                 case ".stl": // convert to .stl
-                    producedExtensions.Add(".stl");
                     converted = converter.ConvertToSTL(fileName);
                     break;
                 case ".ply": // convert to .ply
-                    producedExtensions.Add(".ply");
                     converted = converter.ConvertToPLY(fileName);
                     break;
                 default: break;
@@ -617,23 +628,17 @@ namespace ARFE
 
             if (converted)
             {
-                string[] allFiles = Directory.GetFiles(path);
-                DirectoryInfo newDir = Directory.CreateDirectory(Path.Combine(path, folderName));
+                //delete file converted from
+                File.Delete(Path.Combine(path, subDir, fileName));
 
-                foreach (string file in allFiles)
+                //delete intermediate .dae file
+                if (requestExtension != ".dae"
+                    && File.Exists(Path.Combine(path, subDir, $"{noExtension}.dae")))
                 {
-                    string nameWithoutPath = file.Substring(file.LastIndexOf(@"\") + 1);
-                    foreach (string ext in producedExtensions)
-                    {
-                        if (nameWithoutPath.StartsWith(getFileName) && nameWithoutPath.EndsWith(ext))
-                        {
-                            File.Move(file, $@"{newDir.FullName}\{nameWithoutPath}");
-                            break;
-                        }
-                    }
+                    File.Delete(Path.Combine(path, subDir, $"{noExtension}.dae"));
                 }
 
-                System.IO.Compression.ZipFile.CreateFromDirectory(newDir.FullName, $@"{newDir.Parent.FullName}\{zipFolderName}");
+                System.IO.Compression.ZipFile.CreateFromDirectory(Path.Combine(path, subDir), Path.Combine(path, zipFolderName));
             }
 
             return converted;

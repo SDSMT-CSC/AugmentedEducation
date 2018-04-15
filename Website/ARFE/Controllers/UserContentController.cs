@@ -1,14 +1,14 @@
-﻿using Microsoft.WindowsAzure.Storage.Blob;
-using QRCoder;
-using System;
+﻿using System;
+using System.IO;
+using System.Drawing;
+using System.Web.Mvc;
+using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+
+using Microsoft.WindowsAzure.Storage.Blob;
+
+using QRCoder;
 
 namespace ARFE.Controllers
 {
