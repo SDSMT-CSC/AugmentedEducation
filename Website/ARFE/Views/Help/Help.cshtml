@@ -2,26 +2,35 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>Augmented Education</h1>
-</div>
-
+<h1 style="text-align:center;">It's as easy as...</h1>
+<br />
 <div class="row">
-    <div class="col-md-4">
-        <h2>Upload a Model</h2>
+    <div class="col-md-4" style="text-align: center;">
+        <h1>1</h1>
+        <img src="..\..\..\Content\desktopicon.svg" height="200" width="200" style="margin-top:15px;margin-bottom:15px;" />
         <p>
-            Take 3D model from existing software and upload it here to be converted into an AR ready format.
+            Create an account and upload 3D files.
         </p>
-        <p><a class="btn btn-default" href="@Url.Action("UploadFile", null, new {controller = "Upload" }, Request.Url.Scheme)">Upload &raquo;</a></p>
+        <br />
+        <p><a class="btn btn-default" href="@Url.Action("UploadFile", null, new {controller = "Upload" }, Request.Url.Scheme)">Get started &raquo;</a></p>
     </div>
-    <div class="col-md-4">
-        <h2>My Models</h2>
-        <p>Look up and download the models that you have uploaded or downloaded in the past.</p>
-        <p><a class="btn btn-default" href="@Url.Action("GetMessage", null, new {controller = "Upload" }, Request.Url.Scheme)">DisplayQR &raquo;</a></p>
+    <div class="col-md-4" style="text-align: center;">
+        <h1>2</h1>
+        <img src="..\..\..\Content\sampleqrcode.png" height="150" width="150" style="margin-top:40px;margin-bottom:40px;" />
+        <p>
+            Use QR code in any digital or physical media.
+        </p>
+        <br />
+        <p><a class="btn btn-default" href="@Url.Action("Index", null, new {controller = "UserContent" }, Request.Url.Scheme)">See your files &raquo;</a></p>
     </div>
-    <div class="col-md-4">
-        <h2>My Organization</h2>
-        <p>View all the models that are associated with your organization</p>
-        <p><a class="btn btn-default" href="@Url.Action("UploadFile", null, new {controller = "Upload" }, Request.Url.Scheme)">Organization &raquo;</a></p>
+    <div class="col-md-4" style="text-align: center;">
+        <h1>3</h1>
+        <img src="..\..\..\Content\hololensicon.png" height="50" width="100" style="margin-top:90px;margin-bottom:90px;" />
+        <img src="..\..\..\Content\phoneicon.svg" height="100" width="100" style="margin-top:65px;margin-bottom:65px;" />
+        <p>
+            Open with supported mobile devices and AR headsets.
+        </p>
+        <br />
+        <p><a class="btn btn-default" href="@Url.Action("Index", null, new {controller = "PublicContent" }, Request.Url.Scheme)">Check out public files &raquo;</a></p>
     </div>
 </div>
