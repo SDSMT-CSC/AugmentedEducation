@@ -120,7 +120,7 @@ namespace ARFE
                     {   //attempt to delete if temporary file time is up.
                         //if doesn't delete, mark for deletion by guaranteeing expired
                         //if (s_Instance.DeleteFile(data.OwnerName, data.FileName))
-                        if(s_Instance.DeleteAndRemoveFile(data.OwnerName, data.FileName))
+                        if (s_Instance.DeleteAndRemoveFile(data.OwnerName, data.FileName))
                             removed.Add(g);
                         else
                             s_Instance.MarkForDelete(data.OwnerName, data.FileName);
@@ -132,7 +132,13 @@ namespace ARFE
             s_Instance.CleanExtraFilesFromUploadDirectory();
 
             //get all UploadedFiles/<GUID> directory names
-            List<string> subDirs = Directory.GetDirectories(s_BasePath).ToList();
+            List<string> subDirPaths = Directory.GetDirectories(s_BasePath).ToList();
+            List<string> subDirs = new List<string>();
+            foreach(string path in subDirPaths)
+            {
+                subDirs.Add(path.Substring(path.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+            }
+
             foreach (Guid g in s_UsedGuids)
             {
                 //not a tracked subdir - delete it
@@ -209,7 +215,7 @@ namespace ARFE
                     DeleteDirectory(path);
                     //loop until removed from Guid tracking.
                     //check .Contains() each time in case removed externally
-                    while (retry > 0 
+                    while (retry > 0
                             && s_UsedGuids.Contains(fileGuid)
                             && !s_UsedGuids.TryTake(out fileGuid)) { retry--; }
                 }
@@ -254,14 +260,14 @@ namespace ARFE
 
                 if (!File.Exists(Path.Combine(path, fileName)))
                 {   //file didn't save, don't keep subDir
-                    while(!s_UsedGuids.TryTake(out fileGuid) && retry > 0) { retry--; }
+                    while (!s_UsedGuids.TryTake(out fileGuid) && retry > 0) { retry--; }
                     DeleteDirectory(path);
                     return Guid.Empty;
                 }
 
                 //file saved - track Guid:FileData
                 FileData data = new FileData(fileGuid, userName, fileName);
-                while(!s_FileDataByGuid.TryAdd(fileGuid, data) && retry > 0) { retry--; }
+                while (!s_FileDataByGuid.TryAdd(fileGuid, data) && retry > 0) { retry--; }
             }
             else
                 fileGuid = Guid.Empty;

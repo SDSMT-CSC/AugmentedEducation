@@ -31,10 +31,12 @@ namespace AuthTokenCache.Tests
             TokenCache cache = null;
             Type cacheType = typeof(TokenCache);
 
-            try { cache = (Activator.CreateInstance(cacheType) as TokenCache); }
-            catch (MissingMethodException) { Assert.IsTrue(true); }
-            catch (Exception) { Assert.IsTrue(false); }
+            Assert.IsNull(cache);
 
+            //assert couldn't create, still null
+            Assert.ThrowsException<MissingMethodException>(() => {
+                cache = (Activator.CreateInstance(cacheType) as TokenCache);
+            });
             Assert.IsNull(cache);
         }
 

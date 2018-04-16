@@ -93,7 +93,8 @@ namespace ARFE.Controllers
                 }
             }
 
-            ViewBag.Message = uploadMessage;
+            if(string.IsNullOrEmpty(ViewBag.Message))
+                ViewBag.Message = uploadMessage;
             return View();
         }
 

@@ -15,6 +15,11 @@ using Common;
 
 namespace ARFE
 {
+    /// <summary>
+    /// This class is for managing all transactions between the AE website and 
+    /// Azure blob storage.  All user containers, user blob creation/deletion, 
+    /// blob metadata, blob permissions, and blob listings are handled here.
+    /// </summary>
     public class BlobManager
     {
         #region Constructor
@@ -45,13 +50,8 @@ namespace ARFE
         {
             CloudBlobContainer container = GetCloudBlobContainer(userName);
 
-            if (!container.CreateIfNotExists() && container == null)
-            { /*Some sort of error - returns null*/ }
-            else
-            {
-                PurgeOldTemporaryBlobs(userName);
-                if (userName != "public") { PurgeOldTemporaryBlobs("public"); }
-            }
+            RemoveExpiredTemporaryBlobs();
+            container.CreateIfNotExists();
 
             return container;
         }
@@ -99,8 +99,41 @@ namespace ARFE
         }
 
 
-        #region privately owned containers
+        /// <summary>
+        /// Lazily delete blobs that are stored as the result of conversion requests.
+        /// Maintain the small .fbx files but delete the extras as they become old.
+        /// </summary>
+        public static void RemoveExpiredTemporaryBlobs()
+        {
+            //Found in Web.config
+            string blobConnectionString = CloudConfigurationManager.GetSetting("augmentededucationblob_AzureStorageConnectionString");
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(blobConnectionString);
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
+            foreach (CloudBlobContainer container in blobClient.ListContainers())
+            {
+                List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
+
+                foreach (IListBlobItem blobItem in blobList)
+                {
+                    CloudBlockBlob blob = (CloudBlockBlob)blobItem;
+                    if (blob.Metadata.Keys.Contains("LastAccessed"))
+                    {
+                        //compare .UTC now to .UTC time stored for blob
+                        DateTime now = DateTime.UtcNow;
+                        DateTime lastAccessed = DateTime.SpecifyKind(DateTime.Parse(blob.Metadata["LastAccessed"]), DateTimeKind.Utc);
+
+                        //last accessed over 30 minutes ago
+                        if (lastAccessed.AddMinutes(30) < now)
+                            blob.Delete(DeleteSnapshotsOption.IncludeSnapshots);
+                    }
+                }
+            }
+
+        }
+
+
+        #region privately owned containers
 
         /// <summary>
         /// Upload a file as a blob to cloud storage in the provided user's blob container.
@@ -239,7 +272,6 @@ namespace ARFE
 
         #region public container
 
-
         /// <summary>
         /// Given the current logged in user name and the name of the file to upload,
         /// and the local path to the file, upload the file to the public blob container as a 
@@ -257,17 +289,22 @@ namespace ARFE
         public bool UploadBlobToPublicContainer(string userName, string fileName, string filePath, string description = "", bool overwrite = false)
         {
             string extension = fileName.Substring(fileName.LastIndexOf('.'));
+            CloudBlobContainer container = GetOrCreateBlobContainer("public");
+            CloudBlockBlob blob = container.GetBlockBlobReference($"{FormatBlobContainerName(userName)}-{fileName}");
 
-            if (UploadBlobToUserContainer("public", fileName, filePath, description, overwrite))
+
+            if (overwrite || !blob.Exists())
             {
-                CloudBlobContainer container = GetOrCreateBlobContainer("public");
-                CloudBlockBlob blob = container.GetBlockBlobReference($"{FormatBlobContainerName(userName)}-{fileName}");
+                blob.UploadFromFile(Path.Combine(filePath, fileName));
 
                 UpdateOwnerNameMetaData(blob, userName);
-                return true;
-            }
+                UpdateDescriptionMetaData(blob, description);
 
-            return false;
+                //primarily want to store .fbx due to small size
+                if (extension != ".fbx")
+                    UpdateLastAccessedMetaData(blob);
+            }
+            return true;
         }
 
 
@@ -360,7 +397,7 @@ namespace ARFE
             {
                 CloudBlockBlob blob = (CloudBlockBlob)blobItem;
                 //ignore blobs that don't have OwnerName metaData set - no way of knowing
-                if(blob.Metadata.ContainsKey("OwnerName") && blob.Metadata["OwnerName"] == userName)
+                if (blob.Metadata.ContainsKey("OwnerName") && blob.Metadata["OwnerName"] == userName)
                     blobUriList.Add(blob.Uri);
             }
 
@@ -498,7 +535,7 @@ namespace ARFE
             {   //successfully downloaded original - run conversion and zip results
                 if (ConvertAndZip(path, subDir.ToString(), requestExtension, fileName, zipFolderName))
                 {
-                    //upload converted file to blob storage
+                    //upload converted zipped file to blob storage
                     if (UploadBlobToUserContainer(userName, zipFolderName, path))
                     {   //get reference to blob and get download link
                         toBlob = container.GetBlockBlobReference(zipFolderName);
@@ -569,6 +606,7 @@ namespace ARFE
             blob.SetMetadata();
         }
 
+
         /// <summary>
         /// Perform the appropriate file conversion by calling to the FileConversion.exe
         /// Zip all contents to be efficiently stored in cloud storage.
@@ -627,37 +665,6 @@ namespace ARFE
             }
 
             return converted;
-        }
-
-
-        /// <summary>
-        /// Lazily delete blobs that are stored as the result of conversion requests.
-        /// Maintain the small .fbx files but delete the extras as they become old.
-        /// </summary>
-        /// <param name="userName">The container to delete old temporary blobs from.</param>
-        private void PurgeOldTemporaryBlobs(string userName)
-        {
-            CloudBlobContainer container = GetCloudBlobContainer(userName);
-            try
-            {
-                List<IListBlobItem> blobList = container.ListBlobs(null, true, BlobListingDetails.Metadata).ToList();
-
-                foreach (IListBlobItem blobItem in blobList)
-                {
-                    CloudBlockBlob blob = (CloudBlockBlob)blobItem;
-                    if (blob.Metadata.Keys.Contains("LastAccessed"))
-                    {
-                        DateTime now = DateTime.UtcNow;
-                        DateTime lastAccessed = DateTime.SpecifyKind(DateTime.Parse(blob.Metadata["LastAccessed"]), DateTimeKind.Utc);
-
-                        if (lastAccessed.AddHours(.5) < now) //over 30 minutes old
-                        {
-                            blob.Delete(DeleteSnapshotsOption.IncludeSnapshots);
-                        }
-                    }
-                }
-            }
-            catch { /*Ignore - can fail on new users*/ }
         }
 
         #endregion

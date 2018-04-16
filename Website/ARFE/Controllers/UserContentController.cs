@@ -31,10 +31,12 @@ namespace ARFE.Controllers
                 if (!x.FileName.Contains(".zip"))
                 {
                     index = x.FileName.LastIndexOf(".");
-                    x.FileName = x.FileName.Substring(0, index);
+                    if (index >= 0)
+                        x.FileName = x.FileName.Substring(0, index);
 
                     index = x.Author.IndexOf('@');
-                    x.Author = x.Author.Substring(0, index);
+                    if (index >= 0)
+                        x.Author = x.Author.Substring(0, index);
                     x.UploadDate = x.UploadDate.ToLocalTime();
 
                     privateFileObjects.Add(x);
@@ -49,10 +51,12 @@ namespace ARFE.Controllers
                     if (x.Author == User.Identity.Name)
                     {
                         index = x.FileName.LastIndexOf(".");
-                        x.FileName = x.FileName.Substring(0, index);
+                        if(index >= 0)
+                            x.FileName = x.FileName.Substring(0, index);
 
                         index = x.Author.IndexOf('@');
-                        x.Author = x.Author.Substring(0, index);
+                        if(index >= 0)
+                            x.Author = x.Author.Substring(0, index);
                         x.UploadDate = x.UploadDate.ToLocalTime();
 
                         publicFileObjects.Add(x);
