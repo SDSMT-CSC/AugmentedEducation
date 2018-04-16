@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Text;
-using System.Collections.Generic;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
+
 
 namespace ARFE.Tests
 {
     /// <summary>
-    /// Unit tests covering the functionality of the BlobManager.cs file in ARFE.csproj
+    /// Unit tests covering the non-Azure-facing functionality of the BlobManager.cs file in ARFE.csproj
+    /// 
+    /// Calls to Azure storage are unable to be made from this test project.  The BlobManager class is 
+    /// unable to appropriately access the configuration string required from the Web.config file, located
+    /// at ARFE/Web.config, without the application startup sequence. Azure-facing functionality of the 
+    /// BlobManager.cs file must be manually tested.
     /// </summary>
     [TestClass]
     public class BlobTests
@@ -83,6 +88,18 @@ namespace ARFE.Tests
             }
         }
 
+        /// <summary>
+        /// Verify that a blob container name provided by the call to 
+        /// <see cref="BlobManager.FormatBlobContainerName(string)"/>
+        /// meets all of the blob container name rule standards.
+        /// </summary>
+        /// <param name="containerName">The formatted container name produced.</param>
+        /// <returns>
+        ///     <ul>
+        ///         <li>True: The name is valid.</li>
+        ///         <li>False: The name is not valid.</li>
+        ///     </ul>
+        /// </returns>
         private bool VerifyFormattedContainerName(string containerName)
         {
             bool valid = (containerName.Length >= 3 && containerName.Length < 63);
