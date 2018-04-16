@@ -5,7 +5,6 @@
 
 \input{seniordesignstyle.tex} % This sets the format.
 
-% Add your title page contents here 
 \newcommand{\teamName}{Augmented Education}
 \title{{\color{SDColor3} \rule{\linewidth}{0.5mm}}\\[2mm] {\huge \bfseries \color{SDColor3} \teamName}\\[-1mm] {\color{SDColor3}\rule{\linewidth}{0.5mm}} \\  \vfill
 {\LARGE \bfseries \color{SDColor4} Senior Design Final Documentation }\\  \vfill 
@@ -22,7 +21,6 @@
 
 \date{\color{SDColor3} \today}
 
-
 \begin{document}
 
 \frontmatter
@@ -38,14 +36,8 @@
 %\listofalgorithms
 %\addcontentsline{toc}{chapter}{List of Algorithms}
 
-
 \chapter{Document Preparation and Updates}
 \input{preparation.tex}
- 
- 
- %%%   \chapter{Preface}  Uncomment if you want to have a preface ...
-%%%  This is ..
-
 
 \mainmatter
 
@@ -80,22 +72,15 @@
 \chapter{Software Agreement}
 \includepdf[pages={1-4}]{SoftwareContract.pdf}
 
-% In our style file, appendices are numbered with capital letters
 \appendix
 
 \chapter{Product Description}
 \input{productdescription.tex}
 
-
 \input{refman.tex}  %% All tracks
-
 
 \input{businessplan.tex}   %% Entrepreneur track only 
 \input{hardwareexploration.tex}   %% Research track  only
-
-
-% \chapter{Publications}   %% Research track 
-% \input{pubs.tex}
 
 \chapter{Acknowledgment}
 \label{SpecialThanks}  
@@ -111,15 +96,5 @@ Special thanks to Todd Gagne for your time spent mentoring development of the In
 % table of contents, and are numbered BM-X where X is the page number
 % relative to where the backmatter begins.
 \backmatter
-
-%% Example
-%\chapter{Course Syllabus}
-%\includepdf[pages={1-17}]{syllabus.pdf}
-
-%%% Remove after reading
-%\chapter{\LaTeX\ Example}
-%\input{latexexample.tex}
-
-
 
 \end{document}
