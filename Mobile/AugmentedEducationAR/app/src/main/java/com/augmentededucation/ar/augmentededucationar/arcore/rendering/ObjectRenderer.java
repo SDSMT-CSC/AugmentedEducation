@@ -53,6 +53,10 @@ import de.javagl.obj.ObjUtils;
 
 /**
  * Renders an object loaded from an OBJ file in OpenGL.
+ *
+ * Many functions in this file were from the original HelloAr project. Some functions to work
+ * with .mtl files were added from https://github.com/JohnLXiang/arcore-sandbox. These functions
+ * were modified to work with our project and meet our needs.
  */
 public class ObjectRenderer {
     private static final String TAG = ObjectRenderer.class.getSimpleName();
@@ -126,11 +130,15 @@ public class ObjectRenderer {
     private Paint paint = new Paint();
 
 
+    /**
+     * Empty Constructor for ObjectRenderer
+     */
     public ObjectRenderer() {
     }
 
     /**
-     * Creates and initializes OpenGL resources needed for rendering the model.
+     * Creates and initializes OpenGL resources needed for rendering the model. Used by original
+	 * ARCore example in HelloArActivity.
      *
      * @param context Context for loading the shader and below-named model and texture assets.
      * @param objAssetName  Name of the OBJ file containing the model geometry.
@@ -231,7 +239,8 @@ public class ObjectRenderer {
 
     /**
      * Creates and initializes OpenGL resources needed for rendering the model.
-     * Taken from https://github.com/JohnLXiang/arcore-sandbox
+	 * Can load .obj files and materials from a .mat file and optionally .png files.
+     * Taken from https://github.com/JohnLXiang/arcore-sandbox and edited to work for us.
      * @param context
      *         Context for loading the shader and below-named model and texture assets.
      * @param OBJ_PATH
@@ -461,6 +470,8 @@ public class ObjectRenderer {
 
     /**
      * Taken from https://github.com/JohnLXiang/arcore-sandbox
+	 * @param size
+	 * 			The size of the int buffer to create
      */
     private static IntBuffer createDirectIntBuffer(int size) {
         return ByteBuffer.allocateDirect(size * 4)
@@ -470,6 +481,10 @@ public class ObjectRenderer {
 
     /**
      * Taken from https://github.com/JohnLXiang/arcore-sandbox
+	 * @param context
+	 * 			application context
+ 	 * @param path
+	 * 			path to Tga file
      */
     private Bitmap readTgaToBitmap(Context context, String path) throws IOException {
         InputStream is = context.getAssets().open(path);
@@ -637,7 +652,11 @@ public class ObjectRenderer {
         ShaderUtil.checkGLError(TAG, "After draw");
     }
 
-    private static void normalizeVec3(float[] v) {
+	/**
+	 * Utility function used to normalize vectors for drawing.
+	 * @param v - vector array to normalize
+	 */
+	private static void normalizeVec3(float[] v) {
         float reciprocalLength = 1.0f / (float) Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
         v[0] *= reciprocalLength;
         v[1] *= reciprocalLength;
