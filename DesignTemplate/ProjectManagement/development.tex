@@ -120,11 +120,17 @@ Figure \ref{Contributions} shows a snapshot of repository activity and developer
 \paragraph{Android App}
 \begin{itemize}
     \item Android Studio - IDE for Android development
-    \item ARCore - Support for AR on Anroid devices (off of the Google Play Store)
+    \item ARCore - Support for AR on Android devices (off of the Google Play Store)
     \begin{itemize}
         \item Only works on specific devices (as of 2/20/2018)
+        \item Use OpenGL to draw models, ARCore only performs tracking/world mapping
     \end{itemize}
-    \item OBJ PARSER
+    \item Obj Parser
+    \begin{itemize}
+        \item Used by the example AR Core application to draw the model
+        \item Parses the obj files
+        % \item \url{https://github.com/JohnLXiang/arcore-sandbox}
+    \end{itemize}
 \end{itemize}
 
 \section{Build  Environment}
