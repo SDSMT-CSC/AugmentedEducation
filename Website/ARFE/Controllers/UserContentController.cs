@@ -98,7 +98,12 @@ namespace ARFE.Controllers
 
         /// <summary>
         /// The controller action responsible for the sub-menu button clicks on the menu
-        /// that corresponds to the user's privately owned content.
+        /// that corresponds to the user's privately owned content. 
+        /// The [HttpPost] assembly tag is used to register this method as elligible for POST
+        /// requests only.
+        /// The [Authorize] assembly tag is used in collaboration with ASP.NET Identity.
+        /// If the action is attempted to be browsed to without the browser being correctly signed in
+        /// with Identity, the request is denied.
         /// </summary>
         /// <param name="model"> 
         /// A <see cref="FileTypeModel"/> object representing the file selected.
@@ -157,11 +162,16 @@ namespace ARFE.Controllers
                 return Index();
             }
         }
-        
+
 
         /// <summary>
         /// The controller action responsible for the sub-menu button clicks on the menu
         /// that corresponds to the content that the user owns but is publicly available.
+        /// The [HttpPost] assembly tag is used to register this method as elligible for POST
+        /// requests only.
+        /// The [Authorize] assembly tag is used in collaboration with ASP.NET Identity.
+        /// If the action is attempted to be browsed to without the browser being correctly signed in
+        /// with Identity, the request is denied.
         /// </summary>
         /// <param name="model"> 
         /// A <see cref="FileTypeModel"/> object representing the file selected.
