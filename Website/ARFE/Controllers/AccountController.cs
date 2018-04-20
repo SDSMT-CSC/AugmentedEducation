@@ -1,18 +1,22 @@
-﻿using System;
+﻿//System .dll's
 using System.Web;
 using System.Linq;
 using System.Web.Mvc;
-using System.Globalization;
 using System.Threading.Tasks;
-using System.Security.Claims;
 
+//NuGet packages
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-
-using ARFE.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
 
+//other classes
+using ARFE.Models;
+
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
     [Authorize]

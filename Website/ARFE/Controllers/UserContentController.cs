@@ -1,4 +1,5 @@
-﻿using System;
+﻿//System .dll's
+using System;
 using System.IO;
 using System.Drawing;
 using System.Web.Mvc;
@@ -6,27 +7,48 @@ using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+//NuGet
+using QRCoder;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-using QRCoder;
+//other classes
+using Common;
 
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
+    /// <summary>
+    /// A class derived from the <see cref="System.Web.Mvc.Controller"/> class that has all
+    /// of the controller actions to dispaly and interact with the user's file content 
+    /// on the website.
+    /// </summary>
     public class UserContentController : Controller
     {
+        /// <summary>
+        /// The Index controller action is the default action called when the UserContent page is
+        /// browsed to.  The [Authorize] assembly tag is used in collaboration with ASP.NET Identity.
+        /// If the action is attempted to be browsed to without the browser being correctly signed in
+        /// with Identity, the request is denied.
+        /// </summary>
+        /// <returns>
+        ///     A view to the "Index.cshtml" page in the Views/UserContent/ folder.
+        /// </returns>
         [Authorize]
         public ActionResult Index()
         {
             int index;
             BlobManager blob = new BlobManager();
+            FileTypeModel model = new FileTypeModel();
+            List<FileUIInfo> publicFileList = blob.ListPublicBlobInfoForUI();
+            List<FileUIInfo> publicFileObjects = new List<FileUIInfo>();
+            List<FileUIInfo> privateFileObjects = new List<FileUIInfo>();
+            List<FileUIInfo> privateFileList = blob.ListPrivateBlobInfoForUI(User.Identity.Name);
 
-            var model = new FileTypeModel();
-            List<Common.FileUIInfo> publicFileList = blob.ListPublicBlobInfoForUI();
-            List<Common.FileUIInfo> publicFileObjects = new List<Common.FileUIInfo>();
-            List<Common.FileUIInfo> privateFileObjects = new List<Common.FileUIInfo>();
-            List<Common.FileUIInfo> privateFileList = blob.ListPrivateBlobInfoForUI(User.Identity.Name);
-
-            foreach (Common.FileUIInfo x in privateFileList)
+            //display user's private files
+            foreach (FileUIInfo x in privateFileList)
             {
                 if (!x.FileName.Contains(".zip"))
                 {
@@ -44,7 +66,8 @@ namespace ARFE.Controllers
 
             }
 
-            foreach (Common.FileUIInfo x in publicFileList)
+            //display user's public files
+            foreach (FileUIInfo x in publicFileList)
             {
                 if (!x.FileName.Contains(".zip"))
                 {
@@ -64,19 +87,30 @@ namespace ARFE.Controllers
                 }
             }
 
-            var filestypes = GetAllFileTypes();
+            // Create a list of SelectListItems so these can be rendered on the page
+            model.FileTypes = GetSelectListItems();
             ViewBag.publicFiles = publicFileObjects;
             ViewBag.privateFiles = privateFileObjects;
-
-            // Create a list of SelectListItems so these can be rendered on the page
-            model.FileTypes = GetSelectListItems(filestypes);
 
             return View("Index", model);
         }
 
 
-        [Authorize]
+        /// <summary>
+        /// The controller action responsible for the sub-menu button clicks on the menu
+        /// that corresponds to the user's privately owned content.
+        /// </summary>
+        /// <param name="model"> 
+        /// A <see cref="FileTypeModel"/> object representing the file selected.
+        /// </param>
+        /// <param name="downloadType">
+        /// The selected file type for potential conversion
+        /// </param>
+        /// <returns>
+        /// A view redirection to refresh the content of the User Content page.
+        /// </returns>
         [HttpPost]
+        [Authorize]
         public ActionResult PrivateContentSelect(FileTypeModel model, string downloadType)
         {
             if (model.FileType != null || downloadType.LastIndexOf("--Delete") >= 0)
@@ -123,10 +157,23 @@ namespace ARFE.Controllers
                 return Index();
             }
         }
+        
 
-
-        [Authorize]
+        /// <summary>
+        /// The controller action responsible for the sub-menu button clicks on the menu
+        /// that corresponds to the content that the user owns but is publicly available.
+        /// </summary>
+        /// <param name="model"> 
+        /// A <see cref="FileTypeModel"/> object representing the file selected.
+        /// </param>
+        /// <param name="downloadType">
+        /// The selected file type for potential conversion
+        /// </param>
+        /// <returns>
+        /// A view redirection to refresh the content of the User Content page.
+        /// </returns>
         [HttpPost]
+        [Authorize]
         public ActionResult PublicContentSelect(FileTypeModel model, string downloadType)
         {
             if (model.FileType != null || downloadType.LastIndexOf("--Delete") >= 0)
@@ -174,7 +221,13 @@ namespace ARFE.Controllers
         }
 
 
-
+        /// <summary>
+        /// Create a QR code from the file download link returned from blob storage.
+        /// </summary>
+        /// <param name="downloadLink">the file download link returned from blob storage</param>
+        /// <returns>
+        /// A page redirection that will display the QR code .PNG file.
+        /// </returns>
         private ActionResult DisplayQRCode(string downloadLink)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -191,28 +244,22 @@ namespace ARFE.Controllers
             return View("DisplayQRCode");
         }
 
-        private IEnumerable<string> GetAllFileTypes()
-        {
-            return new List<string>
-            {
-                ".fbx",
-                ".dae",
-                ".obj",
-                ".ply",
-                ".stl",
-            };
-        }
 
-        private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
+        /// <summary>
+        /// For each string in the <see cref="SupportedFileTypes.FileList"/> list, create a new 
+        /// <see cref="SelectListItem"/> object that has both its Value and Text properties 
+        /// set to a particular value. This will result in MVC rendering each item as: 
+        ///     <!--<option value='State Name'>State Name</option>-->
+        /// </summary>
+        /// <returns>
+        /// A list of <see cref="SelectListItem"/> items full of the <see cref="SupportedFileTypes.FileList"/> items.
+        /// </returns>
+        private List<SelectListItem> GetSelectListItems()
         {
             // Create an empty list to hold result of the operation
-            var selectList = new List<SelectListItem>();
+            List<SelectListItem> selectList = new List<SelectListItem>();
 
-            // For each string in the 'elements' variable, create a new SelectListItem object
-            // that has both its Value and Text properties set to a particular value.
-            // This will result in MVC rendering each item as:
-            //     <option value="State Name">State Name</option>
-            foreach (var element in elements)
+            foreach (string element in SupportedFileTypes.FileList)
             {
                 selectList.Add(new SelectListItem
                 {
@@ -225,13 +272,17 @@ namespace ARFE.Controllers
         }
     }
 
+    /// <summary>
+    ///  A POCO class for the file type combo box
+    /// </summary>
     public class FileTypeModel
     {
-        // This property will hold all available states for selection
-
+        /// <summary> The selected file type </summary>
         [Required]
         [Display(Name = "File Type")]
         public string FileType { get; set; }
-        public IEnumerable<SelectListItem> FileTypes { get; set; }
+
+        /// <summary> The list of file type options. </summary>
+        public List<SelectListItem> FileTypes { get; set; }
     }
 }

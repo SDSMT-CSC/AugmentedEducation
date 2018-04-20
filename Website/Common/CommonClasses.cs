@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Common
 {
@@ -25,5 +26,11 @@ namespace Common
         public DateTime UploadDate { get; set; }
 
         #endregion
+    }
+
+    public class SupportedFileTypes
+    {
+        public static List<string> FileList => new List<string> { ".dae", ".fbx", ".obj", ".ply", ".stl" };
+
     }
 }

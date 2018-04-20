@@ -1,16 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Web;
-using System.Linq;
-using System.Drawing;
 using System.Web.Mvc;
-using System.Diagnostics;
-using System.Drawing.Imaging;
-using System.Collections.Generic;
 
-using QRCoder;
-using System.Threading;
-
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
     public class UploadController : Controller

@@ -1,4 +1,5 @@
-﻿using System;
+﻿//System .dll's
+using System;
 using System.IO;
 using System.Web;
 using System.Linq;
@@ -7,11 +8,18 @@ using System.Web.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+//NuGet
 using Newtonsoft.Json.Linq;
-using AuthenticationTokenCache;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
+//other classes
+using AuthenticationTokenCache;
+
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
     [Route("[controller]/[action]")]

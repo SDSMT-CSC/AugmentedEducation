@@ -1,4 +1,5 @@
-﻿using System;
+﻿//system .dll's
+using System;
 using System.IO;
 using System.Drawing;
 using System.Web.Mvc;
@@ -6,10 +7,14 @@ using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+//NuGet
+using QRCoder;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-using QRCoder;
-
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
     public class PublicContentController : Controller
@@ -28,9 +33,6 @@ namespace ARFE.Controllers
             {
                 if(!x.FileName.Contains(".zip"))
                 {
-                    //remove author name from file
-                    string formattedAuthor = blob.FormatBlobContainerName(x.Author);
-                    x.FileName = x.FileName.Replace($"{formattedAuthor}-", "");
                     //remove file extension from file
                     index = x.FileName.LastIndexOf(".");
                     if (index >= 0)
@@ -58,14 +60,11 @@ namespace ARFE.Controllers
         {
             if (model.FileType != null)
             {
-                string user = User.Identity.Name; 
                 int index = downloadType.LastIndexOf("--");
                 string filename = downloadType.Substring(0, index) + ".fbx";
                 string selectionType = downloadType.Substring(index + 2);
 
                 BlobManager blobManager = new BlobManager();
-
-                filename = $"{blobManager.FormatBlobContainerName(user)}-{filename}";
 
                 if (selectionType == "Download")
                 {
