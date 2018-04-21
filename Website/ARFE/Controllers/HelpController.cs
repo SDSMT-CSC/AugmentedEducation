@@ -20,29 +20,5 @@ namespace ARFE.Controllers
         ///     A view to the "Index.cshtml" page in the Views/Help/ folder.
         /// </returns>
         public ActionResult Help() => View();
-
-
-        /// <summary>
-        /// The About page.
-        /// </summary>
-        /// <returns> The About page. </returns>
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-
-        /// <summary>
-        /// The Contact page.
-        /// </summary>
-        /// <returns> The Contact page. </returns>
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
     }
 }

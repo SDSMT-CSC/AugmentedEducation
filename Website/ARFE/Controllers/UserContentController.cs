@@ -48,41 +48,41 @@ namespace ARFE.Controllers
             List<FileUIInfo> privateFileList = blob.ListPrivateBlobInfoForUI(User.Identity.Name);
 
             //display user's private files
-            foreach (FileUIInfo x in privateFileList)
+            foreach (FileUIInfo info in privateFileList)
             {
-                if (!x.FileName.Contains(".zip"))
+                if (!info.FileName.Contains(".zip"))
                 {
-                    index = x.FileName.LastIndexOf(".");
+                    index = info.FileName.LastIndexOf(".");
                     if (index >= 0)
-                        x.FileName = x.FileName.Substring(0, index);
+                        info.FileName = info.FileName.Substring(0, index);
 
-                    index = x.Author.IndexOf('@');
+                    index = info.Author.IndexOf('@');
                     if (index >= 0)
-                        x.Author = x.Author.Substring(0, index);
-                    x.UploadDate = x.UploadDate.ToLocalTime();
+                        info.Author = info.Author.Substring(0, index);
+                    info.UploadDate = info.UploadDate.ToLocalTime();
 
-                    privateFileObjects.Add(x);
+                    privateFileObjects.Add(info);
                 }
 
             }
 
             //display user's public files
-            foreach (FileUIInfo x in publicFileList)
+            foreach (FileUIInfo info in publicFileList)
             {
-                if (!x.FileName.Contains(".zip"))
+                if (!info.FileName.Contains(".zip"))
                 {
-                    if (x.Author == User.Identity.Name)
+                    if (info.Author == User.Identity.Name)
                     {
-                        index = x.FileName.LastIndexOf(".");
+                        index = info.FileName.LastIndexOf(".");
                         if(index >= 0)
-                            x.FileName = x.FileName.Substring(0, index);
+                            info.FileName = info.FileName.Substring(0, index);
 
-                        index = x.Author.IndexOf('@');
+                        index = info.Author.IndexOf('@');
                         if(index >= 0)
-                            x.Author = x.Author.Substring(0, index);
-                        x.UploadDate = x.UploadDate.ToLocalTime();
+                            info.Author = info.Author.Substring(0, index);
+                        info.UploadDate = info.UploadDate.ToLocalTime();
 
-                        publicFileObjects.Add(x);
+                        publicFileObjects.Add(info);
                     }
                 }
             }
