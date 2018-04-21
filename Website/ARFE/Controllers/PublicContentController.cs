@@ -1,4 +1,5 @@
-﻿using System;
+﻿//system .dll's
+using System;
 using System.IO;
 using System.Drawing;
 using System.Web.Mvc;
@@ -6,66 +7,92 @@ using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+//NuGet
+using QRCoder;
 using Microsoft.WindowsAzure.Storage.Blob;
 
-using QRCoder;
+//other classes
+using Common;
 
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
+    /// <summary>
+    /// A class derived from the <see cref="Controller"/> class that has all
+    /// of the controller actions to dispaly and interact with the public file content 
+    /// on the website.
+    /// </summary>
     public class PublicContentController : Controller
     {
-        // GET: PublicContent
+        /// <summary>
+        /// The Index controller action is the default action called when the UserContent page is
+        /// browsed to.
+        /// </summary>
+        /// <returns>
+        ///     A view to the "Index.cshtml" page in the Views/PublicContent/ folder.
+        /// </returns>
         public ActionResult Index()
         {
             int index;
             var model = new FileTypeModel();
-            var filestypes = GetAllFileTypes();
             BlobManager blob = new BlobManager();
             var fileList = blob.ListPublicBlobInfoForUI();
-            List<Common.FileUIInfo> fileObjects = new List<Common.FileUIInfo>();
+            List<FileUIInfo> fileObjects = new List<FileUIInfo>();
 
-            foreach (Common.FileUIInfo x in fileList)
+            foreach (FileUIInfo info in fileList)
             {
-                if(!x.FileName.Contains(".zip"))
+                if(!info.FileName.Contains(".zip"))
                 {
-                    //remove author name from file
-                    string formattedAuthor = blob.FormatBlobContainerName(x.Author);
-                    x.FileName = x.FileName.Replace($"{formattedAuthor}-", "");
                     //remove file extension from file
-                    index = x.FileName.LastIndexOf(".");
+                    index = info.FileName.LastIndexOf(".");
                     if (index >= 0)
-                        x.FileName = x.FileName.Substring(0, index);
+                        info.FileName = info.FileName.Substring(0, index);
 
-                    index = x.Author.IndexOf('@');
+                    index = info.Author.IndexOf('@');
                     if (index >= 0)
-                        x.Author = x.Author.Substring(0, index);
-                    x.UploadDate = x.UploadDate.ToLocalTime();
+                        info.Author = info.Author.Substring(0, index);
+                    info.UploadDate = info.UploadDate.ToLocalTime();
 
-                    fileObjects.Add(x);
+                    fileObjects.Add(info);
                 }
             }
 
             ViewBag.fileObjects = fileObjects;
             // Create a list of SelectListItems so these can be rendered on the page
-            model.FileTypes = GetSelectListItems(filestypes);
+            model.FileTypes = GetSelectListItems();
 
             return View("Index", model);
         }
 
 
+        /// <summary>
+        /// The controller action responsible for the sub-menu button clicks on the menu
+        /// that corresponds to the content that the user owns but is publicly available.
+        /// The [HttpPost] assembly tag is used to register this method as elligible for POST
+        /// requests only.
+        /// </summary>
+        /// <param name="model"> 
+        /// A <see cref="FileTypeModel"/> object representing the file selected.
+        /// </param>
+        /// <param name="downloadType">
+        /// The selected file type for potential conversion
+        /// </param>
+        /// <returns>
+        /// A view redirection to refresh the content of the Public Content page.
+        /// </returns>
         [HttpPost]
         public ActionResult ContentSelect(FileTypeModel model, string downloadType)
         {
             if (model.FileType != null)
             {
-                string user = User.Identity.Name; 
                 int index = downloadType.LastIndexOf("--");
                 string filename = downloadType.Substring(0, index) + ".fbx";
                 string selectionType = downloadType.Substring(index + 2);
 
                 BlobManager blobManager = new BlobManager();
-
-                filename = $"{blobManager.FormatBlobContainerName(user)}-{filename}";
 
                 if (selectionType == "Download")
                 {
@@ -98,6 +125,14 @@ namespace ARFE.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Create a QR code from the file download link returned from blob storage.
+        /// </summary>
+        /// <param name="downloadLink">the file download link returned from blob storage</param>
+        /// <returns>
+        /// A page redirection that will display the QR code .PNG file.
+        /// </returns>
         private ActionResult DisplayQRCode(string downloadLink)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -114,28 +149,22 @@ namespace ARFE.Controllers
             return View("DisplayQRCode");
         }
 
-        private IEnumerable<string> GetAllFileTypes()
-        {
-            return new List<string>
-            {
-                ".fbx",
-                ".dae",
-                ".obj",
-                ".ply",
-                ".stl",
-            };
-        }
 
-        private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
+        /// <summary>
+        /// For each string in the <see cref="SupportedFileTypes.FileList"/> list, create a new 
+        /// <see cref="SelectListItem"/> object that has both its Value and Text properties 
+        /// set to a particular value. This will result in MVC rendering each item as: 
+        ///     <!--<option value='State Name'>State Name</option>-->
+        /// </summary>
+        /// <returns>
+        /// A list of <see cref="SelectListItem"/> items full of the <see cref="SupportedFileTypes.FileList"/> items.
+        /// </returns>
+        private List<SelectListItem> GetSelectListItems()
         {
             // Create an empty list to hold result of the operation
-            var selectList = new List<SelectListItem>();
+            List<SelectListItem> selectList = new List<SelectListItem>();
 
-            // For each string in the 'elements' variable, create a new SelectListItem object
-            // that has both its Value and Text properties set to a particular value.
-            // This will result in MVC rendering each item as:
-            //     <option value="State Name">State Name</option>
-            foreach (var element in elements)
+            foreach (string element in SupportedFileTypes.FileList)
             {
                 selectList.Add(new SelectListItem
                 {

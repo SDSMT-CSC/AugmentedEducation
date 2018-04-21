@@ -1,17 +1,28 @@
-﻿using System;
+﻿//System .dll's
+using System;
+
+//NuGet packages
+using Owin;
+using Microsoft.Owin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.Google;
-using Owin;
+
+//Application Classes
 using ARFE.Models;
 
 namespace ARFE
 {
+    /// <summary>
+    /// The application startup class is called upon launching the application.
+    /// </summary>
     public partial class Startup
     {
-        // For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
+        /// <summary>
+        /// Application startup configuration via <see cref="Microsoft.AspNet.Identity"/>
+        /// For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
+        /// </summary>
+        /// <param name="app"> The application being configured. </param>
         public void ConfigureAuth(IAppBuilder app)
         {
             // Configure the db context, user manager and signin manager to use a single instance per request
