@@ -20,6 +20,11 @@ using Common;
 /// </summary>
 namespace ARFE.Controllers
 {
+    /// <summary>
+    /// A class derived from the <see cref="Controller"/> class that has all
+    /// of the controller actions to dispaly and interact with the public file content 
+    /// on the website.
+    /// </summary>
     public class PublicContentController : Controller
     {
         /// <summary>

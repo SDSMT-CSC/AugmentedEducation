@@ -21,7 +21,7 @@ using Common;
 namespace ARFE.Controllers
 {
     /// <summary>
-    /// A class derived from the <see cref="System.Web.Mvc.Controller"/> class that has all
+    /// A class derived from the <see cref="Controller"/> class that has all
     /// of the controller actions to dispaly and interact with the user's file content 
     /// on the website.
     /// </summary>

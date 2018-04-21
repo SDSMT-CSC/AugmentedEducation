@@ -22,12 +22,24 @@ using AuthenticationTokenCache;
 /// </summary>
 namespace ARFE.Controllers
 {
+    /// <summary>
+    /// The MobileAuthController serves as an API to the mobile application.  The [Route] 
+    /// attribute allows this Controller to specify that to call any individual controller action
+    /// within this class, you have to explicitly list the action method in the request URL.
+    /// </summary>
     [Route("[controller]/[action]")]
     public class MobileAuthController : Controller
     {
         #region Members
 
+        /// <summary> 
+        ///     A reference to the <see cref="TokenCache"/> for generating and validating mobile request authorizations.
+        /// </summary>
         private TokenCache _TokenCache;
+
+        /// <summary>
+        ///     An enum for the <see cref="ListFiles(int, int?)"/> API method.  This puts a name to the request value.
+        /// </summary>
         private enum FileDescriptor
         {
             ALL = 0,
@@ -42,6 +54,10 @@ namespace ARFE.Controllers
 
         #region Constructor
 
+        /// <summary>
+        /// The default constructor either instantiates the <see cref="TokenCache"/> or gets a reference to it.
+        /// The reference is stored in the <see cref="_TokenCache"/> private member.
+        /// </summary>
         public MobileAuthController()
         {
             _TokenCache = TokenCache.Init();
@@ -52,8 +68,9 @@ namespace ARFE.Controllers
 
         #region Properties
 
+        /// <summary> A reference to the applications UserManager for password validation. </summary>
         public ApplicationUserManager UserManager => HttpContext.GetOwinContext().Get<ApplicationUserManager>();
-        public ApplicationSignInManager SignInManager => HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+
         #endregion
 
 
@@ -62,18 +79,19 @@ namespace ARFE.Controllers
         /// <summary>
         /// Read the userName and password values from the JSON and create a unique 
         /// Authorization Token string associated to the user credentials and stored
-        /// in a cache.
+        /// in a cache. This method is only accessible via an Http POST request.
         /// </summary>
         /// <returns>JSON response of the Authentication Token</returns>
         [HttpPost]
         public async Task<string> RequestAuthToken()
         {
+            string token = string.Empty;
+            string reason = string.Empty;
+            string userName = string.Empty;
+            string password = string.Empty;
+
             try
             {
-                string token = string.Empty;
-                string reason = string.Empty;
-                string userName = string.Empty;
-                string password = string.Empty;
                 Stream bodyStream = Request.InputStream;
                 JObject requestJson = JObject.Parse(new StreamReader(bodyStream).ReadToEnd());
 
@@ -110,14 +128,16 @@ namespace ARFE.Controllers
         /// <summary>
         /// Return a list of files that a mobile user has access to denoted by an ownership
         /// descriptor value.  The discriptor values are 
-        /// 0: ALL (All public and private files that the mobile user has access to.),
-        /// 1: OWNED_ALL (All public and private files that the mobile user owns), 
-        /// 2: OWNED_PRIVATE (All of the private files owned by the mobile user), 
-        /// 3: OWNED_PUBLIC (All of the public files owned by the mobile user), 
-        /// 4: NOT_OWNED_PUBLIC (All of the public files not owned by the mobile user).
-        /// 
+        /// <ul>
+        ///     <li>0: ALL (All public and private files that the mobile user has access to.)</li>
+        ///     <li>1: OWNED_ALL (All public and private files that the mobile user owns)</li>
+        ///     <li>2: OWNED_PRIVATE (All of the private files owned by the mobile user)</li>
+        ///     <li>3: OWNED_PUBLIC (All of the public files owned by the mobile user)</li>
+        ///     <li>4: NOT_OWNED_PUBLIC (All of the public files not owned by the mobile user)</li>
+        /// </ul>
         /// If a <paramref name="pageNumber"/> value is supplied, the response list will be paginated
         /// with at most 10 results per page, and the correct page of values will be returned.
+        /// This method is only accessible via an Http GET request.
         /// </summary>
         /// <param name="descriptor">The file descriptor value</param>
         /// <param name="pageNumber">The page index to return.  If null, return all pages.</param>
@@ -125,16 +145,16 @@ namespace ARFE.Controllers
         [HttpGet]
         public async Task<string> ListFiles(int descriptor, int? pageNumber)
         {
+            int totalPages = 0;
+            int currentPage = 0;
+            string reason = string.Empty;
+            string userName = string.Empty;
+            Tuple<string, string> validateUserInfo;
+            List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
+            List<List<Tuple<string, Uri>>> pageFiles = new List<List<Tuple<string, Uri>>>();
+
             try
             {
-                int totalPages = 0;
-                int currentPage = 0;
-                string reason = string.Empty;
-                string userName = string.Empty;
-                Tuple<string, string> validateUserInfo;
-                List<Tuple<string, Uri>> fileList = new List<Tuple<string, Uri>>();
-                List<List<Tuple<string, Uri>>> pageFiles = new List<List<Tuple<string, Uri>>>();
-
                 validateUserInfo = await ValidateUser();
 
                 if (string.IsNullOrEmpty(validateUserInfo.Item2))
@@ -159,16 +179,14 @@ namespace ARFE.Controllers
                             fileList = blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName);
                             break;
                         case ((int)FileDescriptor.NOT_OWNED_PUBLIC): //4
-                                                                     //List of all public files
                             fileList = blobManager.ListBlobNamesToUrisInPublicContainer();
-                            //remove the ones owned by user
+                            //List of all public files - remove the ones owned by user
                             foreach (Tuple<string, Uri> file in blobManager.ListBlobNamesToUrisInPublicContainerOwnedBy(userName))
                             {
                                 fileList.Remove(file);
                             }
                             break;
-                        default:
-                            break;
+                        default: break;
                     }
 
                     //if requesting page and there is content
@@ -207,7 +225,8 @@ namespace ARFE.Controllers
         /// Using the Authentication Token and the FileUri, both provided in the HTTP header as 
         /// fileUri: [fileUri], token: [token]
         /// Authenticate the user from the provided token, and request to Azure Blob storage to 
-        /// get a downloadable file URI for the file.
+        /// get a downloadable file URI for the file. This method is only accessible via an Http
+        /// GET request.
         /// </summary>
         /// <returns>The JSON response containing the downloadable file URI.</returns>
         [HttpGet]
@@ -262,6 +281,19 @@ namespace ARFE.Controllers
 
         #region Private Methods
 
+        /// <summary>
+        /// Verify that user credentials can be retrieved from the <see cref="TokenCache"/> from the 
+        /// access token that is supplied in the Http request headers. If user credentials are retrieved,
+        /// verify through the <see cref="UserSignIn(string, string)"/> method that the credentials are valid
+        /// sign in credentials for a user in the system.
+        /// </summary>
+        /// <returns>
+        ///     An Tuple pair of two strings that consist of:
+        ///     <ul>
+        ///         <li>Item1: The user name.</li>
+        ///         <li>Item2: Any authentication error message.</li>
+        ///     </ul>
+        /// </returns>
         private async Task<Tuple<string, string>> ValidateUser()
         {
             string token = string.Empty;
@@ -286,14 +318,21 @@ namespace ARFE.Controllers
             return new Tuple<string, string>(userInfo.Item1, reason);
         }
 
+
+        /// <summary>
+        /// Verify that the user name and password retrieved from the <see cref="TokenCache"/>
+        /// are valid credentials from a user in the system.
+        /// </summary>
+        /// <param name="userName">The user name retrieved from the <see cref="TokenCache"/></param>
+        /// <param name="password">The password retrieved from the <see cref="TokenCache"/></param>
+        /// <returns>
+        /// An authentication failure reason.  If the reason is empty then the authentication was successful.
+        /// </returns>
         private async Task<string> UserSignIn(string userName, string password)
         {
             string reason = string.Empty;
+            Models.ApplicationUser appUser = await UserManager.FindByNameAsync(userName);
 
-            //lookup user from Owin Context by UserName
-            Models.ApplicationUser appUser = await HttpContext.GetOwinContext()
-                                                                .Get<ApplicationUserManager>()
-                                                                .FindByNameAsync(userName);
             //user found from lookup
             if (appUser != null)
             {
@@ -302,7 +341,6 @@ namespace ARFE.Controllers
                 if (verified == PasswordVerificationResult.Failed)
                 {
                     reason = "Password authentication failed.";
-                    //else : correct UserName, Password ==> good to go
                 }
             }
             else { reason = "User information not found."; }
@@ -310,6 +348,16 @@ namespace ARFE.Controllers
             return reason;
         }
 
+
+        /// <summary>
+        /// Format the expected Json result for the mobile application 
+        /// <see cref="RequestAuthToken"/> request.
+        /// </summary>
+        /// <param name="reason">A message detailing the success or failure.</param>
+        /// <param name="token">The new authentication token for the mobile user.</param>
+        /// <returns>
+        ///     The formatted Json response string.
+        /// </returns>
         private string FormatRequestAuthTokenResult(string reason, string token)
         {
             string quote = "\"";
@@ -327,6 +375,15 @@ namespace ARFE.Controllers
             return jsonString.ToString();
         }
 
+        /// <summary>
+        /// Format the expected Json result for the mobile application <see cref="ListFiles(int, int?)"/>
+        /// request.
+        /// </summary>
+        /// <param name="fileList">A list of associated file names to Uris.</param>
+        /// <param name="reason">A message detailing the success or failure.</param>
+        /// <param name="currentPage">An integer for what section of the overall <paramref name="fileList"/> is being returned.</param>
+        /// <param name="totalPages">An integer for the size of the overall <paramref name="fileList"/></param>
+        /// <returns>The formatted Json response string.</returns>
         private string FormatListFilesResult(List<Tuple<string, Uri>> fileList, string reason, int currentPage, int totalPages)
         {
             string quote = "\"";
@@ -376,6 +433,13 @@ namespace ARFE.Controllers
             return jsonString.ToString();
         }
 
+
+        /// <summary>
+        /// Format the expected Json result of the mobile application <see cref="DownloadFile"/> request.
+        /// </summary>
+        /// <param name="reason">A message detailing the success or failure.</param>
+        /// <param name="downloadUrl">The downloadable link created by Azure Blob storage.</param>
+        /// <returns>The formatted Json response string.</returns>
         private string FormatDownloadFileResult(string reason, string downloadUrl)
         {
             string quote = "\"";
@@ -391,6 +455,13 @@ namespace ARFE.Controllers
             return jsonString.ToString();
         }
 
+
+        /// <summary>
+        /// A method to split the entire list of requested files into blocks or "pages" that each
+        /// contain a small ordered portion of the whole set.
+        /// </summary>
+        /// <param name="fileList">The enitre list of requested files.</param>
+        /// <returns>The formatted Json response string.</returns>
         private List<List<Tuple<string, Uri>>> PaginateFiles(List<Tuple<string, Uri>> fileList)
         {
             int idx = 0;
