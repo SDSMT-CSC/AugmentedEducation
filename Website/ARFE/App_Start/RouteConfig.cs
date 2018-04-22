@@ -1,6 +1,9 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
+/// <summary>
+/// This is the over-arching namespace for all website related code.
+/// </summary>
 namespace ARFE
 {
     /// <summary>

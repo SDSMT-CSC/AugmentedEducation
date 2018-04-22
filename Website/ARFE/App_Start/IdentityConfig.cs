@@ -13,6 +13,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 //Application Classes
 using ARFE.Models;
 
+/// <summary>
+/// This is the over-arching namespace for all website related code.
+/// </summary>
 namespace ARFE
 {
     /// <summary>

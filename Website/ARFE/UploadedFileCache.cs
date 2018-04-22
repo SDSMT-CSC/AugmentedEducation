@@ -10,6 +10,9 @@ using System.Collections.Concurrent;
 //NuGet packages
 using Microsoft.WindowsAzure.Storage.Blob;
 
+/// <summary>
+/// This is the over-arching namespace for all website related code.
+/// </summary>
 namespace ARFE
 {
     /// <summary>

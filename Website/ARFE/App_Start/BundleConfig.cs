@@ -1,5 +1,8 @@
 ﻿using System.Web.Optimization;
 
+/// <summary>
+/// This is the over-arching namespace for all website related code.
+/// </summary>
 namespace ARFE
 {
     /// <summary>

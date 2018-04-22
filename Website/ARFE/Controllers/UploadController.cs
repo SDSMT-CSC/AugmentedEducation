@@ -9,6 +9,10 @@ using System.Web.Mvc;
 /// </summary>
 namespace ARFE.Controllers
 {
+    /// <summary>
+    /// A class derived from the <see cref="Controller"/> class that has all
+    /// of the controller actions to manage user file uploads.  
+    /// </summary>
     public class UploadController : Controller
     {
         #region Members
