@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+/// <summary>
+/// The model classes that contain data representation objects for passing information
+/// between the web .cshtml code and the backend server code.
+/// </summary>
 namespace ARFE.Models
 {
     public class SendCodeViewModel

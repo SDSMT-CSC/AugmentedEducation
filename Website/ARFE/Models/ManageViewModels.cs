@@ -4,6 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 
+/// <summary>
+/// The model classes that contain data representation objects for passing information
+/// between the web .cshtml code and the backend server code.
+/// </summary>
 namespace ARFE.Models
 {
     public class IndexViewModel
