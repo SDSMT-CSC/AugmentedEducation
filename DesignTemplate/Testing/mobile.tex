@@ -1,10 +1,10 @@
 
 \section{Mobile}
-
+    Testing for the mobile app was primarily done manually. This is because most testing was done on visualizing files and verifying the app performed as expected.
     \subsection{Files}
-    
+        A variety of files were used throughout development to test functionality of the app. Some sample files were found on \url{https://free3d.com}. Some files were provided from Dr. Deschamp and others were generated in Maple. Different files were used to test that colors were working both in the MTL and as PNGs. Additionally, large and small files were tested to see how the app reacted to more complex files. The BMW file seen below is an example of a complex file that didn't render well in our app that shows the limitations of our app.
         \subsubsection{Colors}
-
+        A major feature requested for the app was to be able to display colors. The example below shows a simple sphere with a proof of concept that colors do work. The car is a more in-depth example that shows multiple colors on the same model.
         \begin{figure}[H]
             \includegraphics[width=0.5\textwidth]{Mobile/Mobile_RedSphere}
             \centering
@@ -19,8 +19,8 @@
             \label{fig:mobileCar}
         \end{figure}
         
-        \subsubsection{Lage Files}
-
+        \subsubsection{Large Files}
+        One main concern was that 3D files can get large and complex. The BMW is an example of this because it has 51,318 vertices while the sphere has 2258. It took a considerable amount of time to load this file and it draws poorly, showing a limitation of keeping track of so many vertices.
             \begin{figure}[H]
                 \includegraphics[width=0.5\textwidth]{Mobile/Mobile_BMW}
                 \centering
@@ -29,7 +29,7 @@
             \end{figure}
     
         \subsubsection{Small Files}
-
+        A simple test used especially at the beginning of development to test that models would draw. The sphere is a typical example of something generated from Maple. 
         \begin{figure}[H]
             \includegraphics[width=0.5\textwidth]{Mobile/Mobile_Sphere}
             \centering
@@ -38,7 +38,7 @@
         \end{figure}
         
         \subsubsection{Embedded Images}
-
+        Some 3D modeling software generates OBJ files with PNG textures referenced in the MTL instead of defining RGB values. We needed to test that these files were also supported by our app after adding extra functionality for them. Figure \ref{fig:mobileEmbeddedPhone} shows the PNG texture working, but it doesn't match the intended plot perfectly (Figure \ref{fig:mobileEmbeddedWindows}). This is because the app currently does not support drawing multiple images on top of each other yet.
         \begin{figure}[H]
             \includegraphics[width=0.5\textwidth]{Mobile/Mobile_ImagesPhone}
             \centering
@@ -52,6 +52,9 @@
             \caption{Embedded Image - Viewing in the Windows Viewer}
             \label{fig:mobileEmbeddedWindows}
         \end{figure}
+
+        \subsection{Scaling}
+        Different models scale differently when initially drawn in the app. A scale factor of 1.0 on one model may be too small or too large, making the model difficult to visualize. To remedy this, the app provides an option to increase or decrease the scale factor, as well as change the step so models of different scales can be adjusted properly. Maple models generally need a larger scale factor (approx 3.0) while others like the car need to be adjusted by 0.1 at a time.
         
     \subsection{Web Interface}
 
