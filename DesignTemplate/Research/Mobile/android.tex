@@ -1,3 +1,21 @@
 
-\subsection{Android}
-\subsubsection{ARCore}
+\subsection{ARCore}
+    \paragraph{Features Provided}
+
+    ARCore provides a variety of useful features for creating AR apps. However, there are some important features left to the developer to implement. The provided features include: world \& motion tracking, surface recognition, and light estimation for determining current lighting conditions. From the ARCore website \url{https://developers.google.com/ar/discover/}: "Motion tracking allows the phone to understand and track its position relative to the world." Surface recognition "allows the phone to detect the size and location of flat horizontal surfaces like the ground or a coffee table." And "Light estimation allows the phone to estimate the environment's current lighting conditions."
+
+    \paragraph{Features Not Provided}
+
+    ARCore does not provide features for usage documentation, loading/parsing 3D files, or drawing 3D files. Given the recent release of ARCore, Google's documentation is sparse and still under development. Instead, Google provided a sample project showing off the features of ARCore and relying on code comments to understand what is going on. This sample project also included external libraries for loading, parsing and drawing 3D files but they are not part of ARCore and were not clearly listed or defined. These other features needed to be modified to fit our project because of the file types we wanted to handle. The other libraries for loading/parsing and drawing files can be found at \url{https://github.com/javagl/Obj} and \url{https://github.com/JohnLXiang/arcore-sandbox}. The first link is for loading and parsing OBJ files and the second is a modification of the sample project to include displaying MTL files.
+
+\subsection{OpenGL}
+    To draw models, Android uses OpenGL. The developer needs to have an understanding of how OpenGL works (in Java). This includes creating textures, writing shaders, and making proper calls to the library.
+
+\subsection{QR Code Reading}
+    The basis for the QR reading code is at \url{https://github.com/varvet/BarcodeReaderSample/blob/master/LICENSE} with an article explaining its use at \url{https://www.varvet.com/blog/android-qr-code-reader-made-easy/}. This library and its features were implemented in our project to allow for better integration with the website and fulfill user stories.
+
+\subsection{Database}
+    The app uses the Room Persistence Library for database transactions. This database is used to keep track of the user's models that are on and off the phone. It is an abstraction layer over the SQLite database built into Android. The components are the database, entity, and DAO (data access object). The database holds the information, the entity is the structure of the database, and the DAO provides methods for performing database transactions. More information can be found at \url{https://developer.android.com/training/data-storage/room/index.html}.
+
+\subsection{Network Communication}
+    Communication with the website was done through Google's Volley API \url{https://developer.android.com/training/volley/index.html}. It communicates with the endpoint set by the web team. It is used for authentication, retrieving model listing, and downloading files.
