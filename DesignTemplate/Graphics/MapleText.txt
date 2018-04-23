@@ -1,0 +1,4 @@
+f:=plot3d(...);
+with(plottools):
+obj := FileTools:-JoinPath([currentdir(), "test1.obj"]);
+exportplot(obj,f):
