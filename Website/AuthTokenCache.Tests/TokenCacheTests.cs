@@ -4,13 +4,11 @@ using System.Collections.Generic;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using AuthenticationTokenCache;
-
 /// <summary>
 /// The namespace containing all tests that pertain to the 
 /// AuthenticationTokenCache.TokenCache class and it's methods.
 /// </summary>
-namespace AuthTokenCache.Tests
+namespace AuthenticationTokenCache.Tests
 {
     /// <summary>
     /// The class containing all tests that pertain to the 
