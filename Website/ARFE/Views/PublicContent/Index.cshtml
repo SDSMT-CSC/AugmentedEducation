@@ -8,6 +8,32 @@
 
 <h2 class="text-center" style="margin-top:60px;margin-bottom:40px;" ">Public Files</h2>
 
+@using (Html.BeginForm("Search", "PublicContent", FormMethod.Post, new { id = "SearchForm", role = "form" }))
+{
+    <div id="OrderTypeDiv">
+        @Html.RadioButton("OrderType", "1", true)<span>Newest First  </span>
+        @Html.RadioButton("OrderType", "2")<span>Oldest First  </span>
+        @Html.RadioButton("OrderType", "3")<span>Alphabetical  </span>
+        @Html.RadioButton("OrderType", "4")<span>Reverse Alphabetical  </span>
+    </div>
+
+    <div id="SearchTypeDiv">
+        @Html.RadioButton("SearchType", "name", true) Search By Name
+        @Html.RadioButton("SearchType", "date") Search By Date
+    </div>
+
+    <div id="NameSearchDiv">
+        @Html.TextBox("TextCriteria", "", new { type = "text" })
+    </div>
+
+    <div id="DateSearchDiv">
+        From: @Html.TextBox("StartDateCrit", "", new { type = "date", id = "StartDate" })
+        To: @Html.TextBox("EndDateCrit", "", new { type = "date", id = "EndDate" })
+    </div>
+
+    <input id="Search" type="submit" value="Search" />
+}
+
 @if (ViewBag.invalid != null && ViewBag.invalid == true)
 {
     <p style="color:red">Must Select a File Type</p>
@@ -54,6 +80,51 @@
         }
     </tbody>
 </table>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#StartDate').val(getCurrentTime());
+        $('#EndDate').val(getCurrentTime());
+        $('#NameSearchDiv').show();
+        $('#DateSearchDiv').hide();
+
+
+        $('input[type=radio][name=SearchType]').on('change', function () {
+            if (this.value == 'name') {
+                $('#NameSearchDiv').show();
+                $('#DateSearchDiv').hide();
+
+            }
+            else if (this.value == 'date') {
+                $('#NameSearchDiv').hide();
+                $('#DateSearchDiv').show();
+            }
+        });
+
+        $('input[type=radio][name=OrderType]').on('change', function () {
+            $('#SearchForm').submit();
+        });
+    });
+
+
+
+
+    function getCurrentTime() {
+        var currDate = new Date();
+
+        var Day = currDate.getDate();
+        var Month = currDate.getMonth() + 1;
+        if (Month < 10) {
+            Month = 0 + Month.toString();
+        }
+        var Year = currDate.getFullYear();
+
+        var value = Year.toString() + "-" + Month.toString() + "-" + Day.toString();
+
+        return value;
+    }
+</script>
 
 
 

@@ -17,59 +17,13 @@ namespace ARFE.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            int index;
-            BlobManager blob = new BlobManager();
-
-            var model = new FileTypeModel();
-            List<Common.FileUIInfo> publicFileList = blob.ListPublicBlobInfoForUI();
-            List<Common.FileUIInfo> publicFileObjects = new List<Common.FileUIInfo>();
-            List<Common.FileUIInfo> privateFileObjects = new List<Common.FileUIInfo>();
-            List<Common.FileUIInfo> privateFileList = blob.ListPrivateBlobInfoForUI(User.Identity.Name);
-
-            foreach (Common.FileUIInfo x in privateFileList)
-            {
-                if (!x.FileName.Contains(".zip"))
-                {
-                    index = x.FileName.LastIndexOf(".");
-                    if (index >= 0)
-                        x.FileName = x.FileName.Substring(0, index);
-
-                    index = x.Author.IndexOf('@');
-                    if (index >= 0)
-                        x.Author = x.Author.Substring(0, index);
-                    x.UploadDate = x.UploadDate.ToLocalTime();
-
-                    privateFileObjects.Add(x);
-                }
-
-            }
-
-            foreach (Common.FileUIInfo x in publicFileList)
-            {
-                if (!x.FileName.Contains(".zip"))
-                {
-                    if (x.Author == User.Identity.Name)
-                    {
-                        index = x.FileName.LastIndexOf(".");
-                        if(index >= 0)
-                            x.FileName = x.FileName.Substring(0, index);
-
-                        index = x.Author.IndexOf('@');
-                        if(index >= 0)
-                            x.Author = x.Author.Substring(0, index);
-                        x.UploadDate = x.UploadDate.ToLocalTime();
-
-                        publicFileObjects.Add(x);
-                    }
-                }
-            }
-
-            var filestypes = GetAllFileTypes();
-            ViewBag.publicFiles = publicFileObjects;
-            ViewBag.privateFiles = privateFileObjects;
-
             // Create a list of SelectListItems so these can be rendered on the page
+            var model = new FileTypeModel();
+            var filestypes = GetAllFileTypes();
             model.FileTypes = GetSelectListItems(filestypes);
+
+            ViewBag.publicFiles = PublicDateSearch(DateTime.MinValue, DateTime.MaxValue, (int)OrderingOption.NewestFirst);
+            ViewBag.privateFiles = PrivateDateSearch(DateTime.MinValue, DateTime.MaxValue, (int)OrderingOption.NewestFirst);
 
             return View("Index", model);
         }
@@ -174,6 +128,228 @@ namespace ARFE.Controllers
         }
 
 
+        [Authorize]
+        [HttpPost]
+        public ActionResult PrivateSearch(int prOrderType, string prSearchType, string prTextCriteria, string prStartDateCrit, string prEndDateCrit)
+        {
+            var model = new FileTypeModel();
+            var filestypes = GetAllFileTypes();
+            model.FileTypes = GetSelectListItems(filestypes);
+
+            DateTime min = ConvertDateString(prStartDateCrit);
+            DateTime max = ConvertDateString(prEndDateCrit);
+
+            if(max < min)
+            {
+                DateTime temp = min;
+                min = max;
+                max = temp;
+            }
+
+            if (prSearchType == "name")
+            {
+                ViewBag.privateFiles = PrivateNameSearch(prTextCriteria, prOrderType);
+            }
+            else if(prSearchType == "date")
+            {
+                ViewBag.privateFiles = PrivateDateSearch(min, max, prOrderType);
+            }
+            
+            ViewBag.publicFiles = PublicDateSearch(DateTime.MinValue, DateTime.MaxValue, (int)OrderingOption.NewestFirst);
+
+            return View("Index", model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult PublicSearch(int puOrderType, string puSearchType, string puTextCriteria, string puStartDateCrit, string puEndDateCrit)
+        {
+            var model = new FileTypeModel();
+            var filestypes = GetAllFileTypes();
+            model.FileTypes = GetSelectListItems(filestypes);
+
+            DateTime min = ConvertDateString(puStartDateCrit);
+            DateTime max = ConvertDateString(puEndDateCrit);
+
+            if (max < min)
+            {
+                DateTime temp = min;
+                min = max;
+                max = temp;
+            }
+
+            if (puSearchType == "name")
+            {
+                ViewBag.publicFiles = PublicNameSearch(puTextCriteria, puOrderType);
+            }
+            else if (puSearchType == "date")
+            {
+                ViewBag.publicFiles = PublicDateSearch(min, max, puOrderType);
+            }
+
+            ViewBag.privateFiles = PrivateDateSearch(DateTime.MinValue, DateTime.MaxValue, (int)OrderingOption.NewestFirst);
+
+            return View("Index", model);
+        }
+
+        private List<Common.FileUIInfo> PrivateNameSearch(string SearchCriteria, int OrderCriteria)
+        {
+
+            List<Common.FileUIInfo> privateFileObjects = GetPrivateFiles();
+
+            List<Common.FileUIInfo> searchedList = new List<Common.FileUIInfo>();
+
+            if (OrderCriteria == (int)OrderingOption.Alphabetical)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameAscending(privateFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.ReverseAlphabetical)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameDescending(privateFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.NewestFirst)
+            {   
+                searchedList = SearchQueries.FilterByFileNameOrderByDateDescending(privateFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.OldestFirst)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByDateAscending(privateFileObjects, SearchCriteria);
+            }
+
+            return searchedList;
+        }
+
+        private List<Common.FileUIInfo> PublicNameSearch(string SearchCriteria, int OrderCriteria)
+        {
+
+            List<Common.FileUIInfo> publicFileObjects = GetPublicFiles();
+
+            List<Common.FileUIInfo> searchedList = new List<Common.FileUIInfo>();
+
+            if (OrderCriteria == (int)OrderingOption.Alphabetical)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameAscending(publicFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.ReverseAlphabetical)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameDescending(publicFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.NewestFirst)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameDescending(publicFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.OldestFirst)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameAscending(publicFileObjects, SearchCriteria);
+            }
+
+            return searchedList;
+        }
+
+        private List<Common.FileUIInfo> PrivateDateSearch(DateTime startDate, DateTime endDate, int OrderCriteria)
+        {
+            List<Common.FileUIInfo> privateFileObjects = GetPrivateFiles();
+
+            List<Common.FileUIInfo> searchedList = new List<Common.FileUIInfo>();
+
+            if (OrderCriteria == (int)OrderingOption.Alphabetical)
+            {
+                searchedList = SearchQueries.FilterDateOrderByNameAscending(privateFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.ReverseAlphabetical)
+            {
+                searchedList = SearchQueries.FilterDateOrderByNameDescending(privateFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.NewestFirst)
+            {
+                searchedList = SearchQueries.FilterDateOrderByDateDescending(privateFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.OldestFirst)
+            {
+                searchedList = SearchQueries.FilterDateOrderByDateAscending(privateFileObjects, startDate, endDate);
+            }
+
+            return searchedList;
+        }
+
+        private List<Common.FileUIInfo> PublicDateSearch(DateTime startDate, DateTime endDate, int OrderCriteria)
+        {
+            List<Common.FileUIInfo> publicFileObjects = GetPublicFiles();
+
+            List<Common.FileUIInfo> searchedList = new List<Common.FileUIInfo>();
+
+            if (OrderCriteria == (int)OrderingOption.Alphabetical)
+            {
+                searchedList = SearchQueries.FilterDateOrderByNameAscending(publicFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.ReverseAlphabetical)
+            {
+                searchedList = SearchQueries.FilterDateOrderByNameDescending(publicFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.NewestFirst)
+            {
+                searchedList = SearchQueries.FilterDateOrderByDateDescending(publicFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.OldestFirst)
+            {
+                searchedList = SearchQueries.FilterDateOrderByDateAscending(publicFileObjects, startDate, endDate);
+            }
+
+            return searchedList;
+        }
+
+        private List<Common.FileUIInfo> GetPrivateFiles()
+        {
+            int index;
+            BlobManager blob = new BlobManager();
+            List<Common.FileUIInfo> privateFileList = blob.ListPrivateBlobInfoForUI(User.Identity.Name);
+            List<Common.FileUIInfo> privateFileObjects = new List<Common.FileUIInfo>();
+
+            foreach (Common.FileUIInfo x in privateFileList)
+            {
+                if (!x.FileName.Contains(".zip"))
+                {
+                    index = x.FileName.LastIndexOf(".");
+                    x.FileName = x.FileName.Substring(0, index);
+
+                    index = x.Author.IndexOf('@');
+                    x.Author = x.Author.Substring(0, index);
+                    x.UploadDate = x.UploadDate.ToLocalTime();
+
+                    privateFileObjects.Add(x);
+                }
+            }
+            return privateFileObjects;
+        }
+
+        private List<Common.FileUIInfo> GetPublicFiles()
+        {
+
+            int index;
+            BlobManager blob = new BlobManager();
+            List<Common.FileUIInfo> publicFileList = blob.ListPublicBlobInfoForUI();
+            List<Common.FileUIInfo> publicFileObjects = new List<Common.FileUIInfo>();
+
+            foreach (Common.FileUIInfo x in publicFileList)
+            {
+                if (!x.FileName.Contains(".zip"))
+                {
+                    if (x.Author == User.Identity.Name)
+                    {
+                        index = x.FileName.LastIndexOf(".");
+                        x.FileName = x.FileName.Substring(0, index);
+
+                        index = x.Author.IndexOf('@');
+                        x.Author = x.Author.Substring(0, index);
+                        x.UploadDate = x.UploadDate.ToLocalTime();
+
+                        publicFileObjects.Add(x);
+                    }
+                }
+            }
+            return publicFileObjects;
+
+        }
 
         private ActionResult DisplayQRCode(string downloadLink)
         {
@@ -223,6 +399,25 @@ namespace ARFE.Controllers
 
             return selectList;
         }
+
+        private DateTime ConvertDateString(string date)
+        {
+            string[] dateTokens = date.Split('-');
+            int year = Convert.ToInt32(dateTokens[0], 10);
+            int month = Convert.ToInt32(dateTokens[1], 10);
+            int day = Convert.ToInt32(dateTokens[2], 10);
+
+            return new DateTime(year, month, day);
+        }
+    }
+
+    public enum OrderingOption
+    {
+        NewestFirst = 1,
+        OldestFirst = 2,
+        Alphabetical = 3,
+        ReverseAlphabetical = 4
+
     }
 
     public class FileTypeModel

@@ -5,6 +5,33 @@
 <link rel="icon" href="..\..\..\Content\bootstrap.css">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
 
+@using (Html.BeginForm("PrivateSearch", "UserContent", FormMethod.Post, new { id = "PrivateSearchForm", role = "form" }))
+{
+    <div id="prOrderTypeDiv">
+        @Html.RadioButton("prOrderType", "1", true)<span>Newest First  </span>
+        @Html.RadioButton("prOrderType", "2")<span>Oldest First  </span>
+        @Html.RadioButton("prOrderType", "3")<span>Alphabetical  </span>
+        @Html.RadioButton("prOrderType", "4")<span>Reverse Alphabetical  </span>
+    </div>
+
+    <div id="prSearchTypeDiv">
+        @Html.RadioButton("prSearchType", "name", true) Search By Name
+        @Html.RadioButton("prSearchType", "date") Search By Date
+    </div>
+
+    <div id="prNameSearchDiv">
+        @Html.TextBox("prTextCriteria", "", new { type = "text" })
+    </div>
+
+    <div id="prDateSearchDiv">
+        From: @Html.TextBox("prStartDateCrit", "", new { type = "date", id = "prStartDate" })
+        To: @Html.TextBox("prEndDateCrit", "", new { type = "date", id = "prEndDate" })
+    </div>
+
+    <input id="prSearch" type="submit" value="Search" />
+}
+
+
 @if (ViewBag.invalid != null && ViewBag.invalid == true)
 {
     <p style="color:red">Must Select a File Type</p>
@@ -38,11 +65,11 @@
                                                                     // when page is rendered after postback,
                                                                     // take selected value from Model.State.
 
-                                                                                                                // 2. Take list of values from Model.States
-                                                                                                                Model.FileTypes,
+                                                                                                                                    // 2. Take list of values from Model.States
+                                                                                                                                    Model.FileTypes,
 
-                                                                                                                // 3. Text for the first 'default' option
-                                                                                                                "- Select a File Type -")
+                                                                                                                                    // 3. Text for the first 'default' option
+                                                                                                                                    "- Select a File Type -")
                     </td>
                     <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--Download">Download File</button></td>
                     <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--GeneralQR">General QR Code</button></td>
@@ -56,12 +83,37 @@
 </table>
 
 
-
 <br />
 <br />
 <br />
 
 <h2 class="text-center" style="margin-top:20px;margin-bottom:40px;">My Public Files</h2>
+
+@using (Html.BeginForm("PublicSearch", "UserContent", FormMethod.Post, new { id = "PublicSearchForm", role = "form" }))
+{
+    <div id="puOrderTypeDiv">
+        @Html.RadioButton("puOrderType", "1", true)<span>Newest First  </span>
+        @Html.RadioButton("puOrderType", "2")<span>Oldest First  </span>
+        @Html.RadioButton("puOrderType", "3")<span>Alphabetical  </span>
+        @Html.RadioButton("puOrderType", "4")<span>Reverse Alphabetical  </span>
+    </div>
+
+    <div id="puSearchTypeDiv">
+        @Html.RadioButton("puSearchType", "name", true) Search By Name
+        @Html.RadioButton("puSearchType", "date") Search By Date
+    </div>
+
+    <div id="puNameSearchDiv">
+        @Html.TextBox("puTextCriteria", "", new { type = "text" })
+    </div>
+
+    <div id="puDateSearchDiv">
+        From: @Html.TextBox("puStartDateCrit", "", new { type = "date", id = "puStartDate" })
+        To: @Html.TextBox("puEndDateCrit", "", new { type = "date", id = "puEndDate" })
+    </div>
+
+    <input id="puSearch" type="submit" value="Search" />
+}
 
 @if (ViewBag.invalid != null && ViewBag.invalid == true)
 {
@@ -96,11 +148,11 @@
                                                                     // when page is rendered after postback,
                                                                     // take selected value from Model.State.
 
-                                                                                                               // 2. Take list of values from Model.States
-                                                                                                               Model.FileTypes,
+                                                                                                                                   // 2. Take list of values from Model.States
+                                                                                                                                   Model.FileTypes,
 
-                                                                                                               // 3. Text for the first 'default' option
-                                                                                                               "- Select a File Type -")
+                                                                                                                                   // 3. Text for the first 'default' option
+                                                                                                                                   "- Select a File Type -")
                     </td>
                     <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--Download">Download File</button></td>
                     <td class="col-md-2" style="text-align:center; height:100%;"><button type="submit" name="downloadType" value="@file.FileName--GeneralQR">General QR Code</button></td>
@@ -112,3 +164,70 @@
         }
     </tbody>
 </table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#prStartDate').val(getCurrentTime());
+        $('#prEndDate').val(getCurrentTime());
+        $('#prNameSearchDiv').show();
+        $('#prDateSearchDiv').hide();
+
+        $('#puStartDate').val(getCurrentTime());
+        $('#puEndDate').val(getCurrentTime());
+        $('#puNameSearchDiv').show();
+        $('#puDateSearchDiv').hide();
+
+
+        $('input[type=radio][name=prSearchType]').on('change', function () {
+            if (this.value == 'name') {
+                $('#prNameSearchDiv').show();
+                $('#prDateSearchDiv').hide();
+
+            }
+            else if (this.value == 'date') {
+                $('#prNameSearchDiv').hide();
+                $('#prDateSearchDiv').show();
+            }
+        });
+
+        $('input[type=radio][name=prOrderType]').on('change', function () {
+            $('#PrivateSearchForm').submit();
+        });
+
+
+
+        $('input[type=radio][name=puSearchType]').on('change', function () {
+            if (this.value == 'name') {
+                $('#puNameSearchDiv').show();
+                $('#puDateSearchDiv').hide();
+
+            }
+            else if (this.value == 'date') {
+                $('#puNameSearchDiv').hide();
+                $('#puDateSearchDiv').show();
+            }
+        });
+
+        $('input[type=radio][name=puOrderType]').on('change', function () {
+            $('#PublicSearchForm').submit();
+        });
+    });
+
+
+
+
+    function getCurrentTime() {
+        var currDate = new Date();
+
+        var Day = currDate.getDate();
+        var Month = currDate.getMonth() + 1;
+        if (Month < 10) {
+            Month = 0 + Month.toString();
+        }
+        var Year = currDate.getFullYear();
+
+        var value = Year.toString() + "-" + Month.toString() + "-" + Day.toString();
+
+        return value;
+    }
+</script>

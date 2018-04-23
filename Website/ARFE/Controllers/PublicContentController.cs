@@ -17,16 +17,109 @@ namespace ARFE.Controllers
         // GET: PublicContent
         public ActionResult Index()
         {
-            int index;
             var model = new FileTypeModel();
             var filestypes = GetAllFileTypes();
+
+            ViewBag.fileObjects = DateSearch(DateTime.MinValue,DateTime.MaxValue, (int)OrderingOption.NewestFirst);
+            // Create a list of SelectListItems so these can be rendered on the page
+            model.FileTypes = GetSelectListItems(filestypes);
+
+            return View("Index", model);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Search(int OrderType, string SearchType, string TextCriteria, string StartDateCrit, string EndDateCrit)
+        {
+            var model = new FileTypeModel();
+            var filestypes = GetAllFileTypes();
+            model.FileTypes = GetSelectListItems(filestypes);
+
+            DateTime min = ConvertDateString(StartDateCrit);
+            DateTime max = ConvertDateString(EndDateCrit);
+
+            if (max < min)
+            {
+                DateTime temp = min;
+                min = max;
+                max = temp;
+            }
+
+            if (SearchType == "name")
+            {
+                ViewBag.fileObjects = NameSearch(TextCriteria, OrderType);
+            }
+            else if (SearchType == "date")
+            {
+                ViewBag.fileObjects = DateSearch(min, max, OrderType);
+            }
+
+            return View("Index", model);
+        }
+
+        private List<Common.FileUIInfo> DateSearch(DateTime startDate, DateTime endDate, int OrderCriteria)
+        {
+            List<Common.FileUIInfo> publicFileObjects = GetPublicFiles();
+
+            List<Common.FileUIInfo> searchedList = new List<Common.FileUIInfo>();
+
+            if (OrderCriteria == (int)OrderingOption.Alphabetical)
+            {
+                searchedList = SearchQueries.FilterDateOrderByNameAscending(publicFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.ReverseAlphabetical)
+            {
+                searchedList = SearchQueries.FilterDateOrderByNameDescending(publicFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.NewestFirst)
+            {
+                searchedList = SearchQueries.FilterDateOrderByDateDescending(publicFileObjects, startDate, endDate);
+            }
+            else if (OrderCriteria == (int)OrderingOption.OldestFirst)
+            {
+                searchedList = SearchQueries.FilterDateOrderByDateAscending(publicFileObjects, startDate, endDate);
+            }
+
+            return searchedList;
+        }
+
+        private List<Common.FileUIInfo> NameSearch(string SearchCriteria, int OrderCriteria)
+        {
+            List<Common.FileUIInfo> publicFileObjects = GetPublicFiles();
+
+            List<Common.FileUIInfo> searchedList = new List<Common.FileUIInfo>();
+
+            if (OrderCriteria == (int)OrderingOption.Alphabetical)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameAscending(publicFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.ReverseAlphabetical)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameDescending(publicFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.NewestFirst)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameDescending(publicFileObjects, SearchCriteria);
+            }
+            else if (OrderCriteria == (int)OrderingOption.OldestFirst)
+            {
+                searchedList = SearchQueries.FilterByFileNameOrderByNameAscending(publicFileObjects, SearchCriteria);
+            }
+
+            return searchedList;
+        }
+
+        private List<Common.FileUIInfo> GetPublicFiles()
+        {
+            int index;
             BlobManager blob = new BlobManager();
             var fileList = blob.ListPublicBlobInfoForUI();
             List<Common.FileUIInfo> fileObjects = new List<Common.FileUIInfo>();
 
             foreach (Common.FileUIInfo x in fileList)
             {
-                if(!x.FileName.Contains(".zip"))
+                if (!x.FileName.Contains(".zip"))
                 {
                     //remove author name from file
                     string formattedAuthor = blob.FormatBlobContainerName(x.Author);
@@ -45,13 +138,8 @@ namespace ARFE.Controllers
                 }
             }
 
-            ViewBag.fileObjects = fileObjects;
-            // Create a list of SelectListItems so these can be rendered on the page
-            model.FileTypes = GetSelectListItems(filestypes);
-
-            return View("Index", model);
+            return fileObjects;
         }
-
 
         [HttpPost]
         public ActionResult ContentSelect(FileTypeModel model, string downloadType)
@@ -145,6 +233,16 @@ namespace ARFE.Controllers
             }
 
             return selectList;
+        }
+
+        private DateTime ConvertDateString(string date)
+        {
+            string[] dateTokens = date.Split('-');
+            int year = Convert.ToInt32(dateTokens[0], 10);
+            int month = Convert.ToInt32(dateTokens[1], 10);
+            int day = Convert.ToInt32(dateTokens[2], 10);
+
+            return new DateTime(year, month, day);
         }
     }
 
