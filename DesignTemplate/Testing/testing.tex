@@ -1,7 +1,7 @@
 % !TEX root = DesignDocument.tex
 
 
-\chapter{System and Unit Testing Design}
+\chapter{Testing}
 \label{ch:testing}
 
 % This section describes the approach taken with regard to system and unit testing.    This chapter does not describe the outcome of those tests.    
@@ -29,11 +29,11 @@ The file conversion testing is performed manually, as we cannot validate accurac
     \hspace{7mm}
     This feature is not yet implemented, but the conversion test was tested manually as a part and the as a system with the website.
 
-\begin{itemize} \item Download the QR tage for a model from the cloud server \end{itemize}
+\begin{itemize} \item Download the QR tag for a model from the cloud server \end{itemize}
     \hspace{7mm}
     Tags for models are not yet available, but a user can download a converted version of their uploaded file.
 
-\begin{itemize} \item View the QR tage with an AR headset and render the 3D model \end{itemize}
+\begin{itemize} \item View the QR tag with an AR headset and render the 3D model \end{itemize}
     \hspace{7mm} 
     QR tags are not yet implemented, but we successfully rendered 3D models on the hololens by accessing files through OneDrive or using the converted file from the upload page.
 
@@ -108,3 +108,5 @@ Especially for the file conversion software, we have researched which file types
 For the second risk of data security, we try our best to examine and remove any possible security holes in our data flow.
 We will need to analyze the website code to limit file access only to properly-privileged users. 
 We also plan to implement features such as https and end-to-end encryption to maintain data security on our connections.
+
+\input{Testing/mobile}

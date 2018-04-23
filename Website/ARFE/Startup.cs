@@ -5,6 +5,9 @@ using System.Timers;
 using Owin;
 using Microsoft.Owin;
 
+/// <summary>
+/// This is the over-arching namespace for all website related code.
+/// </summary>
 [assembly: OwinStartupAttribute(typeof(ARFE.Startup))]
 namespace ARFE
 {

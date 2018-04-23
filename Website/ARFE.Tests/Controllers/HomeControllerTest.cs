@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ARFE;
-using ARFE.Controllers;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+/// <summary>
+/// The sub-namespace of the main namespace containing unit testing code for the ARFE Web project.
+/// This namespace is for testing the <see cref="ARFE.Controllers"/> code specifically.
+/// </summary>
 namespace ARFE.Tests.Controllers
 {
     [TestClass]

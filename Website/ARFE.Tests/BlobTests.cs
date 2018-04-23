@@ -4,6 +4,9 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
+/// <summary>
+/// The Main namespace containing unit testing code for the ARFE Web project
+/// </summary>
 namespace ARFE.Tests
 {
     /// <summary>

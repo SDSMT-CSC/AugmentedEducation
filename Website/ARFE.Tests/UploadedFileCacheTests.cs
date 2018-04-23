@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
+/// <summary>
+/// The Main namespace containing unit testing code for the ARFE Web project
+/// </summary>
 namespace ARFE.Tests
 {
     /// <summary>

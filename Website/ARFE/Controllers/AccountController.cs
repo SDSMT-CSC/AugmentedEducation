@@ -1,62 +1,85 @@
-﻿using System;
+﻿//System .dll's
 using System.Web;
 using System.Linq;
 using System.Web.Mvc;
-using System.Globalization;
 using System.Threading.Tasks;
-using System.Security.Claims;
 
+//NuGet packages
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-
-using ARFE.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
 
+//other classes
+using ARFE.Models;
+
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
+    /// <summary>
+    /// A class derived from the <see cref="Controller"/> class that has all
+    /// of the controller actions to manage user accounts.
+    /// </summary>
     [Authorize]
     public class AccountController : Controller
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        #region Member Variables
 
-        public AccountController()
+        /// <summary> A member instance of the <see cref="ApplicationSignInManager"/> </summary>
+        private ApplicationSignInManager _SignInManager;
+        /// <summary> A member instance of the <see cref="ApplicationUserManager"/> </summary>
+        private ApplicationUserManager _UserManager;
+
+        #endregion
+
+
+        #region Constructor
+
+        /// <summary> The default constructor. </summary>
+        public AccountController() { }
+
+
+        /// <summary>
+        /// An overloaded constructor that takes instances of the class properties as parameters.
+        /// </summary>
+        /// <param name="userManager">An instance of the <see cref="ApplicationUserManager"/> class.</param>
+        /// <param name="signInManager">An instance of the <see cref="ApplicationSignInManager"/> class.</param>
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
+            _UserManager = userManager;
+            _SignInManager = signInManager;
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
+        #endregion
 
-        public ApplicationSignInManager SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set 
-            { 
-                _signInManager = value; 
-            }
-        }
 
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
+        #region Properties
 
-        //
-        // GET: /Account/Login
+        /// <summary> 
+        /// A property reference to the <see cref="ApplicationSignInManager"/> class.  This reference is either to 
+        /// the instance provided by the <see cref="ManageController(ApplicationUserManager, ApplicationSignInManager)"/> constructor,
+        /// or to the default instance that exists within the context of <see cref="Microsoft.Owin"/>.
+        /// </summary>
+        public ApplicationSignInManager SignInManager => _SignInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+
+        /// <summary> 
+        /// A property reference to the <see cref="ApplicationUserManager"/> class.  This reference is either to 
+        /// the instance provided by the <see cref="ManageController(ApplicationUserManager, ApplicationSignInManager)"/> constructor,
+        /// or to the default instance that exists within the context of <see cref="Microsoft.Owin"/>.
+        /// </summary>
+        public ApplicationUserManager UserManager => _UserManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+        #endregion
+
+
+        /// <summary>
+        /// The default Login method.
+        /// </summary>
+        /// <param name="returnUrl">The page url to redirect to after loggin in.</param>
+        /// <returns> A web page redirect to the <paramref name="returnUrl"/> address. </returns>
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -64,39 +87,57 @@ namespace ARFE.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Login
+
+        /// <summary>
+        /// The login method that takes the completed login model object
+        /// as login credentials and parameters.
+        /// </summary>
+        /// <param name="model">The login object with all of the user credentials and parameters.</param>
+        /// <param name="returnUrl">The page url to redirect to after loggin in.</param>
+        /// <returns> A web page redirect to the appropriate page following the login attempt. </returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (!ModelState.IsValid)
+            ActionResult redirect = View(model);
+
+            if (ModelState.IsValid)
             {
-                return View(model);
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        redirect = RedirectToLocal(returnUrl);
+                        break;
+                    case SignInStatus.LockedOut:
+                        redirect = View("Lockout");
+                        break;
+                    case SignInStatus.RequiresVerification:
+                        redirect = RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                        break;
+                    case SignInStatus.Failure: break;
+                    default:
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        redirect = View(model);
+                        break;
+                }
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
+            return redirect;
         }
 
-        //
-        // GET: /Account/VerifyCode
+
+        /// <summary>
+        /// Third party code verification
+        /// </summary>
+        /// <param name="provider">The provider name.</param>
+        /// <param name="returnUrl">The redirect Url.</param>
+        /// <param name="rememberMe">Remember the logged in user.</param>
+        /// <returns> A web page redirect to the <paramref name="returnUrl"/> address. </returns>
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
@@ -108,8 +149,11 @@ namespace ARFE.Controllers
             return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/VerifyCode
+        /// <summary>
+        /// Third party code verification.
+        /// </summary>
+        /// <param name="model">The user-provided code verification information. </param>
+        /// <returns> A web page redirect to the appropriate page after code verification. </returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -124,7 +168,7 @@ namespace ARFE.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -138,16 +182,21 @@ namespace ARFE.Controllers
             }
         }
 
-        //
-        // GET: /Account/Register
+        /// <summary>
+        /// Register a new user.
+        /// </summary>
+        /// <returns>A web page redirect to the Index page.</returns>
         [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
-        //
-        // POST: /Account/Register
+        /// <summary>
+        /// Register a new user.
+        /// </summary>
+        /// <param name="model"> The user-provided registration information. </param>
+        /// <returns> A web page redirect to the appropriate url after user registration. </returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -159,7 +208,7 @@ namespace ARFE.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     BlobManager blobManager = new BlobManager();
                     CloudBlobContainer container = blobManager.GetOrCreateBlobContainer(model.Email);
 
@@ -178,8 +227,13 @@ namespace ARFE.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ConfirmEmail
+
+        /// <summary>
+        /// This method currently does nothing without third party email support.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
@@ -191,16 +245,23 @@ namespace ARFE.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
-        //
-        // GET: /Account/ForgotPassword
+
+        /// <summary>
+        /// This mehtod currently does nothing without third party verification.
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
+
+        /// <summary>
+        /// This method currently does nothing without third party verification.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -227,24 +288,35 @@ namespace ARFE.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ForgotPasswordConfirmation
+
+        /// <summary>
+        /// This method currently does nothing without third party verification.
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
 
-        //
-        // GET: /Account/ResetPassword
+
+        /// <summary>
+        /// Default password reset view from two-factor auth code.
+        /// </summary>
+        /// <param name="code">Code provided from a two-factor auth provider.</param>
+        /// <returns> A web page redirect to the appropriate page. </returns>
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
             return code == null ? View("Error") : View();
         }
 
-        //
-        // POST: /Account/ResetPassword
+
+        /// <summary>
+        /// Reset user password.
+        /// </summary>
+        /// <param name="model"> User-provided credentials and password reset. </param>
+        /// <returns> A web page redirect to the appropriate confirmation page. </returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -269,27 +341,24 @@ namespace ARFE.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
+
+        /// <summary>
+        /// Redirect to a page after password reset
+        /// </summary>
+        /// <returns> A web page redirect. </returns>
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ExternalLogin
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
-        {
-            // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
-        }
 
-        //
-        // GET: /Account/SendCode
+        /// <summary>
+        /// This method currently does nothing without third party verification.
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <param name="rememberMe"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
@@ -303,8 +372,12 @@ namespace ARFE.Controllers
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/SendCode
+
+        /// <summary>
+        /// This method currently does nothing without third party verification.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -323,76 +396,11 @@ namespace ARFE.Controllers
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
-        /*[AllowAnonymous]
-        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
-        {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
-            if (loginInfo == null)
-            {
-                return RedirectToAction("Login");
-            }
 
-            // Sign in the user with this external login provider if the user already has a login
-            var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
-                case SignInStatus.Failure:
-                default:
-                    // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
-            }
-        }*/
-
-        //
-        // POST: /Account/ExternalLoginConfirmation
-       /* [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Manage");
-            }
-
-            if (ModelState.IsValid)
-            {
-                // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
-                    if (result.Succeeded)
-                    {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
-                AddErrors(result);
-            }
-
-            ViewBag.ReturnUrl = returnUrl;
-            return View(model);
-        }*/
-
-        //
-        // POST: /Account/LogOff
+        /// <summary>
+        /// Log out.
+        /// </summary>
+        /// <returns> Web page redirect to the Public Content page. </returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -401,28 +409,25 @@ namespace ARFE.Controllers
             return RedirectToAction("Index", "PublicContent");
         }
 
-        //
-        // GET: /Account/ExternalLoginFailure
-        [AllowAnonymous]
-        public ActionResult ExternalLoginFailure()
-        {
-            return View();
-        }
 
+        /// <summary>
+        /// Clean up any application resources used by this controller.
+        /// </summary>
+        /// <param name="disposing">should dispose</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (_userManager != null)
+                if (_UserManager != null)
                 {
-                    _userManager.Dispose();
-                    _userManager = null;
+                    _UserManager.Dispose();
+                    _UserManager = null;
                 }
 
-                if (_signInManager != null)
+                if (_SignInManager != null)
                 {
-                    _signInManager.Dispose();
-                    _signInManager = null;
+                    _SignInManager.Dispose();
+                    _SignInManager = null;
                 }
             }
 

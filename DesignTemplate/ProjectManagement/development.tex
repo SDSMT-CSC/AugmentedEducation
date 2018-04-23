@@ -54,7 +54,7 @@ tools with descriptions:
     \item Android Development Tools
     \begin{itemize}
         \item Android Studio
-        \item ARCore Preview
+        \item ARCore (from the Google Play Store)
     \end{itemize}
 \end{itemize}
 
@@ -120,11 +120,17 @@ Figure \ref{Contributions} shows a snapshot of repository activity and developer
 \paragraph{Android App}
 \begin{itemize}
     \item Android Studio - IDE for Android development
-    \item ARCore - Support for AR on Anroid devices (currently in preview)
+    \item ARCore - Support for AR on Android devices (off of the Google Play Store)
     \begin{itemize}
         \item Only works on specific devices (as of 2/20/2018)
+        \item Use OpenGL to draw models, ARCore only performs tracking/world mapping
     \end{itemize}
-    \item OBJ PARSER
+    \item Obj Parser
+    \begin{itemize}
+        \item Used by the example AR Core application to draw the model
+        \item Parses the obj files
+        % \item \url{https://github.com/JohnLXiang/arcore-sandbox}
+    \end{itemize}
 \end{itemize}
 
 \section{Build  Environment}
@@ -196,10 +202,12 @@ There are two libraries that need to be installed: Assimp and FBX SDK.
 
 \subparagraph{Mobile Device Setup}
 \begin{enumerate}
-    \item Enable developer mode
+    \item Install Android Studio
+    \item Enable developer mode on the Android device
     \begin{itemize}
         \item \url{https://developer.android.com/studio/debug/dev-options.html}
         \item Make sure to enable remote debugging from the developer settings on the device
+        \item Extra device drivers may need to be installed on the development computer
     \end{itemize}
 
     \item Install ARCore from the Play Store

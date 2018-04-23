@@ -1,11 +1,21 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
+/// <summary>
+/// This is the over-arching namespace for all website related code.
+/// </summary>
 namespace ARFE
 {
+    /// <summary>
+    /// Configure all of the javascript and css include bundles.  Register
+    /// these with the entire application for simple inclusion in the .cshtml files.
+    /// </summary>
     public class BundleConfig
     {
-        // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
+        /// <summary>
+        /// The collection of script bundles to register with the application.
+        /// For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
+        /// </summary>
+        /// <param name="bundles"></param>
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(

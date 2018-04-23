@@ -1,54 +1,76 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//system .dll's
 using System.Web;
+using System.Linq;
 using System.Web.Mvc;
+using System.Threading.Tasks;
+
+//NuGet
+using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
+
+//other classes
 using ARFE.Models;
 
+/// <summary>
+/// This namespaces is a sub-namespace of the ARFE project namespace specifically
+/// for the ASP.NET Controllers.
+/// </summary>
 namespace ARFE.Controllers
 {
+    /// <summary>
+    /// A class derived from the <see cref="Controller"/> class that has all
+    /// of the controller actions to manage user registration and authentication.  
+    /// </summary>
     [Authorize]
     public class ManageController : Controller
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        #region Member Variables
 
-        public ManageController()
-        {
-        }
+        /// <summary> A member instance of the <see cref="ApplicationSignInManager"/> </summary>
+        private ApplicationSignInManager _SignInManager;
+        /// <summary> A member instance of the <see cref="ApplicationUserManager"/> </summary>
+        private ApplicationUserManager _UserManager;
 
+        #endregion
+
+
+        #region Constructor
+
+        /// <summary> The default constructor. </summary>
+        public ManageController() { }
+
+        /// <summary>
+        /// An overloaded constructor that takes instances of the class properties as parameters.
+        /// </summary>
+        /// <param name="userManager">An instance of the <see cref="ApplicationUserManager"/> class.</param>
+        /// <param name="signInManager">An instance of the <see cref="ApplicationSignInManager"/> class.</param>
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
+            _UserManager = userManager;
+            _SignInManager = signInManager;
         }
 
-        public ApplicationSignInManager SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set 
-            { 
-                _signInManager = value; 
-            }
-        }
+        #endregion
 
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
+
+        #region Properties
+
+        /// <summary> 
+        /// A property reference to the <see cref="ApplicationSignInManager"/> class.  This reference is either to 
+        /// the instance provided by the <see cref="ManageController(ApplicationUserManager, ApplicationSignInManager)"/> constructor,
+        /// or to the default instance that exists within the context of <see cref="Microsoft.Owin"/>.
+        /// </summary>
+        public ApplicationSignInManager SignInManager => _SignInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+
+        /// <summary> 
+        /// A property reference to the <see cref="ApplicationUserManager"/> class.  This reference is either to 
+        /// the instance provided by the <see cref="ManageController(ApplicationUserManager, ApplicationSignInManager)"/> constructor,
+        /// or to the default instance that exists within the context of <see cref="Microsoft.Owin"/>.
+        /// </summary>
+        public ApplicationUserManager UserManager => _UserManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+        #endregion
 
         //
         // GET: /Manage/Index
@@ -324,16 +346,17 @@ namespace ARFE.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && _userManager != null)
+            if (disposing && _UserManager != null)
             {
-                _userManager.Dispose();
-                _userManager = null;
+                _UserManager.Dispose();
+                _UserManager = null;
             }
 
             base.Dispose(disposing);
         }
 
-#region Helpers
+
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -384,6 +407,6 @@ namespace ARFE.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

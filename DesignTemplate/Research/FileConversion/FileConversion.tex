@@ -33,11 +33,18 @@
 
             \paragraph{Maple}
 
-                One of the user stories required the need to export the 3D model from the Maple software used by the math department.  The following statement can be used to export a \texttt{plot3d} plot from Maple into a ????????????????? file type:
+                One of the user stories required the need to export the 3D model from the Maple software used by the math department.  The following statement can be used to export a \texttt{plot3d} plot from Maple into an obj file type:
 
-                \begin{center}
-                    \texttt{????????????????????????????????????}
-                \end{center}
+                \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+
+                \begin{figure}[H]
+                    \verbatiminput{Graphics/MapleText.txt}
+                    \caption{Maple code to export \texttt{plot3d()} plot}
+                \end{figure}
+
+                \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}                
+
+                The tested, common file types Maple can export are: OBJ, DAE, PLY.  Note that Maple cannot export FBX files (tested in Maple 18, May 2018).  To change the name of the file, change the text \texttt{test1.obj} to the desired file name and extension.  If the file extension is not supported by Maple, a warning message will be printed instead of actually producing the file.  Currently, the code will export the model to the same location of where the Maple file is saved.  The save directory can be specified by replacing the text \texttt{currentdir()}.  The desired equation must be written in the \texttt{plot3d()} function as per Maple syntax.  As a note, as of May 2018, Maple will not export textures/colors, so the models will default to white.
 
             \paragraph{Solid Works}
                 

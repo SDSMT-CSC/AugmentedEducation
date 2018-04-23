@@ -1,14 +1,10 @@
-\hspace{7mm}
-This chapter encompasses information such as to how the development of the project will be structured
-by defining roles and responsibilities of those involved, the development process and environment,
-requirements, terms and conditions, and scheduling.
 
 \section{Team Member's Roles}
 %Describe who was involved and what role(s) were played. 
 
 Product development is divided into two teams:
 \begin{enumerate}
-    \item Web Team:
+    \item Web Team and Database:
         \begin{itemize}
             \item Daniel Hodgin
             \item Brady Shimp (Scrum Master)
@@ -22,7 +18,7 @@ Product development is divided into two teams:
         \end{itemize}
 \end{enumerate}
 
-The website team shares the responsibility for developing the website, file upload and download abilities, an API for connecting the website to the conversion software, user log in protected profile functionality, user abilities to manage files, social/collaborative features, file permissions and cloud hosting abilities.  
+The website team shares the responsibility for developing the website, file upload and download abilities, an API for connecting the website to the conversion software, user log in protected profile functionality, user abilities to manage files, file permissions and cloud hosting abilities.  
 
 
 The conversion software shares the responsibility for developing software to convert uploaded file types into file types render-able by AR devices and applications needed by devices for reading and rendering files from QR codes.  Additionally,  this sub-team is responsible for producing a mobile application that interfaces with the website to provide AR visualization.
@@ -32,12 +28,28 @@ As Team Lead, Cheldon Coughlen acts as the team representative to the sponsor an
 
 As Scrum Master, Brady Shimp manages the task board and delegates tasks. 
 
-\section{Project  Management Approach}
+\section{Project Management Approach}
 %This section will provide an explanation of the basic approach to managing the project.  Typically, this would detail how the project will be managed through a given Agile methodology.  The sprint length (i.e. 2 weeks) and product backlog ownership and location (ex. Trello) are examples of what will be discussed.  An overview of the system used to track sprint tasks, bug or trouble tickets, and user stories would be warranted. 
 
-The product is being approached with Agile methodology and two week sprints. InTouch L.L.C. COO Brady Shimp owns the backlog which is located on the GitHub project repository. Mr. Shimp creates tickets which are placed in the backlog. Developers will select tickets, attach their name to it, and move it to an "In Progress" bin to denote activity. Tickets may be assigned by Mr. Shimp or selected by unoccupied developers. Priority levels are assigned to tasks, bugs, and user stories to indicate the priority of the respective ticket. These priority levels may be assessed by whether the ticket roadblocks other development, necessity of the feature based on milestones, or urgency otherwise established.
+The Senior Design I project management approach was to use the Agile methodology and two week sprints.  Each sprint was to begin with a sprint planning and overview session, where the members of the team would discuss the goals that will set out to accomplish over the course of the next two weeks.  At the end of the two weeks, each sprint was to end with a sprint retrospective session, where the members of the team would discuss their progress over the course of the previous sprint, as well as any trouble or interruptions that were encountered. These planning and retrospective sessions immediately impacted the state of the project task board, which was to reflect the current state of all ongoing project development at any given point in time throughout the project life cycle.\\
 
-\section{ Stakeholder Information}
+The project task board has been maintained on the GitHub project repository and has been maintained by Brady Shimp.  
+Tickets were created on the project task board for issues, bugs, work orders, or features and were placed in the "Backlog" bin with an associated description of the ticket, the criteria that must be met in order to deem the ticket as "resolved", and an estimated priority level. 
+Priority levels were assigned to tickets by an estimate of:
+\begin{itemize}
+    \item Whether the ticket halts other development.
+    \item The necessity of the ticket based on milestones. 
+    \item Urgency otherwise established by the situation.
+\end{itemize}
+
+Backlog items were either assigned to the developer most suited and currently available for the task, or left unassigned so that unoccupied developers could voluntarily take on the ticket.  Once a developer was assigned a ticket, their name is attached to the ticket and the ticket is moved from the "Backlog" bin to the "In Progress" bin.  When the ticket item appears to be resolved, the assigned developer is to move it from the "In Progress" bin to the "QA" or quality assurance bin where the item is to be reviewed by someone who did not work on it.  If the ticket does not meet all requirements, it is re-assigned to the developer who submitted it for quality assurance and is moved back from the "QA" bin to the "In Progress" bin. This process is repeated until the reviewer deems that all of the requirements of the ticket have been met.  If the reviewer deems that all of the requirements of the ticket have been met, the ticket is moved from the "QA" bin to the "Done" bin and the ticket is closed.\\
+
+The Senior Design II project management approach for this project was refined from experiences, both good and bad, taken from the Senior Design I project management approach.  The team agreed that the Agile development methodology was too rigid and ineffective for a team with as many members and as many different times of availability as there were.  The sprint planning and retrospective sessions were next to impossible to schedule appropriately and the development process was hindered by too much "red tape". The team instead opted for a Feature Driven Development (FDD) methodology, that employed certain aspects of the Agile system that were deemed effective such as listing expected completion times for feature tasks and tracking productivity via the Scrum project board method. This switch allowed the team to diversify into two sub-teams, one for mobile application development and one for continued web development, that each maintained structure and accountability within themselves.  The decided leaders of the mobile application team and the continued web development team were Kenneth Petry and Brady Shimp, respectively.\\
+
+The project task board maintenance remained consistent over the duration of both courses. The only modification came in the Senior Design II course, ticket assignments and work delegations were handled by Brady Shimp for the web application and HoloLens portions of the project only.  Tickets regarding the mobile application development were delegated by Kenneth Petry.
+
+
+\section{Stakeholder Information}
 
 
 % This section would provide the basic description of all of the stakeholders for 
@@ -46,7 +58,7 @@ The product is being approached with Agile methodology and two week sprints. InT
 Following are descriptions and interests of key stakeholders in the development of Augmented Education:
 
 \begin{itemize}
-	\item InTouch L.L.C.: Custom software solutions company needs product to fulfill contractual obligations to client. 
+	\item InTouch L.L.C.: Custom software solutions company sponsoring the project on behalf of the South Dakota School of Mines and Technology. 
 	\item South Dakota School of Mines and Technology: Higher education STEM university seeking to integrate mixed reality with STEM education and develop curricular content.
 	\item Dr. Jeff McGough: Computer science and mathematics professor seeking to develop mixed reality curricular content for the South Dakota School of Mines and Technology. 
 	\item Dr. Adam Piper: Industrial engineering professor requesting to use Augmented Education to simulate design labs.
@@ -61,7 +73,7 @@ Following are descriptions and interests of key stakeholders in the development 
 % and prioritize the product backlog?  Who will they interact with on the team to 
 % drive product backlog priorities if not done directly? 
 
-The direct customer is the South Dakota School of Mines and Technology with faculty members such as Dr. Jeff McGough, Dr. Christer Karlsson. Dr. Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins constituting an initial base of end users. These faculty members are directly involved with the creative direction of the product and are the indirect source of the product backlog. The faculty members meet monthly with the development team to develop user stories. Two faculty members, Dr. Jeff McGough and Dr. Christer Karlsson, meet weekly with the development team to provide direct input on the backlog and direction of the product. 
+The customer is the South Dakota School of Mines and Technology with faculty members such as Dr. Jeff McGough, Dr. Christer Karlsson. Dr. Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins constituting an initial base of end users. These faculty members are directly involved with the creative direction of the product and are the indirect source of the product backlog. The faculty members meet monthly with the development team to develop user stories. Two faculty members, Dr. Jeff McGough and Dr. Christer Karlsson, meet weekly with the development team to provide direct input on the backlog and direction of the product. 
 
 \subsection{Management or Instructor (Scrum Master)}
 % Who?  What role will they play in the project?  Will the Scrum Master drive the 
@@ -73,7 +85,7 @@ Brady Shimp, COO of InTouch L.L.C., is the Scrum Master of this project. Brady d
 % Who?  Is there a defined project manager, developer, tester, designer, architect, 
 % etc.? 
 
-Developers are assigned components of the platform on constant rotation. Each developer is required to play all roles regarding their component. This includes, but is not limited to, designing, architecting, managing, developing, and testing their solution. In the designing and architecting phase, a developer is required to consult the members of their development team to ensure proper planning and compatibility. Each developer must have their functioning implementation thoroughly verified by another team member before merging their solution into the development branch. 
+Developers are assigned components of the platform on constant rotation. Each developer is required to play all roles regarding their component. This includes, but is not limited to, designing, architecture, managing, developing, and testing their solution. In the designing and architecture phase, a developer is required to consult the members of their development team to ensure proper planning and compatibility. Each developer must have their functioning implementation thoroughly verified by another team member before merging their solution into the development branch. 
 
 As a whole, the project development and testing is managed by Brady Shimp. Mr. Shimp manages the development of the project through the task board by creating, delegating, and monitoring the completion of tickets. 
 
@@ -81,14 +93,14 @@ As a whole, the project development and testing is managed by Brady Shimp. Mr. S
 % Describe the budget for the project including gifted equipment and salaries for 
 % people on the project.
 
-There is no budget actively established for the project. Pending official adoption of the product by the South Dakota School of Mines and Technology, proper withholdings will be made to support a year of operation of the product. All other profit will be allocated evenly among the student development team. 
-
-The client has indicated possession of a \$40,000 grant budget for developing mixed reality course content and purchasing associated hardware. Client has purchased a variety of AR and VR hardware (such as the Microsoft HoloLens, Meta 2, and Oculus Rift) that is available for product testing through the student status of developers. Client's indicated intentions are to use a portion of said grant for purchasing the product's Early Adopters License. 
+This project received \$15,500 of funding from the South Dakota School of Mines and Technology's Mobile Computing Grant. \$9,000 was allocated for student developer salary. \$6,500 was used for hardware purchases which included a Microsoft HoloLens, Meta 2, Oculus Rift, Samsung Galaxy S8, Google Pixel, and certain computer hardware necessary for running the Oculus Rift and Meta 2. 
+ 
+The South Dakota School of Mines and Technology received the Mobile Computing Grant for the purpose of developing mixed reality courses and curriculum content. The grant proposal may be found in F-\ref{F:F-1}.
 
 \section{Intellectual Property and Licensing}
 % Describe the IP ownership and issues surrounding IP.
 
-All intellectual property and ownership is retained by InTouch L.L.C.. 
+All intellectual property and ownership is retained by the South Dakota School of Mines and Technology.
 
-Licenses for Visual Studio 2017 need not be purchased as students are already granted licensed access. All other third party resources utilized are available under the MIT License or likewise. 
+Developer licenses for Visual Studio 2017 are provided by the South Dakota School of Mines and Technology. Android Studio is license free. All other third-party resources utilized are available under MIT License. 
 
