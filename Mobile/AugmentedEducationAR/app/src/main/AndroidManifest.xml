@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.augmentededucation.ar.augmentededucationar">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,8 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ARActivity"></activity>
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".ARActivity" />
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".barcode.ScanQRCodeActivity"></activity>
     </application>
 
 </manifest>

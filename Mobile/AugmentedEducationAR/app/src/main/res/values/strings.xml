@@ -6,4 +6,19 @@
     <string name="login">Login</string>
     <string name="scanqrcode">Scan QR Code</string>
     <string name="viewinar">View in AR</string>
+
+    <!-- Strings related to HomeActivity-->
+    <string name="no_barcode_captured">No barcode captured</string>
+    <string name="barcode_error_format">"Error reading barcode: %1$s"</string>
+
+    <!-- Strings related to barcode scanner -->
+    <string name="ok">OK</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="scale_factor">Scale Factor</string>
+    <string name="minus">-</string>
+    <string name="plus">+</string>
+
+    <string name="web_AuthToken">AuthToken</string>
+    <string name="contoffline">Continue Offline</string>
 </resources>
