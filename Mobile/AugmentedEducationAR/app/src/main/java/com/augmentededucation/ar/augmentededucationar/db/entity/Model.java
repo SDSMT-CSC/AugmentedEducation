@@ -1,13 +1,13 @@
 package com.augmentededucation.ar.augmentededucationar.db.entity;
 
-/**
- * Created by 7296837 on 2/27/2018.
- */
-
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+/**
+ * Defines the field names in the Model entity where Model refers to the 3D models stored and viewed
+ * by the user. This creates a table within the AppDatabase object to hold Model objects.
+ */
 @Entity
 public class Model {
     @PrimaryKey

@@ -13,9 +13,9 @@ import java.util.List;
 import static android.arch.persistence.room.OnConflictStrategy.IGNORE;
 
 /**
- * Created by 7296837 on 2/27/2018.
+ * ModelDao defines the methods used to interact with the database. This DAO corresponds to the
+ * Model entity that is in AppDatabase.
  */
-
 @Dao
 public interface ModelDao {
     @Query("SELECT * FROM Model")

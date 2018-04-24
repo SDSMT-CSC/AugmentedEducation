@@ -9,9 +9,10 @@ import com.augmentededucation.ar.augmentededucationar.db.dao.ModelDao;
 import com.augmentededucation.ar.augmentededucationar.db.entity.Model;
 
 /**
- * Created by 7296837 on 2/27/2018.
+ * Creates a database holder called AppDatabase that extends RoomDatabase. Contains methods to
+ * create and return an instance of the database, and destroy the instance. Entities such as Model
+ * are stored in the AppDatabase object.
  */
-
 @Database(entities = {Model.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase{
 
