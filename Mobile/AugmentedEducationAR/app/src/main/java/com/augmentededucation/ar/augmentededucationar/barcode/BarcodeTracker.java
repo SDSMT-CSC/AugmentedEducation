@@ -21,10 +21,6 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.barcode.Barcode;
 
 /**
- * Created by 7296837 on 2/5/2018.
- */
-
-/**
  * Tracker used for tracking or reading a barcode. This is used to receive newly detected items.
  */
 class BarcodeTracker extends Tracker<Barcode> {

@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.augmentededucation.ar.augmentededucationar.barcode;
 
 import android.Manifest;
@@ -32,6 +47,10 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 
+/**
+ * Activity starts camera after receiving permissions. It detects barcodes, creates an intent with
+ * the barcode, and returns the intent as the activity's result.
+ */
 public final class ScanQRCodeActivity extends AppCompatActivity
         implements BarcodeTracker.BarcodeGraphicTrackerCallback{
 
@@ -49,6 +68,11 @@ public final class ScanQRCodeActivity extends AppCompatActivity
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
 
+    /**
+     * Initializes the UI and creates the barcode detector pipeline
+     *
+     * @param savedInstanceState The bundle used if the activity is going to be recreated
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +93,12 @@ public final class ScanQRCodeActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Checks that the barcode is not null and creates a new intent with the barcode. Returns the
+     * intent and a success code as the result that the activity returns to its caller.
+     *
+     * @param barcode The barcode object that has been detected
+     */
     @Override
     public void onDetectedQrCode(Barcode barcode) {
         if (barcode != null) {
@@ -102,9 +132,8 @@ public final class ScanQRCodeActivity extends AppCompatActivity
         Context context = getApplicationContext();
 
         // A barcode detector is created to track barcodes.  An associated multi-processor instance
-        // is set to receive the barcode detection results, track the barcodes, and maintain
-        // graphics for each barcode on screen.  The factory is used by the multi-processor to
-        // create a separate tracker instance for each barcode.
+        // is set to receive the barcode detection results and track the barcodes.  The factory is
+        // used by the multi-processor to create a separate tracker instance for each barcode.
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context)
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
@@ -113,7 +142,7 @@ public final class ScanQRCodeActivity extends AppCompatActivity
 
         if (!barcodeDetector.isOperational()) {
             // Note: The first time that an app using the barcode or face API is installed on a
-            // device, GMS will download a native libraries to the device in order to do detection.
+            // device, GMS will download native libraries to the device in order to do detection.
             // Usually this completes before the app is run for the first time.  But if that
             // download has not yet completed, then the above call will not detect any barcodes
             // and/or faces.
@@ -138,6 +167,7 @@ public final class ScanQRCodeActivity extends AppCompatActivity
         // Creates and starts the camera.  Note that this uses a higher resolution in comparison
         // to other detection examples to enable the barcode detector to detect small barcodes
         // at long distances.
+
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
