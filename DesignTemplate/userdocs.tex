@@ -38,6 +38,41 @@
 \section{User Guide for HoloLens}
 
 \section{User Guide for Mobile App}
+There are four main screens available in the mobile app. These are the login, file listing, QR code reader, and AR view. 
+\begin{itemize}
+    \item Login Screen
+    \begin{itemize}
+        \item You may log in using credentials for an account created on the website. Credentials will be saved after the app is closed if you check the box.
+        \item Alternatively, you may "Continue Offline" if you don't have a login or don't need to sign in. 
+        \item Offline users can view files that are already downloaded on the device and scan new QR codes for adding more models to their list.
+    \end{itemize}
+    \item File Listing
+    \begin{itemize}
+        \item The files available to view are listed here.
+        \item Some files are already downloaded on the device, and some files are available from the website.
+        \item In offline mode, only downloaded files will appear.
+        \item A user can select a file from the list. A file that is already downloaded will load in the AR View screen. A file that is not downloaded will be downloaded while a loading spinner appears to demonstrate that the download is in progress.
+        \item There is a button available to access the QR Code Reader screen.
+    \end{itemize}
+    \item QR Code Reader
+    \begin{itemize}
+        \item The whole screen will be a live feed from the camera.
+        \item The user can point their device at a mobile QR code and the app will automatically scan it, returning the user to the File Listing with the new file added.
+        \item A user may use the back navigation button to return to the file listing if they choose not to scan a QR code.
+    \end{itemize}
+    \item AR View
+    \begin{itemize}
+        \item The AR view allows the user to view the 3D model in their own environment.
+        \item The view will have a live feed from the phone's camera.
+        \item Small blue points will appear as the phone maps out surfaces.
+        \item The user may need to move the device around slowly and allow the phone a few seconds to map flat horizontal surfaces.
+        \item When the trigrid appears over the surfaces, the user can tap the screen where they would like to place the model.
+        \item After the model is placed, they can use the + and - buttons to change the size, as well as use the number input at the bottom to change how quickly the scale changes.
+        \item The user should be able to move around the placed object to see it from different sides, while it remains anchored where it was placed.
+        \item If the user covers the camera or turns too far away, the model may lose tracking and need to be replaced.
+        \item The user may use the back navigation button to return to the file listing.
+    \end{itemize}
+\end{itemize}
 
 \section{Demos}
 
