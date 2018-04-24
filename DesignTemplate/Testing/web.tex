@@ -1,0 +1,60 @@
+% !TEX root = DesignDocument.tex
+
+\section{Website Testing}
+\tab There are few unit tests for the website, as the majority of functionality is UI driven and therefor is verified visually or in real-time, as is the case for file tracking and management. 
+Microsoft's C\# testing framework is utilized for the portions of the code that are able to be tested through automated unit tests. 
+The unit testing classes, projects, and namespaces are more thoroughly documented in the AE Web Code sub-document at the end of this document.
+The file conversion testing has been performed manually, as the accuracy of conversion cannot be validated through software alone. 
+A variety of files have been tested throughout the development of this project to demonstrate successful file type conversion.
+Below is a comprehensive list of manual tests, the steps taken to complete the test, and the satisfaction criteria of the tests.
+
+\subsection{File Management}
+\begin{itemize}
+    \item Upload 3D file to a cloud server 
+    \begin{itemize}
+        \item Tested by manually accessing the website and uploading a file. The test passes if the file is present in the Azure Blob Storage.
+    \end{itemize}
+
+    \item Uploaded 3D files will be automatically converted to an intermediate file type.
+    \begin{itemize}
+        \item Tested by manually uploading a file that is of a supported file type. The test passes if the file exists in Azure Blob Storage as having a ".fbx" extension.
+    \end{itemize} 
+
+    \item Download the files stored in Azure Blob Storage as any one of the supported file types.
+    \begin{itemize}
+        \item Tested by allowing file download through the web interface that gives the user the option to download the file as a different type. The test passes if the file conversion software is successfully executed and the file that is downloaded is a zipped folder containing the requested file, having the correct extension, along with any accompanying material or design files.
+    \end{itemize}  
+
+\end{itemize}
+
+
+\subsection{User Registration}
+\begin{itemize}
+    \item 
+\end{itemize}
+
+
+\subsection{QR Codes}
+\begin{itemize}
+    \item Generate unique QR codes for files in Azure Blob Storage.
+    \begin{itemize}
+        \item Tested by creating a QR code for the URL that is the downloadable link for the file. The test passes if the QR is able to be scanned to download the correct file.
+    \end{itemize}    
+
+    \item Make the unique QR codes viewable and downloadable through the web interface.
+    \begin{itemize}
+        \item Tested by allowing the user to generate QR codes on demand through the web interface and download the image. The test passes if the QR code, viewed either through the web interface or the downloaded image, is able to be scanned to download the correct file.
+    \end{itemize}    
+
+    \item View the QR code with an AR headset to download and render the 3D model.
+    \begin{itemize}
+        \item Tested by generating a QR code through the web interface and scanning it with a QR code reading application on the AR headset. The test passes if scanning the QR code downloads the correct file that is then able to be opened in a 3D model viewer and the model is correct.
+    \end{itemize} 
+\end{itemize}
+
+
+\subsection{Mobile Authentication}
+\begin{itemize}
+    \item 
+\end{itemize}
+
