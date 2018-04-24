@@ -125,11 +125,14 @@
             Since internet can be less than reliable on cell phones, it was important to test if the there was no internet on the phone.  This was done by turning off Wifi on the testing phones (as they do not have cellular activated).  As expected, if there is no internet, an error message is displayed to the user that the communication was unsuccessful.
         
     \subsection{Offline Mode}
+        
+        When preparing for the Senior Design Fair, the mobile team decided that it would be a good idea to add an offline mode so the user can view models without having to authenticate with the server.  This was because the Wifi capabilities at the fair would be slim to none.  Therefore, an "Offline Mode" button was added to the login page to allow the user to continue offline.  Testing needed to be done on this to only show models registered as on the phone, as the user would not be able to download remote files without first authenticating.  This was tested and implemented in the application.  The application will not get a list of models from the website or download files from the website in offline mode.  The rest of the functionality (such as viewing the models) remained the same, which was as desired.
 
     \subsection{QR Code Scanning}
         
         To test that our app was scanning QR codes as expected during development, we tried a number of different QR codes found online and printed on objects around. There were a surprising amount of these objects on hand with printed QR codes to test with. Testing on these gave us an idea of the performance of the QR code scanner for varying QR code sizes.
 
-        While we weren't able to test QR codes that pointed to our 3D model downloads during development, we knew that it was just a matter of encoding the link in the QR code correctly. With this in mind, we continued to test on random QR codes. Once we had the functionality to embed the download link in a QR code, we tested downloading a number of files manually using their respective QR codes.
+        The scanner worked with QR codes that pointed to our 3D model downloads.  One difficulty of testing this was the way the list of models was populated.  When the list was originally populated, all models owned by the user, and models that were public were added to the list.  So, all of the models that the user could access would already be in the list, so scanning a QR code would do nothing.  A later revision changed this so only privately owned files were added to the list, so QR codes can now usefully be scanned.Once we had the functionality to embed the download link in a QR code, we tested downloading a number of files manually using their respective QR codes.
 
     \subsection{Database}
+    

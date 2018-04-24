@@ -184,7 +184,30 @@ namespace ARFE.Controllers
             }
         }
 
-        
+        /// <summary>
+        /// The Index controller action is called when the user in doing a unique search of the private files
+        /// The [Authorize] assembly tag is used in collaboration with ASP.NET Identity.
+        /// If the action is attempted to be browsed to without the browser being correctly signed in
+        /// with Identity, the request is denied.
+        /// </summary>
+        /// <param name="prOrderType">
+        /// An integer that designates the ordering style. Value corresponds to Ordering Option Enum
+        /// </param>
+        /// <param name="prSearchType">
+        /// A string containing the type of search the user is trying to do. Value is either "name" or "date"
+        /// </param>
+        /// <param name="prTextCriteria">
+        /// The user inputed string to filter files that only hold that name
+        /// </param>
+        /// <param name="prStartDateCrit">
+        /// String containing the lower bound date for the date search. Format: "YYYY/MM/DD"
+        /// </param>
+        /// <param name="prEndDateCrit">
+        /// String containing the upper bound date for the date search. Format: "YYYY/MM/DD"
+        /// </param>
+        /// <returns>
+        ///     A view to the "Index.cshtml" page in the Views/UserContent/ folder.
+        /// </returns>
         [Authorize]
         [HttpPost]
         public ActionResult PrivateSearch(int prOrderType, string prSearchType, string prTextCriteria, string prStartDateCrit, string prEndDateCrit)
@@ -216,6 +239,31 @@ namespace ARFE.Controllers
             return View("Index", model);
         }
 
+
+        /// <summary>
+        /// The Index controller action is called when the user in doing a unique search of the public files
+        /// The [Authorize] assembly tag is used in collaboration with ASP.NET Identity.
+        /// If the action is attempted to be browsed to without the browser being correctly signed in
+        /// with Identity, the request is denied.
+        /// </summary>
+        /// <param name="puOrderType">
+        /// An integer that designates the ordering style. Value corresponds to Ordering Option Enum
+        /// </param>
+        /// <param name="puSearchType">
+        /// A string containing the type of search the user is trying to do. Value is either "name" or "date"
+        /// </param>
+        /// <param name="puTextCriteria">
+        /// The user inputed string to filter files that only hold that name
+        /// </param>
+        /// <param name="puStartDateCrit">
+        /// String containing the lower bound date for the date search. Format: "YYYY/MM/DD"
+        /// </param>
+        /// <param name="puEndDateCrit">
+        /// String containing the upper bound date for the date search. Format: "YYYY/MM/DD"
+        /// </param>
+        /// <returns>
+        ///     A view to the "Index.cshtml" page in the Views/UserContent/ folder.
+        /// </returns>
         [Authorize]
         [HttpPost]
         public ActionResult PublicSearch(int puOrderType, string puSearchType, string puTextCriteria, string puStartDateCrit, string puEndDateCrit)
@@ -247,6 +295,19 @@ namespace ARFE.Controllers
             return View("Index", model);
         }
 
+        /// <summary>
+        /// This function is responsible for filtering the private file list based off a string. It also
+        /// orders the list based on the option provided by the user
+        /// </summary>
+        /// <param name="SearchCriteria"> 
+        /// A <see cref="FileTypeModel"/> object representing the file selected.
+        /// </param>
+        /// <param name="OrderCriteria">
+        /// Integer that corresponds to the OrderingOptions Enum
+        /// </param>
+        /// <returns>
+        /// A list of FileUIInfo objects
+        /// </returns>
         private List<Common.FileUIInfo> PrivateNameSearch(string SearchCriteria, int OrderCriteria)
         {
 
@@ -274,6 +335,19 @@ namespace ARFE.Controllers
             return searchedList;
         }
 
+        /// <summary>
+        /// This function is responsible for filtering the public file list based off a string. It also
+        /// orders the list based on the option provided by the user
+        /// </summary>
+        /// <param name="SearchCriteria"> 
+        /// A <see cref="FileTypeModel"/> object representing the file selected.
+        /// </param>
+        /// <param name="OrderCriteria">
+        /// Integer that corresponds to the OrderingOptions Enum
+        /// </param>
+        /// <returns>
+        /// A list of FileUIInfo objects
+        /// </returns>
         private List<Common.FileUIInfo> PublicNameSearch(string SearchCriteria, int OrderCriteria)
         {
 
@@ -301,6 +375,22 @@ namespace ARFE.Controllers
             return searchedList;
         }
 
+        /// <summary>
+        /// This function responsible foe filtering the private file list date and ordering
+        /// it based on the user input.
+        /// </summary>
+        /// <param name="startDate"> 
+        /// A datetime contaning the lowerbound for the date search
+        /// </param>
+        /// <param name="endDate">
+        /// A datetime containing the upper bound for the date search
+        /// </param>
+        /// <param name="OrderCriteria">
+        /// Integer corresponding to the OrderingOption enum
+        /// </param>
+        /// <returns>
+        /// A list for FileUIInfo objects
+        /// </returns>
         private List<Common.FileUIInfo> PrivateDateSearch(DateTime startDate, DateTime endDate, int OrderCriteria)
         {
             List<Common.FileUIInfo> privateFileObjects = GetPrivateFiles();
@@ -327,6 +417,22 @@ namespace ARFE.Controllers
             return searchedList;
         }
 
+        /// <summary>
+        /// This function responsible foe filtering the public file list date and ordering
+        /// it based on the user input.
+        /// </summary>
+        /// <param name="startDate"> 
+        /// A datetime contaning the lowerbound for the date search
+        /// </param>
+        /// <param name="endDate">
+        /// A datetime containing the upper bound for the date search
+        /// </param>
+        /// <param name="OrderCriteria">
+        /// Integer corresponding to the OrderingOption enum
+        /// </param>
+        /// <returns>
+        /// A list for FileUIInfo objects
+        /// </returns>
         private List<Common.FileUIInfo> PublicDateSearch(DateTime startDate, DateTime endDate, int OrderCriteria)
         {
             List<Common.FileUIInfo> publicFileObjects = GetPublicFiles();
@@ -353,6 +459,13 @@ namespace ARFE.Controllers
             return searchedList;
         }
 
+        /// <summary>
+        /// This function gets all of the private files and uses it to populate
+        /// a list of FileUIInfo objects. It then returns that list to the caller.
+        /// requests only.
+        /// <returns>
+        /// A List of FileUIInfo objects corresponding to the users private
+        /// </returns>
         private List<Common.FileUIInfo> GetPrivateFiles()
         {
             int index;
@@ -377,6 +490,13 @@ namespace ARFE.Controllers
             return privateFileObjects;
         }
 
+        /// <summary>
+        /// This function gets all of the users public files and uses it to populate
+        /// a list of FileUIInfo objects. It then returns that list to the caller.
+        /// requests only.
+        /// <returns>
+        /// A List of FileUIInfo objects corresponding to the users public files
+        /// </returns>
         private List<Common.FileUIInfo> GetPublicFiles()
         {
 
@@ -406,7 +526,6 @@ namespace ARFE.Controllers
 
         }
 
-
         /// <summary>
         /// Create a QR code from the file download link returned from blob storage.
         /// </summary>
@@ -429,7 +548,6 @@ namespace ARFE.Controllers
             }
             return View("DisplayQRCode");
         }
-
 
         /// <summary>
         /// For each string in the <see cref="SupportedFileTypes.FileList"/> list, create a new 
@@ -457,6 +575,15 @@ namespace ARFE.Controllers
             return selectList;
         }
 
+        /// <summary>
+        /// Takes a string in the form of YYYY/MM/DD and converts into a datetime object and returns it.
+        /// </summary>
+        /// <param name="date">
+        /// A string in the form of YYYY/MM/DD 
+        /// </param>
+        /// <returns>
+        /// A datetime object created using the input string.
+        /// </returns>
         private DateTime ConvertDateString(string date)
         {
             string[] dateTokens = date.Split('-');

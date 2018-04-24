@@ -45,7 +45,32 @@ namespace ARFE.Controllers
             return View("Index", model);
         }
 
-
+        /// <summary>
+        /// The controller action responsible for the filtering and ordering the 
+        /// files, based on the user input.
+        /// </summary>
+        /// <param name="OrderType"> 
+        /// An integer that references the Ordering Option enum
+        /// </param>
+        /// <param name="SearchType">
+        /// A string containing "name" or "date". The denotes which type of search
+        /// is begin submitted.
+        /// </param>
+        /// </param>
+        /// <param name="TextCriteria">
+        /// User inputted search string for the linq query
+        /// </param>
+        /// </param>
+        /// <param name="StartDateCrit">
+        /// A string containing the lower bound date for the date search
+        /// </param>
+        /// </param>
+        /// <param name="EndDateCrit">
+        /// A string containing the upper bound date for the date search
+        /// </param>
+        /// <returns>
+        ///     A view to the "Index.cshtml" page in the Views/PublicContent/ folder.
+        /// </returns>
         [Authorize]
         [HttpPost]
         public ActionResult Search(int OrderType, string SearchType, string TextCriteria, string StartDateCrit, string EndDateCrit)
@@ -75,6 +100,23 @@ namespace ARFE.Controllers
             return View("Index", model);
         }
 
+
+        /// <summary>
+        /// This function responsible foe filtering the file list date and ordering
+        /// it based on the user input.
+        /// </summary>
+        /// <param name="startDate"> 
+        /// A datetime contaning the lowerbound for the date search
+        /// </param>
+        /// <param name="endDate">
+        /// A datetime containing the upper bound for the date search
+        /// </param>
+        /// <param name="OrderCriteria">
+        /// Integer corresponding to the OrderingOption enum
+        /// </param>
+        /// <returns>
+        /// A list for FileUIInfo objects
+        /// </returns>
         private List<Common.FileUIInfo> DateSearch(DateTime startDate, DateTime endDate, int OrderCriteria)
         {
             List<Common.FileUIInfo> publicFileObjects = GetPublicFiles();
@@ -101,6 +143,20 @@ namespace ARFE.Controllers
             return searchedList;
         }
 
+
+        /// <summary>
+        /// This function is responsible for filtering the file list based off a string. It also
+        /// orders the list based on the option provided by the user
+        /// </summary>
+        /// <param name="SearchCriteria"> 
+        /// A <see cref="FileTypeModel"/> object representing the file selected.
+        /// </param>
+        /// <param name="OrderCriteria">
+        /// Integer that corresponds to the OrderingOptions Enum
+        /// </param>
+        /// <returns>
+        /// A list of FileUIInfo objects
+        /// </returns>
         private List<Common.FileUIInfo> NameSearch(string SearchCriteria, int OrderCriteria)
         {
             List<Common.FileUIInfo> publicFileObjects = GetPublicFiles();
@@ -127,6 +183,13 @@ namespace ARFE.Controllers
             return searchedList;
         }
 
+        /// <summary>
+        /// This function gets all of the files labeled public and uses it to populate
+        /// a list of FileUIInfo objects. It then returns that list to the caller.
+        /// requests only.
+        /// <returns>
+        /// A List of FileUIInfo objects corresponding to all public files
+        /// </returns>
         private List<Common.FileUIInfo> GetPublicFiles()
         {
             int index;
@@ -265,6 +328,16 @@ namespace ARFE.Controllers
             return selectList;
         }
 
+
+        /// <summary>
+        /// Takes a string in the form of YYYY/MM/DD and converts into a datetime object and returns it.
+        /// </summary>
+        /// <param name="date">
+        /// A string in the form of YYYY/MM/DD 
+        /// </param>
+        /// <returns>
+        /// A datetime object created using the input string.
+        /// </returns>
         private DateTime ConvertDateString(string date)
         {
             string[] dateTokens = date.Split('-');
