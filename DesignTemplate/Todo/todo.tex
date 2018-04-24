@@ -1,19 +1,46 @@
 
 \chapter{TODO}
-
+\label{ch:TODO}
     \section{Mobile}
         \begin{enumerate}
             \item Android app
             \begin{itemize}
-                \item Add support for embedded image files (png).  Needs to be able to load in, and display, multiple images on top of each other at once.  The app currently can handle one, but some models (especially those made in Paint3D) needs to have multiple displayed on top of each other to get the correct shading/color.
+                \item Add support for embedded image files (png).  Needs to be able to load in, and display, multiple images on top of each other at once.  The app currently can handle one, but some models (especially those made in Paint3D) need to have multiple displayed on top of each other to get the correct shading/color.
 
                 \item Add filtering, ordering, and searching to the list of models.
 
                 \item Add support for deleting models from the list.
 
+                \item Add more controls to the AR viewer (rotate, drag, pinch to zoom)
+
                 \item Search through the models directory and clean up the listing with models that do not exist.
 
                 \item Add functionality to send a request to the website to get a displayable name from QR codes.
+
+                \item Publish app in Google Play Store or provide other method for simple distribution.
+
             \end{itemize}
             \item ARKit app
+            \begin{itemize}
+                \item Determine 3D file type for compatibility with ARKit.
+
+                \item Create basic app with transitions between screens.
+
+                \item Add drawing functionality for a single model.
+
+                \item Allow user to select model from a list on the phone.
+
+                \item Add login from phone to website, with authentication and saved credentials.
+
+                \item Retrieve file listing from website and download files as requested.
+
+                \item Allow for QR code scanning to add models to the phone.
+
+                \item Provide all existing functionality within the Android app that is available in iOS.
+
+                \item Implement future additions to Android app (filtering, controls, etc.) to iOS app as well.
+
+                \item Publish app in App Store for distribution.
+
+            \end{itemize}
         \end{enumerate}
