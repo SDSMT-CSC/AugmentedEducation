@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthenticationTokenCache", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{9FF255DD-071B-474A-B25A-B252E50670CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthTokenCache.Tests", "AuthTokenCache.Tests\AuthTokenCache.Tests.csproj", "{AA66FF47-312F-4ABB-8BC4-081689E77654}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationTokenCache.Tests", "AuthTokenCache.Tests\AuthenticationTokenCache.Tests.csproj", "{AA66FF47-312F-4ABB-8BC4-081689E77654}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

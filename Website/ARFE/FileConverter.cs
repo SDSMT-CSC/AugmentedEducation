@@ -140,7 +140,7 @@ namespace ARFE
                 int index = fileName.LastIndexOf(".");
                 string baseFile = fileName.Substring(0, index);
 
-                Convert(fileName, baseFile, ".obj");
+                return Convert(fileName, baseFile, ".obj");
             }
 
             return false;
