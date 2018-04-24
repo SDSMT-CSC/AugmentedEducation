@@ -1,7 +1,8 @@
-% !TEX root = DesignDocument.tex
 
 \section{Mobile Testing}
     Testing for the mobile app was primarily done manually. This is because most testing was done on visualizing files and verifying the app performed as expected.  It was also verifying that HTTP packets were as expected going to and from the phone.
+
+    When error messages are printed to the user of the app, a toast is displayed.  A toast is the small box that pops up on the lower section of the screen.
 
     \subsection{Files}
         A variety of files were used throughout development to test functionality of the app. Some sample files were found on \url{https://free3d.com}. Some files were provided from Dr. Deschamp and others were generated in Maple. Different files were used to test that colors were working both in the MTL and as PNGs. Additionally, large and small files were tested to see how the app reacted to more complex files. The BMW file seen below is an example of a complex file that didn't render well in our app that shows the limitations of our app.
@@ -69,8 +70,10 @@
     \subsection{Web Interface}
 
         Another major component of the mobile app was the communication with the website.  If the app can display the models, there is little purpose if there is no method to get the models onto the phone.  The web API provided by the web team provides a method for communicating with the website.  It is done using the Volley library, provided by Google.  It abstracts the sending/receiving of networking communication away from the developer.  The code for these interfaces in primarily located in the \texttt{WebAccessor} Java class.
+
+        Testing has shown that while the website is on Azure, the responsiveness is not always the best.  It is not infrequent to receive timeout errors on requests.  When this occurs, a message is displayed to the user.
         
-        \subsubsection{Endpoints}
+        \subsubsection{Endpoints}\label{sec:Mobile_Auth}
         
             The endpoints used by the mobile application allow the app to: authenticate with the website, get a list of owned models, and download a model.  The endpoints were tested using Postman (to make sure the response was what was expected), the Android Studio debugger to make sure the correct fields were set, and a packet capture application to view the actual HTTP message sent from the phone.
 
@@ -118,9 +121,15 @@
                 Future developers should be aware of how the models are saved from the Android download manager.  When making the call for the download manager to do the download, a final path/file name must be provided.  This can cause issues if the file is saved with the wrong extension, especially if the files are viewed on the developers computer (and not just on the phone).
         
         \subsubsection{No Internet}
+
+            Since internet can be less than reliable on cell phones, it was important to test if the there was no internet on the phone.  This was done by turning off Wifi on the testing phones (as they do not have cellular activated).  As expected, if there is no internet, an error message is displayed to the user that the communication was unsuccessful.
         
     \subsection{Offline Mode}
 
     \subsection{QR Code Scanning}
+        
+        To test that our app was scanning QR codes as expected during development, we tried a number of different QR codes found online and printed on objects around. There were a surprising amount of these objects on hand with printed QR codes to test with. Testing on these gave us an idea of the performance of the QR code scanner for varying QR code sizes.
+
+        While we weren't able to test QR codes that pointed to our 3D model downloads during development, we knew that it was just a matter of encoding the link in the QR code correctly. With this in mind, we continued to test on random QR codes. Once we had the functionality to embed the download link in a QR code, we tested downloading a number of files manually using their respective QR codes.
 
     \subsection{Database}
