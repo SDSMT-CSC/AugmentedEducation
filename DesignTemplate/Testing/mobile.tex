@@ -69,6 +69,8 @@
     \subsection{Web Interface}
 
         Another major component of the mobile app was the communication with the website.  If the app can display the models, there is little purpose if there is no method to get the models onto the phone.  The web API provided by the web team provides a method for communicating with the website.  It is done using the Volley library, provided by Google.  It abstracts the sending/receiving of networking communication away from the developer.  The code for these interfaces in primarily located in the \texttt{WebAccessor} Java class.
+
+        Testing has shown that while the website is on Azure, the responsiveness is not always the best.  It is not infrequent to receive timeout errors on requests.  When this occurs, a message is displayed to the user.
         
         \subsubsection{Endpoints}
         
