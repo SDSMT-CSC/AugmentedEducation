@@ -28,9 +28,22 @@ Below is a comprehensive list of manual tests, the steps taken to complete the t
 \end{itemize}
 
 
-\subsection{User Registration}
+\subsection{User Accounts}
 \begin{itemize}
-    \item 
+    \item New user registration.
+    \begin{itemize}
+        \item Attempt to register a new user with the website, sign out, and attempt to sign back in with the new user's credentials.  The test passes if regular sign in with the new user's credentials is successful.
+    \end{itemize}
+
+    \item Existing user sign in.
+    \begin{itemize}
+        \item Having previously registered a user with the website, attempt to sign in with the existing user's credentials. The test passes if sign in with the user's credentials is successful.
+    \end{itemize}
+
+    \item Sign out.
+    \begin{itemize}
+        \item While currently signed in to the website as a user, click a button to allow for sign out so that the browser session is no longer associated with the user and validated with the website.  The test passes if the user is successfully signed out of their account, the browser redirects to a landing page, and the browser session is no longer allowed to browse the website without signing in again.
+    \end{itemize}
 \end{itemize}
 
 
@@ -55,6 +68,6 @@ Below is a comprehensive list of manual tests, the steps taken to complete the t
 
 \subsection{Mobile Authentication}
 \begin{itemize}
-    \item 
+    \item \ref{sec:Mobile_Auth}
 \end{itemize}
 
