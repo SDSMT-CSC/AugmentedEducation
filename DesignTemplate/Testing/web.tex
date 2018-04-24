@@ -66,8 +66,11 @@ Below is a comprehensive list of manual tests, the steps taken to complete the t
 \end{itemize}
 
 
-\subsection{Mobile Authentication}
+\subsection{Database Persistence}
 \begin{itemize}
-    \item \ref{sec:Mobile_Auth}
+    \item The Entity Framework generated database needed to be tested for persistence after each updated publication of the website code to Microsoft Azure. This was done to ensure that no user account credentials were erased or altered with each publication.  This was done by comparing "SELECT *" statements of each of the database tables both before and after each new publication.
 \end{itemize}
+
+\subsection{Mobile Authentication}
+\begin{itemize} \item \ref{sec:Mobile_Auth} \end{itemize}
 
