@@ -122,7 +122,7 @@ Figure \ref{Contributions} shows a snapshot of repository activity and developer
     \item Android Studio - IDE for Android development
     \item ARCore - Support for AR on Android devices (off of the Google Play Store)
     \begin{itemize}
-        \item Only works on specific devices (as of 2/20/2018)
+        \item Only works on specific devices (as of 4/26/2018)
         \item Use OpenGL to draw models, ARCore only performs tracking/world mapping
     \end{itemize}
     \item Obj Parser
@@ -131,25 +131,31 @@ Figure \ref{Contributions} shows a snapshot of repository activity and developer
         \item Parses the obj files
         % \item \url{https://github.com/JohnLXiang/arcore-sandbox}
     \end{itemize}
+    \item QR Code Reader - included in Android project dependencies
+    \item Volley - Google library for network communications between app and website
+    \item Room - Google library that provides an abstraction layer over SQLite for storing file listings in the phone's database.
 \end{itemize}
 
 \section{Build  Environment}
 Azure is used to build and deploy the website. Once the tools are downloaded and an Azure account is created, 
 all that is needed is to right-click on the ASP.NET MVC project and select publish. The website is then hosted on Azure and
 can be accessed by all.
+Android Studio is used to build the mobile app. After setting up the environment for normal development, Android Studio will build the app for the desired device (connected for debugging) or it can be specified to build a release APK for distribution. 
+
 \section{Development Machine Setup}
 
-Pull the git repository with both the Website and File Conversion code located at: \url{https://github.com/SavoySchuler/ARFE}
+Pull the git repository with the Website, File Conversion, and Android code located at: \url{https://github.com/SavoySchuler/ARFE}
 
 % If warranted, provide a list of steps and details associated with setting up a 
 % machine for use by a developer. 
 
-The following are the requirement for a development machine:
+The following are the requirements for a development machine:
 \begin{itemize}
     \item Windows 10
     \item Visual Studio 2017 Enterprise with ASP.NET MVC, Azure and Unity tools
     \item Unity Personal
     \item HoloToolkit-Unity Set of tools for Hololens development with unity. Free for use. Download from the GitHub page.
+    \item Android Studio for Android app development
 \end{itemize}
 
 \paragraph{File Conversion}
@@ -197,6 +203,8 @@ There are two libraries that need to be installed: Assimp and FBX SDK.
     \begin{itemize}
         \item \url{https://developer.android.com/studio/index.html}
     \end{itemize}
+    \item Dependencies will be automatically included with the Android Studio project.
+    \item Android Studio will require specific build tools to be installed for the target device's android version. Follow prompts when building the app and Android Studio will install necessary components for you.
 
 \end{enumerate}
 
@@ -207,6 +215,7 @@ There are two libraries that need to be installed: Assimp and FBX SDK.
     \begin{itemize}
         \item \url{https://developer.android.com/studio/debug/dev-options.html}
         \item Make sure to enable remote debugging from the developer settings on the device
+        \item On the device, make sure to set the computer as a trusted device for debugging when prompted.
         \item Extra device drivers may need to be installed on the development computer
     \end{itemize}
 

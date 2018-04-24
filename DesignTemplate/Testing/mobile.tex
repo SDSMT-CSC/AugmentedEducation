@@ -73,7 +73,7 @@
 
         Testing has shown that while the website is on Azure, the responsiveness is not always the best.  It is not infrequent to receive timeout errors on requests.  When this occurs, a message is displayed to the user.
         
-        \subsubsection{Endpoints}
+        \subsubsection{Endpoints}\label{sec:Mobile_Auth}
         
             The endpoints used by the mobile application allow the app to: authenticate with the website, get a list of owned models, and download a model.  The endpoints were tested using Postman (to make sure the response was what was expected), the Android Studio debugger to make sure the correct fields were set, and a packet capture application to view the actual HTTP message sent from the phone.
 
@@ -127,5 +127,9 @@
     \subsection{Offline Mode}
 
     \subsection{QR Code Scanning}
+        
+        To test that our app was scanning QR codes as expected during development, we tried a number of different QR codes found online and printed on objects around. There were a surprising amount of these objects on hand with printed QR codes to test with. Testing on these gave us an idea of the performance of the QR code scanner for varying QR code sizes.
+
+        While we weren't able to test QR codes that pointed to our 3D model downloads during development, we knew that it was just a matter of encoding the link in the QR code correctly. With this in mind, we continued to test on random QR codes. Once we had the functionality to embed the download link in a QR code, we tested downloading a number of files manually using their respective QR codes.
 
     \subsection{Database}

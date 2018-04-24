@@ -43,16 +43,16 @@
     The goal for the file type research was to find out what the commond 3D model file types are, and what is commonly used with AR devices.  Another goal was to determine a common file type for all file types on the website.
 
     \paragraph{OBJ}
-    The OBJ filetype (Wavefront OBJ) stores a list of verticies, and constructs faces using the verticies.  OBJ supports textures, applied to each face, that are stored in a seperate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed.
+    The OBJ filetype (Wavefront OBJ) stores a list of verticies, and constructs faces using the verticies.  OBJ supports textures, applied to each face, that are stored in a seperate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed. The MTL file can also reference PNG or BMP files for textures. The Android app uses files in the OBJ format.
 
     \paragraph{STL}
     The STL file type (sterolithography) stores a list of verticies and forms triangles to form the surfaces of an object.  This file type does not support textures.  It is commonly used in 3D printing.
 
     \paragraph{DAE}
-    The DAE file type (Collada) uses XML to store a 3D model.  It supports textures and animations imbedded in the file.  Therefore, a model with textures and/or animations are stored in a single file.
+    The DAE file type (Collada) uses XML to store a 3D model.  It supports textures and animations embedded in the file.  Therefore, a model with textures and/or animations are stored in a single file.
 
     \paragraph{FBX}
-    The FBX file type (Autodesk FilmBox) is a propriatary file format for Autodesk.  It is commonly used, and is supported, by many different AR devices.
+    The FBX file type (Autodesk FilmBox) is a propriatary file format for Autodesk.  It is commonly used, and is supported, by many different AR devices such as the HoloLens.
 
     \paragraph{Conculsions}
     The above file types were found to be the most common.  The intermediate file type was agreed to be DAE.  It supported the most features while encapsulating all the data in a single file.
