@@ -3,13 +3,13 @@
 
     \subsection{Overview}
     \paragraph{}
-    A major tool in the project is the File Conversion Software.  
-    The file conversion software aims to read in many different 3D model file types (.fbx, .obj, .dae, ...) and convert them to another desired 3D file type.  
+    A major tool in the project is the file conversion software.  
+    The file conversion software aims to read in many different 3D model file types (.fbx, .obj, .dae, etc.) and convert them to another desired 3D file types.  
     A brief listing of supported file types is in table \ref{tab:suportedfiletypes}.
     
     \paragraph{}
-    This tool is intended to be used on the back end of the website.  Whenever a user uploads a file, it can be converted to a common file type, using this tool.
-    When the user requests a download on an AR device, the type may be different than what is stored.  Therefore, the tool will be used to convert the file before
+    This tool is intended to be used on the back end of the website.  Whenever a user uploads a file, it can be converted to a common file type.
+    When the user requests a download on an AR device, the type may be different than what is stored. Therefore, the tool will be used to convert the file before
     it is sent to the user.
     
     \paragraph{}
@@ -19,40 +19,40 @@
     \begin{table}[h]
         \centering
         \begin{tabular}{l  l}
-            -i & Input file name (can specify full path), infers the input file type from the name \\
-            -o & Name (or full path) to write the converted file, infers the export file type from the name \\
-            -odir & The path to the directory, the file name is inferred from the input file name \\
-            -t & The file type (.fbx, .obj, .dae, ...) to export to
+            \texttt{-i} & Input file name (can specify full path), infers the input file type from the name \\
+            \texttt{-o} & Name (or full path) to write the converted file, infers the export file type from the name \\
+            \texttt{-odir} & The path to the directory, the file name is inferred from the input file name \\
+            \texttt{-t} & The file type (.fbx, .obj, .dae, etc.) to export to
         \end{tabular}
     \end{table}
     
-    Note the -t flag is only needed when using the -odir flag.  The -odir just specifies which directory to write to, but not the file type.
-    Therefore, more information is needed in order to export to a file.  The -o flag will parse the file name and extract the file type from the -i file name.
+    Note the \texttt{-t} flag is only needed when using the \texttt{-odir} flag.  The \texttt{-odir} just specifies which directory to write to, but not the file type.
+    Therefore, more information is needed in order to export to a file.  The \texttt{-o} flag will parse the file name and extract the file type from the \texttt{-i} file name.
     
     An example command to run:
     
     \begin{center}
-        .\textbackslash FileConversion.exe -i C:\textbackslash SomePath\textbackslash someFile.obj -t fbx -odir C:\textbackslash SomeOtherPath\textbackslash
+        \texttt{.\textbackslash FileConversion.exe -i C:\textbackslash SomePath\textbackslash someFile.obj -t fbx -odir C:\textbackslash SomeOtherPath\textbackslash}
     \end{center}
     
-    This will convert a file named someFile.obj located at C:\textbackslash SomePath\textbackslash  to an FBX file named someFile.fbx located at 
-    C:\textbackslash SomeOtherPath\textbackslash
+    This will convert a file named \texttt{someFile.obj} located at \texttt{C:\textbackslash SomePath\textbackslash  to an FBX file named someFile.fbx} located at 
+    \texttt{C:\textbackslash SomeOtherPath\textbackslash}
     
     \subsubsection{File Type Research}
 
-    The goal for the file type research was to find out what the commond 3D model file types are, and what is commonly used with AR devices.  Another goal was to determine a common file type for all file types on the website.
+    The goal for the file type research was to find the common 3D model file types, and what is commonly used with AR devices.
 
     \paragraph{OBJ}
-    The OBJ filetype (Wavefront OBJ) stores a list of verticies, and constructs faces using the verticies.  OBJ supports textures, applied to each face, that are stored in a seperate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed. The MTL file can also reference PNG or BMP files for textures. The Android app uses files in the OBJ format.
+    The OBJ filetype (Wavefront OBJ) stores a list of vertices, and constructs faces using the vertices.  OBJ supports textures, applied to each face, that are stored in a separate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed. The MTL file can also reference PNG or BMP files for textures. The Android app uses files in the OBJ format.
 
     \paragraph{STL}
-    The STL file type (sterolithography) stores a list of verticies and forms triangles to form the surfaces of an object.  This file type does not support textures.  It is commonly used in 3D printing.
+    The STL file type (sterolithography) stores a list of vertices and forms triangles to form the surfaces of an object.  This file type does not support textures.  It is commonly used in 3D printing.
 
     \paragraph{DAE}
     The DAE file type (Collada) uses XML to store a 3D model.  It supports textures and animations embedded in the file.  Therefore, a model with textures and/or animations are stored in a single file.
 
     \paragraph{FBX}
-    The FBX file type (Autodesk FilmBox) is a propriatary file format for Autodesk.  It is commonly used, and is supported, by many different AR devices such as the HoloLens.
+    The FBX file type (Autodesk FilmBox) is a proprietary file format for Autodesk.  It is commonly used, and is supported, by many different AR devices such as the HoloLens.
 
     \paragraph{Conculsions}
     The above file types were found to be the most common.  The intermediate file type was agreed to be DAE.  It supported the most features while encapsulating all the data in a single file.
@@ -72,9 +72,9 @@
         \end{itemize}
     \end{itemize}
 
-    Multiple librarires are needed to support the file types that are necessary for common AR rendering.  In the Microsoft Hololens, the default
+    Multiple libraries were needed to support the file types that were necessary for common AR rendering.  In the Microsoft HoloLens, the default
     3D viewer supports FBX files very easily.  Therefore, it was decided that the conversion software needed to export to FBX.  The best tool to do 
-    so is the FBX SDK, since FBX is a propriatary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it will read and write.
+    so is the FBX SDK, since FBX is a proprietary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it will read and write.
     Therefore, the Open Asset Import Library is used to better support a wide array of file types.  So in using assimp and the FBX SDK together,
     the conversion software can support a wide range of both import and export file types.
 
@@ -104,18 +104,18 @@
             \end{itemize}
         \end{itemize}
         
-        This outlines that the program tries to use a single library to convert the file before using multiple.  If a single library is unable to 
+        This outlines that the program tries to use a single library to convert the file before using both libraries.  If a single library is unable to 
         read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
         using a single library is if a user wants to read a .obj and write to a .fbx.  The FBX SDK can handle reading and writing those particular file
-        types, so it will be used ot do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
-        Assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimp is used to 
+        types, so it will be used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
+        assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimp is used to 
         read the .ply, write to a .dae (common file type).  The FBX SDK then reads the .dae and writes to a .fbx.
 
     \subsection{Design Details}
 
     \subsubsection{Overview}
 
-    The file converison software is written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
+    The file conversion software is written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
     in the program is defined.  Instances of the classes will be created when needed.  
     The high level view of the program is:
     \begin{enumerate}
