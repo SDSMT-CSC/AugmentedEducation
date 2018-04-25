@@ -1,0 +1,39 @@
+ \section{HoloLens}
+
+    \subsection{Research \& Tutorials}
+
+     At the end of the first semester and beginning of the second, the development team pursued the idea of creating a custom HoloLens application.
+     Starting research into this proved difficult, as the all of this technology was just release and poorly documented. The following
+     Following links are the tutorials that were used to learn HoloLens Development.
+
+    \begin{itemize}
+        \item Environment Setup - https://docs.microsoft.com/en-us/windows/mixed-reality/install-the-tools
+        \item Unity Basic Tutorial - https://unity3d.com/learn/tutorials
+        \item Basic HoloLens App Tutorial - https://hololens.reality.news/how-to/hololens-dev-101-build-basic-hololens-app-minutes-0175021/
+        \item Advanced HoloLens App Tutorial - https://next.reality.news/how-to/hololens-dev-101-building-dynamic-user-interface-part-1-setup-0179747/
+    \end{itemize}
+
+    \subsection{Unity}
+    Using the tutorials mentioned above, the development team learned the basics of the Unity. Unity is a game engine with a C\# backing.
+    Adding an object in Unity, creates a skeleton object in C\# that is tied to the object. Generic event handlers can be assigned to the object through
+    the editor, or custom event handlers could be created by manipulating the code using Visual Studio. 
+
+    \subsection{HoloToolKit}
+    HoloToolKit is a Unity/C\# library that duplicated many of the objects that come with basic Unity, such as, viewer camera or interactable object.
+    With this toolkit, a simple application with basic gaze interaction was created.
+    
+    \subsection{Development Problems}
+    The development team started to face difficulties based on the tools that we were using
+    The main walls that were hit during development were Unity's handling of .fbx file, HoloToolKit's room mapping, and overall performance of the app.
+    The following is a description of why those were problems
+    \begin{itemize}
+        \item Unity's handling of .fbx files: Unity requires that 3D models be loaded before compilation of the code, because unity converts the models to their own filetype.
+        This is a large problem because for the app to provide the correct functionality it needs to load and display .fbx files at run time.
+        \item HoloToolKit's room mapping: It only uses the Hololens room mapping software to keep track of the Hololens position.
+        This mean the models would clip through wall and floors. This was nessessary for the application, but it is a functionality provided by Microsoft default viewing software.
+        \item Performance: The viewer with the HoloToolKit showed lag. This caused the models to shift rapidly as you moved around them. 
+    \end{itemize}
+
+    The custom HoloLens app was dropped due to these reasons. It became clear that an app with the basic functionality required for the project was a long way out.
+    It made more since to make sure the website worked with the Microsoft tool chain, because it offered the functionality needed immedatly.
+    This also allows the users to use the latest and greatest viewing software without having to dedicate a team to continuous updating of an application.
