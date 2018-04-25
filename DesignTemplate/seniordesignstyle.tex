@@ -154,7 +154,7 @@ showstringspaces=false,tabsize = 3}
 
 %redefine the backmatter command
 \let\stdbackmatter\backmatter
-\makeatletter% We need the '@' letter to call if@openright
+\makeatletter% Need the '@' letter to call if@openright
 \renewcommand{\backmatter}{
 \stdbackmatter
 % need to set the page counter back to 1
@@ -184,18 +184,18 @@ showstringspaces=false,tabsize = 3}
 %% [\vspace{1ex}%
 %% {\titlerule[2pt]}]
   %%% Since counters are different in the appendix section
-  %%% we redefine \chapter to explicitly reset the page number
+  %%% Redefine \chapter to explicitly reset the page number
   %%%  (comment out to see effect)
   \renewcommand{\chapter}[1]{
     \stdchapter{##1}\setcounter{page}{1}
-    %%% We also redefine page numbering
+    %%% Also redefined page numbering
     \renewcommand{\thepage}{\Alph{chapter}-\arabic{page}}
   }
 }
 \makeatother% Restore the normal behavior of '@'
 
 
-\makeatletter% We need the '@' letter to call if@openright
+\makeatletter% Need the '@' letter to call if@openright
 \newcommand{\agreement}{
   \renewcommand{\chapter}[1]{
     \if@openright\cleardoublepage\else\clearpage\fi% chapters begin on right page
