@@ -18,7 +18,7 @@ CAD software and AR hardware are assumed available for use of this platform. CAD
 
 \subsection{Website}
 %Describe briefly the role this major component plays in this system. 
-This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
+This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. Note, a target file type must be specified when generating a QR code. When a direct download link or QR code download link is used, the cloud will supply a file in its specified format to the calling device. 
 
 
 \subsection{File Conversion}
