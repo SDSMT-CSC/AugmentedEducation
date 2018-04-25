@@ -5,24 +5,16 @@
 
 \subsection{System Requirements}
 
-% What are they? How will they impact the potential design? Are there alternatives
-The basic system requirements to use the website are to have a web browser 
-installed with internet access.  The user must have access to modeling software 
-or a method to create/provide 3D models to the website.
+To use the website, a user must have a web browser and internet access.  The user must have access to modeling software or a method to create/provide 3D models to the website.
 
-In order to fully use the product, a user must have an Augmented Reality device.
-Each device may have different system requirements. Some AR devices such as the 
-HoloLens or AR compatible smartphones will not require a computer to run off. 
-However, some AR devices require to be tethered to a computer. Usually, 
-manufacturers detail a set of quite high minimum specifications for a computer 
-that can be used
+In order to fully use the product, a user must have an augmented reality (AR) device. Each device may have different system requirements. Some AR devices such as the HoloLens or AR compatible smartphones will not require a separate computer to run off. However, some AR devices require to be tethered to a computer. Usually,manufacturers detail a set of minimum specifications for a computer that can be used.
 
 The Meta 2 is an example of a headset that requires a separate computer in order
 to run.  In our research we found that the Meta 2 specified one of the highest 
 recommended specifications among popular VR headsets. This makes it a good 
 example for system specifications that would run an AR application smoothly. 
 The minimum and recommended specifications are listed below. The list was crated
-in November 2017, and can be found in table 
+in November 2017, and must be found in table 
 \ref{table:metatwosystemrequirements}.
 
 \begin{table}[H]
@@ -59,8 +51,8 @@ both their computer and AR viewer configured for network access.
 	\item Visual Studio 2017 Enterprise with ASP.NET MVS, Azure and Unity tools.
 	\item Unity Personal
 	\item HoloToolkit - Unity Set of tools for HoloLens development with Unity.
-	\item Assimp library
-	\item FBX SDK
+	\item Assimp library - For file conversion
+	\item FBX SDK - For file conversion
 	\item Android Studio
 \end{itemize}
 
@@ -72,9 +64,9 @@ both their computer and AR viewer configured for network access.
 
 The Senior Design I team structure for this project was self-organized, having decided on the Agile development methodology and decided on Brady Shimp as a Scrum Master and Cheldon Coughlen as the Team Lead. The team had weekly status report meetings with our client representatives and faculty advisors, Dr. McGough and Dr. Karlsson. At these meetings the team provided progress reports and discussed any design modifications or complications moving forward.\\
 
-The Senior Design II team structure for this project was refined from experiences, both good and bad, taken from the Senior Design I structure.  The team agreed that the Agile development methodology was too rigid and ineffective for a team with as many members and as many different times of availability as there were.  The team instead opted for a Feature Driven Development (FDD) methodology, that employed certain aspects of the Agile system that were deemed effective such as listing expected completion times for feature tasks and tracking productivity via the Scrum project board method. This switch allowed the team to diversify into two sub-teams, one for mobile application development and one for continued web development, that each maintained structure and accountability within themselves.  The decided leaders of the mobile application team and the continued web development team were Kenneth Petry and Brady Shimp, respectively.\\
+The Senior Design II team structure for this project was refined from experiences, both good and bad, taken from the Senior Design I structure.  The team agreed that the Agile development methodology was too rigid and ineffective for a team with as many members and as many different times of availability as there were.  The team instead opted for a Feature Driven Development (FDD) methodology, that employed certain aspects of the Agile system that were deemed effective such as listing expected completion times for feature tasks and tracking productivity via the  project board. This switch allowed the team to diversify into two sub-teams, one for mobile application development and one for continued web development, that each maintained structure and accountability within themselves.  The decided leaders of the mobile application team and the continued web development team were Kenneth Petry and Brady Shimp, respectively.\\
 
-Consistencies across both courses of Senior Design I and Senior Design II were the Scrum style issue tracking, GitHub for the bulk project management tools, Google Team Drive for collaborative shared materials and presentation preparation, team communication through the Discord chat application, weekly status meetings with the project clients, and a structured task delegation system with a single point of authority.
+Consistencies across both courses of Senior Design I and II were the Scrum style issue tracking, GitHub for the bulk project management tools, Google Team Drive for collaborative shared materials and presentation preparation, team communication through the Discord chat application, weekly status meetings with the project clients, and a structured task delegation system with a single point of authority.
 
 % \section{Specifications}
 
@@ -108,22 +100,16 @@ with it.
 
 \subsection{Backlog Tracker}
 
-We manage our backlog using GitHub's project board. Using GitHub's system is 
-convenient as we also use it to host our code repository. Items from our backlog 
-are added to the backlog column of the project board. They are sometimes broken 
-up into smaller issues if the feature is large and can be worked on by multiple 
-developers.
+The backlog is managed using GitHub's project board. GitHub's system is 
+convenient as it also hosts the code repository. Items from the backlog 
+are added to the project board.
 
 When the issue is ready to be worked on, it is taken from the backlog and 
-assigned to a developer. The project board has three other sections: 
+assigned to a developer. The project board has three sections: 
 'Work in Progress', 'QA', and 'Ready' as seen in Figure 
 ~\ref{fig:ProjectTaskBoard}. Once the developer begins working on it, 
-they move it to 'Work in Progress'. When they have the issue taken care of, they
-move it to 'QA' and assign it to a developer that has not worked on the issue, 
-but has the background to test it. Once it is verified that the issue has been 
-fixed, it is moved to 'Ready'. If any problems arise while testing the solution,
-it is communicated to the developers who worked on it and the issue is moved 
-back to 'QA'.
+they move it to 'Work in Progress'. When completed, the developer
+moves it to 'QA', and assigns it to another developer. Once the fix has been verified, the issue is moved to 'Ready'. If any problems arise while testing the solution, the concerns are communicated to the developers who worked on it and the issue is moved back to 'QA'.
 
 \begin{figure}[H]
     \centering
@@ -132,11 +118,9 @@ back to 'QA'.
     \label{fig:ProjectTaskBoard}
 \end{figure}
 
-By default, just the development team has access to the Sprint and Product 
-Backlog on GitHub, but through stand-alone documentation, presentations, and 
-other communication, we share this information with our other stakeholders. 
-We can provide access to the actual backlog we maintain on the GitHub repository
-on request.
+By default, only the development team has access to the Sprint and Product 
+Backlog on GitHub.  Documentation, presentations, and 
+other communications provide insight into the status of the project to other interested parties. 
 
 \subsection{Sprints}
 The project is encompassed by 13 Sprints - 6 in the Fall semester and 7 in the 
@@ -150,21 +134,10 @@ what needs to happen in subsequent sprints.
 \section{Proof of Concept Results}
 
 
-To some extent, the work done in our first semester is centered on giving our 
-stakeholders a proof of concept so that they can begin to drive the requirements
-of the project in the future. We had a couple of meetings with faculty to demo 
-what we were able to create in VR and AR so that they could see the capabilities
-of the technology, and think about how they could integrate it in their 
-classroom. At the end of our first semester of development, we will have an MVP
-to demonstrate the proof of concept. Our presentations through the semester have 
-contained wire frames and demos that reflect the features our MVP will have.
-
-With regards to research and system design, the team has been doing both
-concurrently. This is possible since Dr. McGough provided the team with a 
-high-level view of the entire system and the data flow before we began the 
-project. This meant that the team able to focus on researching and implementing 
-smaller pieces of the system. 
-
+The first semester was centered on giving the 
+stakeholders a proof of concept product so that they can begin to drive the requirements
+of the project in the future. The team had meetings with faculty to demo 
+ VR and AR technology to prepare for integration in the classroom. At the end of the first semester, an MVP was available for demonstration. 
 
 \section{Supporting Material}
 

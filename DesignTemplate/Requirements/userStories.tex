@@ -1,36 +1,33 @@
 \section{User Stories}
 
-
 User stories are collected through conversations with the stakeholders and
-regularly displaying what we have accomplished. Our senior design team has
-weekly meetings with our client to review progress on the project. We meet
+regularly displaying what the team has accomplished. The senior design team had
+weekly meetings with the client to review progress on the project. The team met
 with other faculty related to the project as necessary in order to receive
-specific feedback.
+feedback.
 
-The starting point for the requirements and user stories for this project comes
-from the original grant proposal by Dr. McGough and other SD Mines faculty
+The starting point for the requirements and user stories for this project came
+from the a grant proposal by Dr. McGough and other SD Mines faculty,
 which can be found in ~\autoref{ch:support}. Over the course of several
-meetings and conversations with the professors on the grant, we refined the
-requirements for our product.
+meetings and conversations with the professors on the grant, the
+requirements for our product were defined.
 
-An example user story from the grant, which is a close representation of the
-use case we are trying to support with our MVP, is as follows: "As a Calc III
+An example user story from the grant is as follows: "As a Calc III
 professor, I would like to provide visualizations of 3D objects so that
 students can find the volume of an object by being able to view the object
-from different angles, and being able to slice the object's volume"
+from different angles, and being able to slice the object's volume."
 
-Some base requirements we have identified for our platform include:
+Some base requirements identified for the platform include:
 \begin{itemize}
-	\item Must have a website to manage files
-	\item Must support 3D files exported from CAD programs commonly used in STEM
-	\item Must automatically convert files to AR device compatible format
-	\item Must render files on the Microsoft HoloLens
-	\item Must render files on an Android mobile device
+	\item A website to manage files
+	\item Support for 3D files exported from CAD programs commonly used in STEM
+	\item Automatic file conversion
+	\item Render files on the Microsoft HoloLens
+	\item Render files on an Android mobile device
 \end{itemize}
 
-At the advice of our faculty advisor, we grouped our user stories into three 
-development rounds. For each user story we discuss the testability of the 
-feature, and include the test if it is. More detail on tests can be found in the testing section, Chapter \ref{ch:testing}.
+At the advice of faculty advisors, the user stories were grouped into three 
+development rounds. User story defines a test as appropriate. More detail on tests can be found in Chapter \ref{ch:testing}.
 
 % This section can really be seen as the guts of the document.  This section
 % should be the result of discussions with the stakeholders with regard to the
@@ -52,19 +49,19 @@ User Stories:
 	\item As an SD Mines faculty member, I want to:
 		\begin{itemize}
 			\item Upload a 3D file to the cloud.
-			\item Retrieve the file in my needed format.
-			\item Download a QR code for my model.
-			\item Log in to my secure account and view my uploaded files.
-			\item Choose my files to be private or public.
-			\item To browse and download files that are public.
+			\item Retrieve the file in the proper format.
+			\item Download a QR code for a model.
+			\item Log in to a secure account and view my uploaded files.
+			\item Choose files to be private or public.
+			\item Browse and download public files.
 		\end{itemize}
 \end{itemize}
 Tests:
 \begin{itemize}
-	\item Test conversion of multiple types of 3D models.
-	\item Test viewing and manipulating the models on the HoloLens.
-	\item Test generation of a unique QR code associate with each model.
-	\item Test the upload and download process for a 3D model.
+	\item Conversion of multiple types of 3D models.
+	\item Viewing and manipulating the models on the HoloLens.
+	\item Generation of a unique QR code associated with each model.
+	\item Upload and download process for a 3D model.
 \end{itemize}
 
 \subsection{Phase 1: Senior Design II}
@@ -73,8 +70,7 @@ User Stories:
 \begin{itemize}
 	\item As a user, I want to:
 	\begin{itemize}
-		\item View surface materials.
-		\item Use an Android phone for scanning QR codes and viewing models.
+		\item View surface materials on 3D model.
 		\item Use an Android phone for scanning QR codes and viewing models.
 		\item Switch between models quickly in the AR device.
 	\end{itemize}
@@ -83,9 +79,6 @@ Tests:
 \begin{itemize}
 	\item Upload a file and verify that the AR tag received links to the correct
 	model.
-	\item Testing the security of an account may be out of the scope of this 
-	phase. We will strive to research and maintain best practices while 
-	implementing features.
 	\item Test privacy rules and visibility for files by creating multiple 
 	profiles with different privacy settings.
 	\item Gather 3D models of multiple file types and test the rendering of 
