@@ -3,55 +3,53 @@
 
  \subsection{Overview}
  \paragraph{}
- A major tool in the project is the website interface for hosting the 3D models that users generate.
- The website is where a user will be able to upload their 3D models
- and get the reference tag for that model.
+ The website is a hosting service for uploading, downloading and managing the users files. Microsoft's ASP.NET MVC was used to create the website and Azure was used for its web hosting and file storage tools.
  
  \paragraph{}
- The website is intended to be a full user experience, where they can
- can sign in to view and manage their own content.
-
-\paragraph{}
-This website will be making use of Microsoft's ASP.NET stack along with
-Azure services for database and website hosting. A more in-depth look into 
-these tools is offered below.
+ Users can create an account to store and share 3D models with other users. Once a user has an account, they can upload a 3D model as one of the websites supported file types. A user can download the model as any of the supported file types or generate a QR code that can be used for quick download using the mobile app or any other QR code readers.
 
 \subsection{User Interface}
-The user interface is made to be very simple. The final product
-UI consists of five main windows. 
-\begin{itemize}
-    \item Home Screen
-    \begin{itemize}
-        \item Here the user will be able to navigate to the different sections of the website.
-        \item The user will need to be logged in to navigate to their pages.
-        \item It has a link link to the sign in and sign up.
-        \item If the user tries to navigate to a page without signing in
-        they will be taken to the login page.
-    \end{itemize}
+The user interface was designed to be very simple. The UI is comprised of four main pages with a navigation bar to get the pages
+    \paragraph{Public Content Page}
 
-    \item Upload Screen
-    \begin{itemize}
-        \item This is a very simple page where the user can upload their files.
-        \item Once the file is uploaded a QR code will be showing for a reference to the file.
-    \end{itemize}
+        \begin{figure}[H]
+        \includegraphics[width=0.5\textwidth]{Web/PublicPage}
+        \centering
+        \caption{Public Content Page}
+        \label{fig:PublicContent}
+        \end{figure}
 
-    \item User, Organization and All Screens
-    \begin{itemize}
-        \item These screens will all be very similar.
-        \item They will allow for the user to search through all
-        available models associated to the section they are in.
-    \end{itemize}
-\end{itemize}
+        This is the main landing page for the website. From here users are able to browse the public files to download and generate QR code. Users do not need to be signed in or have an account to access the information on this page.
 
-The wireframes of these pages can be found in prototypes and demos section of this document.
-You can find references to the wireframes below.
-\begin{itemize}
-    \item Home Page ~\ref{fig:proto_web_home}
-    \item User Page ~\ref{fig:proto_web_user_page}
-    \item Organization Page ~\ref{fig:proto_web_organization_home}
-    \item Browse All Page ~\ref{fig:proto_web_browse_all_files}
-    \item Upload Page ~\ref{fig:proto_web_upload}
-\end{itemize}
+    \paragraph{My Content Page}
+        \begin{figure}[H]
+        \includegraphics[width=0.5\textwidth]{Web/MyContent}
+        \centering
+        \caption{My Content Page}
+        \label{fig:MyContent}
+        \end{figure}
+
+        This page will display all of the content that a user has uploaded. Here a user can browse their private and public files to download and generate QR codes. Users also have the ability to delete files. Users must have an account to access this page.
+
+    \paragraph{Upload Page}
+        \begin{figure}[H]
+        \includegraphics[width=0.5\textwidth]{Web/Upload}
+        \centering
+        \caption{Upload Page}
+        \label{fig:UploadPage}
+        \end{figure}
+
+        This page will allow users to upload 3D models. Users can upload a material file if it is an OBJ file. The user can add a description, specify an alternate name, and make the file public. Users must have an account and be signed in to access this page.
+
+    \paragraph{Help Page}
+        \begin{figure}[H]
+        \includegraphics[width=0.5\textwidth]{Web/Help}
+        \centering
+        \caption{Upload Page}
+        \label{fig:HelpPage}
+        \end{figure}
+    
+        This page just gives a simple tutorial on how to uses the website.
 
 \subsection{Technologies Used}
 
@@ -85,26 +83,23 @@ You can find references to the wireframes below.
 
 
     \subsection{Data Flow}
-    The data flow happens in two main places. It is set up into a Upload controller
-    and a Download Controller.
+    The website acts as an intermediary between the user and the cloud. Data flow for the website can be broken into a upload and download data flow.
 
+    \paragraph{Upload Data Flow}
     \begin{itemize}
-        \item Upload Controller
-        \begin{itemize}
-            \item The user browses through the their file system and uploads
-            the 3D model that selected.
-            \item Once the file is on the server side it is then converted to an
-            .fbx and stored for download.
-            \item A tag to reference the model is returned to the client.
-        \end{itemize}
-        
-        \item Download Controller
-        \begin{itemize}
-            \item The client sends the reference tag was given when it was uploaded to the server.
-            \item The server takes that tag and finds the assoicated model.
-            \item Using the httpresponse datastructure to create the response and send
-            the model back to the user.
-        \end{itemize}
+        \item Once a user upload a file it is temporarily save on the server.
+        \item If the file is not a FBX file it is converted to a FBX file.
+        \item The file is then uploaded to Azure blob storage for long term storage.
+        \item The file on the server is then deleted on a sucessful upload to Azure.
+    \end{itemize}
+
+    \paragraph{Download Data Flow}
+    \begin{itemize}
+        \item When a user requests to download a file or generate a QR code, the file name and type is sent to the server.
+        \item The server pulls the file from Azure and temporarily save it to the server.
+        \item If a download is requested, it does a conversion if nessessary and send the file to the user.
+        \item If a QR code is generated, it does a conversion if nessessary and then saves it back to Azure storage and returns a link to the file in Azure embedded in a QR code.
+        \item 
     \end{itemize}
 
 
@@ -112,8 +107,8 @@ You can find references to the wireframes below.
 
     \subsubsection{Overview}
 
-    The website is written in C\# with the ASP.NET MVC framework. The main logic
-    of the website is contained in two controllers
+    The website was written in C\# with the ASP.NET MVC framework. The main logic
+    of the website are contained in two controllers
     \begin{itemize}
         \item Upload Controller
         \begin{itemize}
