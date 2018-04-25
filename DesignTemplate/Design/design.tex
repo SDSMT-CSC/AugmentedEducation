@@ -7,7 +7,7 @@ The goal of this system is to establish a tool chain between CAD files and AR ha
 
 \section{System Overview and Description}
 %Provide a more detailed description of the major system components without getting too detailed.  This section should contain a high-level block and/or flow diagram of the system highlighting the major components. See Figure~\ref{systemdiagram}. This is a floating figure environment. \LaTeX\ will try to put it close to where it was typeset but will not allow the figure to be split if moving it can not happen.  Figures, tables, algorithms and many other floating environments are automatically numbered and placed in the appropriate type of table of contents.  You can move these and the numbers will update correctly.
-CAD software and AR hardware are assumed available for use of this platform. CAD file support for AR headsets is also a standard for current manufacturers. Thus, the three primary components of this platform are a web interface, file conversion software, and mobile app. The website is intended to drive both the upstream and downstream of data flow. The upstream will be from the user to the cloud. The downstream will be from the cloud to AR devices via QR code or direct download. Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. The website must also include a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. Custom AR file viewing is not conveniently supported with common features for mobile devices and a companion app for this platform must be developed. See \ref{fig:UMLSystemOverview} for a visual representation of the interacting components of this platform.
+CAD software and AR hardware are assumed available for use of this platform. CAD file support for AR headsets is also a standard for current manufacturers. Thus, the three primary components of this platform are a web interface, file conversion software, and mobile app. The website is intended to drive both the upstream and downstream of data flow. The upstream will be from the user to the cloud. The downstream will be from the cloud to AR devices via QR code or direct download. Between these data streams rests file conversion software that will be used to convert input files to output file types necessary for specific AR hardware. The website must also include a QR code generator plugin that will be used for generating unique QR codes to associate with uploaded files. Custom AR file viewing is not conveniently supported with common features for mobile devices and a companion app for this platform must be developed. See Fig. \ref{fig:UMLSystemOverview} for a visual representation of the interacting components of this platform.
 
 \begin{figure}[H]
 	\centering
@@ -18,14 +18,14 @@ CAD software and AR hardware are assumed available for use of this platform. CAD
 
 \subsection{Website}
 %Describe briefly the role this major component plays in this system. 
-This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. When an AR device accesses a file via QR code or download link, a restful API or likewise will ensure the file conversion software is first called before delivering the file to the device to be rendered.  
+This major component of the system will broker all interactions occurring across the platform. A user interface will be used to control the data upstream between the user and the cloud. Functionality will include uploading, updating, and deleting files. The website will provide QR code generation for uploaded files and create an association between an uploaded file and its QR code. Note, a target file type must be specified when generating a QR code. When a direct download link or QR code download link is used, the cloud will supply a file in its specified format to the calling device. 
 
 
 \subsection{File Conversion}
 The file conversion software converts files between common 3D file types. It is designed to be called from the back end of the website.
 
 Table \ref{tab:suportedfiletypes} lists the minimum file types supported.  More may be supported, but those listed are the minimum needed to support the majority of common file types.  
-Models created in most common Computer Aided Design software can export to some of the input file types.
+Models created in most computer aided design software can export to at least one of these common input file types.
 
 \begin{table}[!h]
     \centering
@@ -83,11 +83,11 @@ The other options we explored were Amazon Web Service for cloud hosting and linu
 We didn't pursue these because negative feedback from our own developers as other professional reviews.
 
  \subsection{Data Flow}
-The web interface for users creates a data upstream exists between a web browser and a cloud server. Users may upload, update, and delete remotely hosted files.
+The web interface for users creates a data upstream that exists between a web browser and a cloud server. Users may upload and delete remotely hosted files.
 
-Data downstream exists between the cloud server and AR hardware. Data downstream is initiated by users calling file download through QR codes or direct download links. 
+Data downstream exists between the cloud server and AR hardware. Data downstream is initiated by users calling the file download through QR codes or direct download links. 
 
-When a file us upload, a QR code generator plugin will be activated to generate and deliver a unique QR code to the web interface to be downloaded by the user and stored on the cloud server in association with the related file. 
+When a file is uploaded, a QR code generator plugin will be activated to generate and deliver a unique QR code to the web interface to be downloaded by the user and stored on the cloud server in association with the related file. 
 
 When a file is accessed by an AR device, conversion software will convert the file to the appropriate AR compatible file type before delivery. This converted file will be stored on the cloud server for a limited time to streamline repeated and multi-user access.
   
@@ -102,7 +102,7 @@ When a file is accessed by an AR device, conversion software will convert the fi
     
 \subsection{UX}
 
-Upon delivery of the MVP, user experience testing will be conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing will include inspection of the elements including, but not limited to, the following:
+Upon delivery of the MVP, user experience testing was conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing included inspection of the elements including, but not limited to, the following:
 
 \begin{itemize}
 	\item Appearance
