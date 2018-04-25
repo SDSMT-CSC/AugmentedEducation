@@ -115,17 +115,17 @@
 
     \subsubsection{Overview}
 
-    The file conversion software is written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
+    The file conversion software was written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
     in the program is defined.  Instances of the classes will be created when needed.  
     The high level view of the program is:
     \begin{enumerate}
         \item Parse command line arguments
         \item Convert the file
-        \item Print error messages if errors occured
+        \item Print error messages if errors occurred
     \end{enumerate}
 
     The parsing the command line arguments section may fail if the user does not supply the correct arguments.  A flag is set after parsing to indicate
-    whether the correct arguments were supplied.  If an error occurrs during file conversion, the error will be denoted by an integer error code.  
+    whether the correct arguments were supplied.  If an error occurs during file conversion, the error will be denoted by an integer error code.  
     During file conversion, if a single library could not convert it on its own, an extra file will be created as an intermediate file.
 
     \subsubsection{Code Structure}
@@ -141,169 +141,79 @@
 
     \begin{tabular}{l l}
         \centering
-        success & bool \\
-        & True if the needed information is set, false otherwise \\
+        \texttt{success} & \texttt{bool} \\
+        & \texttt{True} if the needed information is set, \texttt{False} otherwise \\
 
-        inputFile & string \\
+        \texttt{inputFile} & \texttt{string} \\
         & The name/path of the file to convert \\
 
-        outputFile & string \\
+        \texttt{outputFile} & \texttt{string} \\
         & The name/path of the file to export to \\
 
-        fileExtention & string \\
-        & The file extention of the output file
+        \texttt{fileExtension} & \texttt{string} \\
+        & The file extension of the output file
     \end{tabular}
 
-    If the success variable is false, the other member variables possibly have bad data that should not be used.
+    If the success variable is \texttt{False}, the other member variables possibly have bad data that should not be used.
 
     \paragraph{File Conversion}
     \hfill \break
     The file conversion portion of the program is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
-    This section implements the two libraries.  Each library is implemented in a class inherited from an abstract AbstractConverter converter class.  The two 
-    library implementation classes are called AssimpConverter and FBXConverter.  A class named FileConverter contains the logic on determining which 
+    This section implements the two libraries.  Each library is implemented in a class inherited from an abstract \texttt{AbstractConverter} class.  The two 
+    library implementation classes are called \texttt{AssimpConverter} and \texttt{FBXConverter}.  A class named \texttt{FileConverter} contains the logic on determining which 
     library/libraries to use when converting the file.
 
-    \subparagraph{AbstractConverter}
+    \subparagraph{\texttt{AbstractConverter}}
     \hfill \break
-    The AbstractConverter is an abstract class that acts like an interface for the child classes.  The abstract methods are:
+    The \texttt{AbstractConverter} is an abstract class that acts like an interface for the child classes.  The abstract methods are:
     \begin{itemize}
-        \item SupportsInputFileType
+        \item \texttt{SupportsInputFileType}
         \begin{itemize}
-            \item Return true if the converter can read in a file with a given file type
+            \item Return \texttt{True} if the converter can read in a file with a given file type
         \end{itemize}
 
-        \item SupportsOutputFileType
+        \item \texttt{SupportsOutputFileType}
         \begin{itemize}
-            \item Return true if the converter can write to a file with a given type
+            \item Return \texttt{True} if the converter can write to a file with a given type
         \end{itemize}
 
-        \item ConvertFile
+        \item \texttt{ConvertFile}
         \begin{itemize}
             \item Performs the file conversion
         \end{itemize}
     \end{itemize}
 
-    An emum is defined, called Result, that provides a more self documenting way to return information from functions.  Values less than zero are errors, while
+    An enum is defined, called \texttt{Result}, that provides a more self documenting way to return information from functions.  Values less than zero are errors, while
     value greater than zero are successes.  The levels of the enum are:
     
     \begin{tabular}{l l}
         \centering
-        Failed &\\
-        IOError &\\
-        SceneNotLoaded &\\
-        NotInitialized &\\
-        FileTypeNotSupported &\\
-        Success &
+        \texttt{Failed} &\\
+        \texttt{IOError} &\\
+        \texttt{SceneNotLoaded} &\\
+        \texttt{NotInitialized} &\\
+        \texttt{FileTypeNotSupported} &\\
+        \texttt{Success} &
     \end{tabular}
 
-    \subparagraph{AssimpConverter}
+    \subparagraph{\texttt{AssimpConverter}}
     \hfill \break
-    The AssimpConverter inherits from the AbstractConverter and uses the Open Asset Import Library for file conversion.  
-    The file type supported methods are implementd by adding the supported file types to a set, and checking whether the questionable type is in the set.
+    The \texttt{AssimpConverter} inherits from the \texttt{AbstractConverter} and uses the Open Asset Import Library for file conversion.  
+    The file type supported methods are implemented by adding the supported file types to a set, and checking whether the questionable type is in the set.
     The list of file types supported is taken from the Open Asset Import Library website's list of supported input file types.  
     The output file types list comes from the same location.
     When converting a file, optimizations may be performed on the file to remove unnecessary/duplicate information.  For example, when importing a file, 
-    repeatedverticies in the meshes will be condensed into one, to help reduce the size of the file.
+    repeated vertices in the meshes will be condensed into one, to help reduce the size of the file.
 
-    \subparagraph{FBXConverter}
+    \subparagraph{\texttt{FBXConverter}}
     \hfill \break
-    The FBXConverter inherits the AbstractConverter and uses the FBX SDK to import and export files.
-    THe file type input and output lists are derived from the FBX SDK website.
+    The \texttt{FBXConverter} inherits the \texttt{AbstractConverter} and uses the FBX SDK to import and export files.
+    The file type input and output lists are derived from the FBX SDK website.
 
-    \subparagraph{FileConverter}
+    \subparagraph{\texttt{FileConverter}}
     \hfill \break
-    The FileConverter looks at the input and output file types, and determines which library/libraries needed to convert the file.
+    The \texttt{FileConverter} looks at the input and output file types, and determines which library/libraries are needed to convert the file.
     It tries see if a single library can do the conversion.  If not, then both libraries are used by exporting from one into a 
     temporary file (.dae) and converting that to the final file type. After comparing the read/write lists between the libraries,
     the DAE file type was common between the two, and included features that other file types did not.  Therefore, it was chosen
     to have DAE as the common intermediate file type.
-
- \begin{comment}
-    \section{Major Component \#1 }
-
-    {\bf If the following makes sense, use this outline, if not then modify the outline}
-
-
-    This section is used to describe the design details for each of the major components 
-    in the system.    Note that this chapter is critical for all tracks.  Research tracks would do experimental design here where other tracks would include the engineering design aspects.    This section is not brief and requires the necessary detail that 
-    can be used by the reader to truly understand the architecture and implementation 
-    details without having to dig into the code.    Sample algorithm:  Algorithm~\ref{alg1}.  This algorithm environment is automatically placed - meaning it floats.   You don't have to worry about placement or numbering.  
-
-    \begin{algorithm} [tbh]                     % enter the algorithm environment
-    \caption{Calculate $y = x^n$}          % give the algorithm a caption
-    \label{alg1}                           % and a label for \ref{} commands later in the document
-    \begin{algorithmic}                    % enter the algorithmic environment
-        \REQUIRE $n \geq 0 \vee x \neq 0$
-        \ENSURE $y = x^n$
-        \STATE $y \Leftarrow 1$
-        \IF{$n < 0$}
-            \STATE $X \Leftarrow 1 / x$
-            \STATE $N \Leftarrow -n$
-        \ELSE
-            \STATE $X \Leftarrow x$
-            \STATE $N \Leftarrow n$
-        \ENDIF
-        \WHILE{$N \neq 0$}
-            \IF{$N$ is even}
-                \STATE $X \Leftarrow X \times X$
-                \STATE $N \Leftarrow N / 2$
-            \ELSE[$N$ is odd]
-                \STATE $y \Leftarrow y \times X$
-                \STATE $N \Leftarrow N - 1$
-            \ENDIF
-        \ENDWHILE
-    \end{algorithmic}
-    \end{algorithm}
-    Citations look like~\cite{Choset:2005:PRM, arkin2009governing, lavalle2006}  and~\cite{wiki:asimo,lumelsky:1987, nolfi2000evolutionary}.  These are done automatically.  Just fill in the database {\tt designrefs.bib} using the same field structure as the other entries.  Then pdflatex the document, bibtex the document and pdflatex twice again.  The first pdflatex creates requests for bibliography entries.
-    The bibtex extracts and formats the requested entries.  The next pdflatex puts them in order and assigns labels.  The final pdflatex replaces references in the text with the assigned labels.
-    The bibliography is automatically constructed.  
-    
-
-
-    \subsection{Technologies  Used}
-    This section provides a list of technologies used for this component.  The details 
-    for the technologies have already been provided in the Overview section. 
-
-    \subsection{Component  Overview}
-    This section can take the form of a list of features. 
-
-    \subsection{Phase Overview}
-    This is an extension of the Phase Overview above, but specific to this component. 
-    It is meant to be basically a brief list with space for marking the phase status. 
-
-    \subsection{ Architecture  Diagram}
-    It is important to build and maintain an architecture diagram.  However, it may 
-    be that a component is best described visually with a data flow diagram. 
-
-
-    \subsection{Data Flow Diagram}
-    It is important to build and maintain a data flow diagram.  However, it may be 
-    that a component is best described visually with an architecture diagram. 
-
-
-    \subsection{Design Details}
-    This is where the details are presented and may contain subsections.   Here is an example code listing:
-    \begin{lstlisting}
-    #include <stdio.h>
-    #define N 10
-    /* Block
-    * comment */
-    
-    int main()
-    {
-        int i;
-    
-        // Line comment.
-        puts("Hello world!");
-    
-        for (i = 0; i < N; i++)
-        {
-            puts("LaTeX is also great for programmers!");
-        }
-    
-        return 0;
-    }
-    \end{lstlisting}
-    This code listing is not floating or automatically numbered.  If you want auto-numbering, but it in the algorithm environment (not algorithmic however) shown above.
-
-\end{comment}
