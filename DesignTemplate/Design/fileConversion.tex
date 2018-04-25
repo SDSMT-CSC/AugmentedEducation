@@ -115,17 +115,17 @@
 
     \subsubsection{Overview}
 
-    The file conversion software is written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
+    The file conversion software was written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
     in the program is defined.  Instances of the classes will be created when needed.  
     The high level view of the program is:
     \begin{enumerate}
         \item Parse command line arguments
         \item Convert the file
-        \item Print error messages if errors occured
+        \item Print error messages if errors occurred
     \end{enumerate}
 
     The parsing the command line arguments section may fail if the user does not supply the correct arguments.  A flag is set after parsing to indicate
-    whether the correct arguments were supplied.  If an error occurrs during file conversion, the error will be denoted by an integer error code.  
+    whether the correct arguments were supplied.  If an error occurs during file conversion, the error will be denoted by an integer error code.  
     During file conversion, if a single library could not convert it on its own, an extra file will be created as an intermediate file.
 
     \subsubsection{Code Structure}
@@ -151,7 +151,7 @@
         & The name/path of the file to export to \\
 
         fileExtention & string \\
-        & The file extention of the output file
+        & The file extension of the output file
     \end{tabular}
 
     If the success variable is false, the other member variables possibly have bad data that should not be used.
@@ -199,11 +199,11 @@
     \subparagraph{AssimpConverter}
     \hfill \break
     The AssimpConverter inherits from the AbstractConverter and uses the Open Asset Import Library for file conversion.  
-    The file type supported methods are implementd by adding the supported file types to a set, and checking whether the questionable type is in the set.
+    The file type supported methods are implements by adding the supported file types to a set, and checking whether the questionable type is in the set.
     The list of file types supported is taken from the Open Asset Import Library website's list of supported input file types.  
     The output file types list comes from the same location.
     When converting a file, optimizations may be performed on the file to remove unnecessary/duplicate information.  For example, when importing a file, 
-    repeatedverticies in the meshes will be condensed into one, to help reduce the size of the file.
+    repeated vertices in the meshes will be condensed into one, to help reduce the size of the file.
 
     \subparagraph{FBXConverter}
     \hfill \break
