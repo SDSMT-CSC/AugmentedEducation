@@ -81,11 +81,11 @@ The HoloLens is a standalone AR device with advanced features and built-in softw
 Other options considered were Amazon Web Service for cloud hosting and Linux development environment using Python and Django for the back-end logic. These were not chosen due to lack of prior experience on the development team. 
 
  \subsection{Data Flow}
-The web interface for users creates a data upstream exists between a web browser and a cloud server. Users may upload, update, and delete remotely hosted files.
+The web interface for users creates a data upstream that exists between a web browser and a cloud server. Users may upload and delete remotely hosted files.
 
-Data downstream exists between the cloud server and AR hardware. Data downstream is initiated by users calling file download through QR codes or direct download links. 
+Data downstream exists between the cloud server and AR hardware. Data downstream is initiated by users calling the file download through QR codes or direct download links. 
 
-When a file us upload, a QR code generator plugin will be activated to generate and deliver a unique QR code to the web interface to be downloaded by the user and stored on the cloud server in association with the related file. 
+When a file is uploaded, a QR code generator plugin will be activated to generate and deliver a unique QR code to the web interface to be downloaded by the user and stored on the cloud server in association with the related file. 
 
 When a file is accessed by an AR device, conversion software will convert the file to the appropriate AR compatible file type before delivery. This converted file will be stored on the cloud server for a limited time to streamline repeated and multi-user access.
   
@@ -100,7 +100,7 @@ When a file is accessed by an AR device, conversion software will convert the fi
     
 \subsection{UX}
 
-Upon delivery of the MVP, user experience testing will be conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing will include inspection of the elements including, but not limited to, the following:
+Upon delivery of the MVP, user experience testing was conducted once per sprint with five representative client faculty members: Dr. Jeff McGough, Dr. Christer Karlsson, Dr, Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins. User experience testing included inspection of the elements including, but not limited to, the following:
 
 \begin{itemize}
 	\item Appearance

@@ -9,18 +9,16 @@
  
  \paragraph{}
  The website is intended to be a full user experience, where they can
- can sign in to view and manage their own content. In the long term view
- this will be a service similar to GitHub, where users can collaberate and share
- their material with friends and co-workers.
+ can sign in to view and manage their own content.
 
 \paragraph{}
 This website will be making use of Microsoft's ASP.NET stack along with
-Azure services for database and website hosting. A more indepth look into 
-these tool will be offered below.
+Azure services for database and website hosting. A more in-depth look into 
+these tools is offered below.
 
 \subsection{User Interface}
 The user interface is made to be very simple. The final product
-UI was decided to be made of five main windows. 
+UI consists of five main windows. 
 \begin{itemize}
     \item Home Screen
     \begin{itemize}
@@ -33,7 +31,7 @@ UI was decided to be made of five main windows.
 
     \item Upload Screen
     \begin{itemize}
-        \item This is a very simple page where the user can upload their files
+        \item This is a very simple page where the user can upload their files.
         \item Once the file is uploaded a QR code will be showing for a reference to the file.
     \end{itemize}
 
@@ -41,12 +39,12 @@ UI was decided to be made of five main windows.
     \begin{itemize}
         \item These screens will all be very similar.
         \item They will allow for the user to search through all
-        available models associatated to the section they are in.
+        available models associated to the section they are in.
     \end{itemize}
 \end{itemize}
 
-The wireframes of all of these pages can be found in prototypes and demos section of this document.
-You can find refeneces to the wireframes below.
+The wireframes of these pages can be found in prototypes and demos section of this document.
+You can find references to the wireframes below.
 \begin{itemize}
     \item Home Page ~\ref{fig:proto_web_home}
     \item User Page ~\ref{fig:proto_web_user_page}
@@ -58,15 +56,15 @@ You can find refeneces to the wireframes below.
 \subsection{Technologies Used}
 
     As stated earlier in this document, this product is making use
-    of the Microsoft environment for its tools. Below is an indepth 
-    break down of the tools currently being used:
+    of the Microsoft environment for its tools. Below is an in-depth 
+    breakdown of the tools currently being used:
 
     \begin{itemize}
     \item ASP.NET MVC
     \begin{itemize}
-        \item An MVC web architecture, where the backend logic is writen in controller classes
-        that send and recieve data from the client.
-        \item It allows for dynamic html pages using a Razor synatax. Razor allows
+        \item An MVC web architecture, where the backend logic is written in controller classes
+        that send and receive data from the client.
+        \item It allows for dynamic html pages using a Razor syntax. Razor allows
         you to embed C\# Code into the html and execute logic.
     \end{itemize}
     
@@ -81,10 +79,9 @@ You can find refeneces to the wireframes below.
     These tools make up the core development of this website. The website is also
     making use of other smaller packages to handles user authentication and database management.
 
-    The website also impliments the file conversion software that is described later.
+    The website also implements the file conversion software that is described later.
     The file conversion was written in C++, so it couldn't be compiled with the website.
-    The work around was that was used, was the file conversion was compiled into a executable.
-    The executable was used through a system command to convert the file.
+    The workaround was that the file conversion was compiled into an executable that can be used through a system command to convert the file.
 
 
     \subsection{Data Flow}
