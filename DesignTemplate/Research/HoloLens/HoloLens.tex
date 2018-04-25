@@ -23,9 +23,8 @@
     With this toolkit, a simple application with basic gaze interaction was created.
     
     \subsection{Development Problems}
-    The development team started to face difficulties based on the tools that we were using
-    The main walls that were hit during development were Unity's handling of .fbx file, HoloToolKit's room mapping, and overall performance of the app.
-    The following is a description of why those were problems
+    Development tools posed the primary difficulties when developing a Unity companion application for the HoloLens. Namely problematic components were Unity's handling of .fbx file, HoloToolKit's room mapping, and overall performance of the application compared to Microsoft's default viewer application.
+    The following list provides specific details of these issues:
     \begin{itemize}
         \item Unity's handling of .fbx files: Unity requires that 3D models be loaded before compilation of the code, because unity converts the models to their own filetype.
         This is a large problem because for the app to provide the correct functionality it needs to load and display .fbx files at run time.
