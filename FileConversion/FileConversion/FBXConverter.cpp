@@ -10,7 +10,7 @@ FBXConverter::FBXConverter()
 	sceneFBX = nullptr;
 
 	acceptedInputTypes.insert(".dae");
-	acceptedInputTypes.insert(".obj");
+	//acceptedInputTypes.insert(".obj");
 	acceptedInputTypes.insert(".fbx");
 	acceptedInputTypes.insert(".dxf");
 
