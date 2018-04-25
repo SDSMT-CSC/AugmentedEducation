@@ -1,9 +1,10 @@
 
-\section{Web Application}
-
 \hypertarget{website_CodeDocumentation}
 {
     \label{website_CodeDocumentation}
     \index{Website@CodeDocumentation}
 }
-\includepdf[pages={1-}]{CodeDocumentation/WebCodeDoc}
+
+%add section header to first included page
+\includepdf[pages={1}, pagecommand=\section{Web Application}]{CodeDocumentation/WebCodeDoc}
+\includepdf[pages={2-}]{CodeDocumentation/WebCodeDoc}
