@@ -3,9 +3,7 @@
 \section{Website Testing}
 \tab There are few unit tests for the website, as the majority of functionality is UI driven and therefore is verified visually or in real-time, as is the case for file tracking and management. 
 Microsoft's C\# testing framework is utilized for the portions of the code that are able to be tested through automated unit tests. 
-The unit testing classes, projects, and namespaces are more thoroughly documented in the AE Web Code sub-document at the end of this document.
-The file conversion testing has been performed manually, as the accuracy of conversion cannot be validated through software alone. 
-A variety of files have been tested throughout the development of this project to demonstrate successful file type conversion.
+The unit testing classes, projects, and namespaces are more thoroughly documented in the AE Web Code sub-document at the end of this document see: \ref{website_CodeDocumentation}.
 Below is a comprehensive list of manual tests, the steps taken to complete the test, and the satisfaction criteria of the tests.
 
 \subsection{File Management}
@@ -73,7 +71,7 @@ Below is a comprehensive list of manual tests, the steps taken to complete the t
 
 \subsection{Database Persistence}
 \begin{itemize}
-    \item The Entity Framework generated database needed to be tested for persistence after each updated publication of the website code to Microsoft Azure. This was done to ensure that no user account credentials were erased or altered with each publication.  This was done by comparing "SELECT *" statements of each of the database tables both before and after each new publication.
+    \item The Entity Framework generated database needed to be tested for persistence after each updated publication of the website code to Microsoft Azure. This was done to ensure that no user account credentials were erased or altered with each publication.  This was done by comparing ``SELECT *" statements of each of the database tables both before and after each new publication.
 \end{itemize}
 
 \subsection{Mobile Authentication}
