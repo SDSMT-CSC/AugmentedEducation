@@ -1,7 +1,7 @@
 # File produced by Open Asset Import Library (http://www.assimp.sf.net)
 # (assimp v3.3.0)
 
-#mtllib Car.obj.mtl
+mtllib Car.obj.mtl
 
 # 1298 vertex positions
 v  0.4916599988937378 1.049996972084045 -2.124808073043823
