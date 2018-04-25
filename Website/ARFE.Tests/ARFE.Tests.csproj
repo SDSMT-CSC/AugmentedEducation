@@ -119,7 +119,6 @@
     <Compile Include="BlobTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
-    <Compile Include="SearchQueriesTest.cs" />
     <Compile Include="UploadedFileCacheTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -132,10 +131,6 @@
     <ProjectReference Include="..\ARFE\ARFE.csproj">
       <Project>{FE62EC34-17FE-4433-8F94-31E93E93510C}</Project>
       <Name>ARFE</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{9ff255dd-071b-474a-b25a-b252e50670ca}</Project>
-      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
