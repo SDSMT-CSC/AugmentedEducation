@@ -23,11 +23,11 @@
 
                 The file structure of OBJ files is very easy to understand.  For a more in-depth understanding, the Wikipedia page on the file type gives a very good description (\url{https://en.wikipedia.org/wiki/Wavefront_.obj_file}).  A brief synopsis is given below.
 
-                The main file (<filename>.obj) contains the body of the model, and any additional files are materials.  The material file have a .mtl extension (or appropriate image file extensions for embedded images).  The OBJ file itself contains a large list of vertices given as Cartesian coordinates in 3-space.  Other lists such as texture coordinates, normal vectors, and parameter space vertices are listed.  The other important list is the list of faces.  A face is defined by a set of interconnected vertices.  A material in the .mtl file can be specified before listing faces to set the currently active material.
+                The main file (<filename>.obj) contains the body of the model, and any additional files are materials.  The material file have an MTL extension (or appropriate image file extensions for embedded images).  The OBJ file itself contains a large list of vertices given as Cartesian coordinates in 3-space.  Other lists such as texture coordinates, normal vectors, and parameter space vertices are listed.  The other important list is the list of faces.  A face is defined by a set of interconnected vertices.  A material in the MTL file can be specified before listing faces to set the currently active material.
 
             \paragraph{Embedded Images}
 
-                Image files (such as .png or .jpeg) can be embedded in the model.  They are defined in the .mtl file when declaring a material.  When the model is parsed and drawn, the images must be located.  One issue found on this topic is the file paths to the images.  In most models tested, the path is an absolute path.  Therefore, when the user uploads or moves the file off of their computer, the image path may be inaccurate and the viewing software may have a rough time when displaying the model.
+                Image files (such as .png or .jpeg) can be embedded in the model.  They are defined in the MTL file when declaring a material.  When the model is parsed and drawn, the images must be located.  One issue found on this topic is the file paths to the images.  In most models tested, the path is an absolute path.  Therefore, when the user uploads or moves the file off of their computer, the image path may be inaccurate and the viewing software may have a rough time when displaying the model.
 
         \subsubsection{Exporting from Common Programs}
 
