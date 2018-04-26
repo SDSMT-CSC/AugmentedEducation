@@ -9,7 +9,7 @@
     
     \paragraph{}
     This tool is intended to be used on the back end of the website.  Whenever a user uploads a file, it can be converted to a common file type.
-    When the user requests a download on an AR device, the type may be different than what is stored. Therefore, the tool will be used to convert the file before
+    When the user requests a download on an AR device, the type may be different than what is stored. Therefore, the tool converts the file before
     it is sent to the user.
     
     \paragraph{}
@@ -27,7 +27,7 @@
     \end{table}
     
     Note the \texttt{-t} flag is only needed when using the \texttt{-odir} flag.  The \texttt{-odir} just specifies which directory to write to, but not the file type.
-    Therefore, more information is needed in order to export to a file.  The \texttt{-o} flag will parse the file name and extract the file type from the \texttt{-i} file name.
+    Therefore, more information is needed in order to export to a file.  The \texttt{-o} flag parses the file name and extract the file type from the \texttt{-i} file name.
     
     An example command to run:
     
@@ -35,7 +35,7 @@
         \texttt{.\textbackslash FileConversion.exe -i C:\textbackslash SomePath\textbackslash someFile.obj -t fbx -odir C:\textbackslash SomeOtherPath\textbackslash}
     \end{center}
     
-    This will convert a file named \texttt{someFile.obj} located at \texttt{C:\textbackslash SomePath\textbackslash  to an FBX file named someFile.fbx} located at 
+    This converts a file named \texttt{someFile.obj} located at \texttt{C:\textbackslash SomePath\textbackslash  to an FBX file named someFile.fbx} located at 
     \texttt{C:\textbackslash SomeOtherPath\textbackslash}
     
     \subsubsection{File Type Research}
@@ -74,7 +74,7 @@
 
     Multiple libraries were needed to support the file types that were necessary for common AR rendering.  In the Microsoft HoloLens, the default
     3D viewer supports FBX files very easily.  Therefore, it was decided that the conversion software needed to export to FBX.  The best tool to do 
-    so is the FBX SDK, since FBX is a proprietary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it will read and write.
+    so is the FBX SDK, since FBX is a proprietary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it reads and writes.
     Therefore, the Open Asset Import Library is used to better support a wide array of file types.  So in using assimp and the FBX SDK together,
     the conversion software can support a wide range of both import and export file types.
 
@@ -107,7 +107,7 @@
         This outlines that the program tries to use a single library to convert the file before using both libraries.  If a single library is unable to 
         read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
         using a single library is if a user wants to read a .obj and write to a .fbx.  The FBX SDK can handle reading and writing those particular file
-        types, so it will be used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
+        types, so it is used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
         assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimp is used to 
         read the .ply, write to a .dae (common file type).  The FBX SDK then reads the .dae and writes to a .fbx.
 
@@ -116,7 +116,7 @@
     \subsubsection{Overview}
 
     The file conversion software was written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
-    in the program is defined.  Instances of the classes will be created when needed.  
+    in the program is defined.  Instances of the classes are created when needed.  
     The high level view of the program is:
     \begin{enumerate}
         \item Parse command line arguments
@@ -125,8 +125,8 @@
     \end{enumerate}
 
     The parsing the command line arguments section may fail if the user does not supply the correct arguments.  A flag is set after parsing to indicate
-    whether the correct arguments were supplied.  If an error occurs during file conversion, the error will be denoted by an integer error code.  
-    During file conversion, if a single library could not convert it on its own, an extra file will be created as an intermediate file.
+    whether the correct arguments were supplied.  If an error occurs during file conversion, the error is denoted by an integer error code.  
+    During file conversion, if a single library could not convert it on its own, an extra file is created as an intermediate file.
 
     \subsubsection{Code Structure}
     The file conversion software is broken into two main sections: parameter parsing and file conversion.
@@ -134,10 +134,10 @@
     \paragraph{Parameter Parsing}
     \hfill \break
     The parameter parsing code is in a class called ParseParameters.  ParseParameters has a constructor that takes the number of command line arguments, 
-    and the command line arguments.  It will parse the values needed out into member variables that are public.  It will ignore invalid arguments,
+    and the command line arguments.  It parses the values needed out into member variables that are public.  It ignores invalid arguments,
     and print a usage statement if the correct arguments are not supplied.  When printing the usage statement, cout is used to write to standard out.
 
-    After processing the command line arguments, the member variables in the class will be set with the appropriate information.  The member variables are:
+    After processing the command line arguments, the member variables in the class are set with the appropriate information.  The member variables are:
 
     \begin{tabular}{l l}
         \centering
@@ -203,7 +203,7 @@
     The list of file types supported is taken from the Open Asset Import Library website's list of supported input file types.  
     The output file types list comes from the same location.
     When converting a file, optimizations may be performed on the file to remove unnecessary/duplicate information.  For example, when importing a file, 
-    repeated vertices in the meshes will be condensed into one, to help reduce the size of the file.
+    repeated vertices in the meshes are condensed into one, to help reduce the size of the file.
 
     \subparagraph{\texttt{FBXConverter}}
     \hfill \break
