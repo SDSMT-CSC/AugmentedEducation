@@ -7,10 +7,10 @@
 % This section describes the approach taken with regard to system and unit testing.    This chapter does not describe the outcome of those tests.    
 
 \section{Overview}
-\tab The testing approach is based on automated unit testing where available and manual testing with instructional testing steps recorded. Website, file conversion, mobile application, HoloLens, and component integration testing are all recorded and documented separately. The purpose of the product tests is to ensure that the features described in the user stories and project specification are met and work as intended. The manual tests for each user story are described below.
+The testing approach is based on automated unit testing where available and manual testing with instructional testing steps recorded. Website, file conversion, mobile application, HoloLens, and component integration testing are all recorded and documented separately. The purpose of the product tests is to ensure that the features described in the user stories and project specification are met and work as intended. The manual tests for each user story are described below.
 
 \section{Dependencies}
-\tab The main testing framework for the Azure website is Microsoft's C\# testing framework. The file conversion needs no external testing framework as it is tested manually for accuracy. The database schema and implementation is provided by the Microsoft Entity Framework package, in which stable releases are guaranteed functional, however testing is done by verifying state persistence across publications. The mobile was mostly tested manually so there are no dependencies.
+The main testing framework for the Azure website is Microsoft's C\# testing framework. The file conversion needs no external testing framework as it is tested manually for accuracy. The database schema and implementation is provided by the Microsoft Entity Framework package, in which stable releases are guaranteed functional, however testing is done by verifying state persistence across publications. The mobile was mostly tested manually so there are no dependencies.
 
 \input{Testing/web}
 
