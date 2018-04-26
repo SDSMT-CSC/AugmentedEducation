@@ -1,7 +1,7 @@
 
 \section{File Conversion}
 
-    An early section of the research in the project was on file conversion.  The goal was to make some software that will take in a wide variety of 3D model file types and export them to file types that would be viewable on VR/AR devices.  This section outlines the specifics of what the research found.
+    An early section of the research in the project was on file conversion.  The goal was to make some software that takes in a wide variety of 3D model file types and export them to file types that would be viewable on VR/AR devices.  This section outlines the specifics of what the research found.
 
     \subsection{File Types}
 
@@ -13,17 +13,17 @@
 
         \subsubsection{DAE}
 
-            The DAE file type, also called Collada, is used as a common intermediary type in our project.  The only widly available software that can open and dispaly .dae files is Blender.  However, it is not common for people to have Blender installed.  If the user had not used the software before, there is a steep learning curve, so it is not recommended that users use this as the final file type.
+            The DAE file type, also called Collada, is used as a common intermediary type in the project.  The only widely available software that can open and display .dae files is Blender.  However, it is not common for people to have Blender installed.  If the user had not used the software before, there is a steep learning curve, so it is not recommended that users use this as the final file type.
 
         \subsubsection{OBJ}
 
-            The Wavefront OBJ file type is a standard format supported by almost all viewers.  It is simple to understand, but it structure leads to a very large file size.  Also, any materials in the file are stored in separate files, so multiple files must be managed in order to view a model.  Therefore, this file type is a poor choice for a common interchange due to the large size and complexity.
+            The Wavefront OBJ file type is a standard format supported by almost all viewers.  It is simple to understand, but its structure leads to a very large file size.  Also, any materials in the file are stored in separate files, so multiple files must be managed in order to view a model.  Therefore, this file type is a poor choice for a common interchange due to the large size and complexity.
 
             \paragraph{Structure}
 
                 The file structure of OBJ files is very easy to understand.  For a more in-depth understanding, the Wikipedia page on the file type gives a very good description (\url{https://en.wikipedia.org/wiki/Wavefront_.obj_file}).  A brief synopsis is given below.
 
-                The main file (<filename>.obj) contains the body of the model, and any additional files are materials.  The material files will have a .mtl extension (or appropriate image file extensions for embedded images).  The obj file itself contains a large list of vertices given as Cartesian coordinates in 3-space.  Other lists such as texture coordinates, normal vectors, and parameter space vertices are listed.  The other important list is the list of faces.  A face is defined by a set of interconnected vertices.  A material in the .mtl file can be specified before listing faces to set the currently active material.
+                The main file (<filename>.obj) contains the body of the model, and any additional files are materials.  The material file have a .mtl extension (or appropriate image file extensions for embedded images).  The obj file itself contains a large list of vertices given as Cartesian coordinates in 3-space.  Other lists such as texture coordinates, normal vectors, and parameter space vertices are listed.  The other important list is the list of faces.  A face is defined by a set of interconnected vertices.  A material in the .mtl file can be specified before listing faces to set the currently active material.
 
             \paragraph{Embedded Images}
 
@@ -44,7 +44,7 @@
 
                 \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}                
 
-                The tested, common file types Maple can export are: OBJ, DAE, PLY.  Note that Maple cannot export FBX files (tested in Maple 18, May 2018).  To change the name of the file, change the text \texttt{test1.obj} to the desired file name and extension.  If the file extension is not supported by Maple, a warning message will be printed instead of actually producing the file.  Currently, the code will export the model to the same location of where the Maple file is saved.  The save directory can be specified by replacing the text \texttt{currentdir()}.  The desired equation must be written in the \texttt{plot3d()} function as per Maple syntax.  As a note, as of May 2018, Maple will not export textures/colors, so the models will default to white.
+                The tested, common file types Maple can export are: OBJ, DAE, PLY.  Note that Maple cannot export FBX files (tested in Maple 18, May 2018).  To change the name of the file, change the text \texttt{test1.obj} to the desired file name and extension.  If the file extension is not supported by Maple, a warning message is printed instead of actually producing the file.  Currently, the code exports the model to the same location of where the Maple file is saved.  The save directory can be specified by replacing the text \texttt{currentdir()}.  The desired equation must be written in the \texttt{plot3d()} function as per Maple syntax.  As a note, as of May 2018, Maple does not export textures/colors, so the models default to white.
 
             \paragraph{Solid Works}
                 
@@ -54,12 +54,12 @@
 
         The two libraries used for file conversion were heavily discussed in previous sections.  Therefore, a brief summary of what occurs is described here.
 
-        The Open Asset Import Library (assimp) supports importing and exporting to a wide variety of file types.  However, it has issues when working with the fbx file type.  Therefore, the FBX SDK from AutoDesk is used to handle the conversion to and from fbx files.  If neither library can complete the conversion on its own, then both libraries will be used to do the conversion.  In this case, one library will create a .dae file that will be consumed by the other library.  This allows for the two libraries to work together and convert to almost any file type desired.
+        The Open Asset Import Library (assimp) supports importing and exporting to a wide variety of file types.  However, it has issues when working with the fbx file type.  Therefore, the FBX SDK from AutoDesk is used to handle the conversion to and from fbx files.  If neither library can complete the conversion on its own, then both libraries are used to do the conversion.  In this case, one library creates a .dae file that is consumed by the other library.  This allows for the two libraries to work together and convert to almost any file type desired.
 
     \subsection{Implementation and Uses}
 
-        This section will cover how the file conversion research and software is applied in the project.  This will mostly include the use cases for the file conversion software that was developed.
+        This section covers how the file conversion research and software is applied in the project.  This mostly includes the use cases for the file conversion software that was developed.
 
-        The website is the main consumer for the file conversion software.  It is the entity that will make a call to convert a file to a different type.  The goal was to abstract the file conversion away from the user so they do not need to worry about different types and what works, and what does not.  
+        The website is the main consumer for the file conversion software.  It is the entity that makes a call to convert a file to a different type.  The goal was to abstract the file conversion away from the user so they do not need to worry about different types and what works, and what does not.  
             
-        A call to the file conversion is performed whenever a user uploads a file.  It will convert the uploaded file into the .fbx type for storage.  Then, the user can request a download through the website to different file types.  This will call the file conversion software.  Also, if a request comes in through the Rest API (typically through mobile), a file conversion may take place.  A mobile device will make a request for the obj type, as it is what can currently be rendered.
+        A call to the file conversion is performed whenever a user uploads a file.  It converts the uploaded file into the .fbx type for storage.  Then, the user can request a download through the website to different file types.  This calls the file conversion software.  Also, if a request comes in through the Rest API (typically through mobile), a file conversion may take place.  A mobile device makes a request for the obj type, as it is what can currently be rendered.
