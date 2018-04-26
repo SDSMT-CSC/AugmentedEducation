@@ -1,11 +1,12 @@
 
+%Add the following as a page command to get the reference to link correctly 
+%throughout the document.
+% \hypertarget{website_CodeDocumentation}
+% {
+%    \index{Website@CodeDocumentation}
+%    \label{website_CodeDocumentation}
+% }
+
 %add section header to first included page
-\includepdf[pages={1}, pagecommand=\section{Web Application}]{CodeDocumentation/WebCodeDoc}
-
-\hypertarget{website_CodeDocumentation}
-{
-    \index{Website@CodeDocumentation}
-    \label{website_CodeDocumentation}
-}
-
+\includepdf[pages={1}, pagecommand=\section{Web Application}\hypertarget{website_CodeDocumentation}{\index{Website@CodeDocumentation}\label{website_CodeDocumentation}}]{CodeDocumentation/WebCodeDoc}
 \includepdf[pages={2-}]{CodeDocumentation/WebCodeDoc}
