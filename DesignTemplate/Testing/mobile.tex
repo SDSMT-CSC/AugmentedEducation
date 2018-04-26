@@ -27,7 +27,7 @@
         
         \subsubsection{Large Files}
         
-            One main concern was that 3D files can get large and complex. The BMW is an example of this because it has 51,318 vertices while the sphere has 2258. It took a considerable amount of time to load this file and it draws poorly, showing a limitation of keeping track of so many vertices.
+            One main concern was that 3D files can get large and complex. The BMW is an example of this because it has 51,318 vertices while the sphere only has 2,258. It took a longer amount of time ($\sim$5 seconds) to load this file and it draws poorly, showing a limitation of keeping track of so many vertices.
             \begin{figure}[H]
                 \includegraphics[width=0.5\textwidth]{Mobile/Mobile_BMW}
                 \centering
@@ -69,7 +69,7 @@
         
     \subsection{Web Interface}
 
-        Another major component of the mobile app was the communication with the website.  If the app can display the models, there is little purpose if there is no method to get the models onto the phone.  The web API provided by the web team provides a method for communicating with the website.  It is done using the Volley library, provided by Google.  It abstracts the sending/receiving of networking communication away from the developer.  The code for these interfaces in primarily located in the \texttt{WebAccessor} Java class.
+        Another major component of the mobile app was the communication with the website.  If the app can display the models, there is little purpose if there is no method to get the models onto the phone.  The web API provided by the web team provides a method for communicating with the website.  It is done using the Volley library, provided by Google.  It abstracts the low level sending/receiving of networking communication away from the developer.  The code for these interfaces in primarily located in the \texttt{WebAccessor} Java class.
 
         Testing has shown that while the website is on Azure, the responsiveness is not always the best.  It is not infrequent to receive timeout errors on requests.  When this occurs, a message is displayed to the user.
         
