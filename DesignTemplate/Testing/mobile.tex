@@ -94,7 +94,7 @@
                 
             \paragraph{List Models}
 
-                Another endpoint that is used by the mobile device is the one to get a listing of files owned by the user.  Like with the authentication token request, this call was tested manually to ensure the HTTP packets were well formed, and as expected.  Postman was agin used to help test.  Figure \ref{fig:mobilePostmanListFiles} shows the Postman setup to send a request for a file listing.  
+                Another endpoint that is used by the mobile device is the one to get a listing of files owned by the user.  Like with the authentication token request, this call was tested manually to ensure the HTTP packets were well formed, and as expected.  Postman was again used to help test.  Figure \ref{fig:mobilePostmanListFiles} shows the Postman setup to send a request for a file listing.  
                 
                 \begin{figure}[H]
                     \includegraphics[width=0.75\textwidth]{postman_ListFiles}
@@ -103,11 +103,11 @@
                     \label{fig:mobilePostmanListFiles}
                 \end{figure}
                 
-                Note, the \texttt{descriptor=} at the end of the url, as it is used to state which files are desired for download.  An agreement was made between the mobile and web teams on what the levels should be.  There is an enumeration defined in the Java code with more details on the values and meanings.  Testing the different values showed a bug in the web code that always caused an error on the mobile device.  This issue was fixed by the web team.
+                Note, the \texttt{descriptor=} at the end of the URL, as it is used to state which files are desired for download.  An agreement was made between the mobile and web teams on what the levels should be.  There is an enumeration defined in the Java code with more details on the values and meanings.  Testing the different values showed a bug in the web code that always caused an error on the mobile device.  This issue was fixed by the web team.
             
             \paragraph{Download Model}
 
-                Downloading a model includes contacting two endpoints.  One is used to get a temporary link to actually download the file, and the next downloads the file from that url.  This is used so the phone can store the long term location, and get a temporary active url to get the file.  Testing for these sections again included using Postman, and using a web browser to facilitate the download.  The Postman settings to get the temporary url are located in Figure \ref{fig:mobilePostmanDownloadFile}.
+                Downloading a model includes contacting two endpoints.  One is used to get a temporary link to actually download the file, and the next downloads the file from that URL.  This is used so the phone can store the long term location, and get a temporary active URL to get the file.  Testing for these sections again included using Postman, and using a web browser to facilitate the download.  The Postman settings to get the temporary URL are located in Figure \ref{fig:mobilePostmanDownloadFile}.
 
                 \begin{figure}[H]
                     \includegraphics[width=0.75\textwidth]{postman_DownloadFile}
@@ -116,7 +116,7 @@
                     \label{fig:mobilePostmanDownloadFile}
                 \end{figure}
 
-                The field \texttt{result} contains the temporary url.  It would then be put into a web browser (typically Firefox or Chrome) and the file is downloaded.  The file downloaded should be in the OBJ file format, since it is the one that is parse-able by the phone.  The website should use the file conversion software ensure this.  When the models are downloaded, they are stored in a \texttt{Models} directory on the phone.  The file system on the device can be viewed with the Downloads app.  Note, if the model is downloaded, and it does not show up in the file structure, the phone should be restarted.  Commonly, the files do not show up until the device is restarted.  A new folder will be created in the \texttt{Models} directory.  This is because one OBJ model can have multiple other models associated with it, including MTL (material) files and images.  When the models are downloaded, a zip archive is actually downloaded and extracted.
+                The field \texttt{result} contains the temporary URL.  It would then be put into a web browser (typically Firefox or Chrome) and the file is downloaded.  The file downloaded should be in the OBJ file format, since it is the one that is parse-able by the phone.  The website should use the file conversion software ensure this.  When the models are downloaded, they are stored in a \texttt{Models} directory on the phone.  The file system on the device can be viewed with the Downloads app.  Note, if the model is downloaded, and it does not show up in the file structure, the phone should be restarted.  Commonly, the files do not show up until the device is restarted.  A new folder will be created in the \texttt{Models} directory.  This is because one OBJ model can have multiple other models associated with it, including MTL (material) files and images.  When the models are downloaded, a zip archive is actually downloaded and extracted.
 
                 Future developers should be aware of how the models are saved from the Android download manager.  When making the call for the download manager to do the download, a final path/file name must be provided.  This can cause issues if the file is saved with the wrong extension, especially if the files are viewed on the developers computer (and not just on the phone).
         

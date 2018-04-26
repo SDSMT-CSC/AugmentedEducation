@@ -43,7 +43,7 @@
     The goal for the file type research was to find the common 3D model file types, and what is commonly used with AR devices.
 
     \paragraph{OBJ}
-    The OBJ filetype (Wavefront OBJ) stores a list of vertices, and constructs faces using the vertices.  OBJ supports textures, applied to each face, that are stored in a separate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed. The MTL file can also reference PNG or BMP files for textures. The Android app uses files in the OBJ format.
+    The OBJ file type (Wavefront OBJ) stores a list of vertices, and constructs faces using the vertices.  OBJ supports textures, applied to each face, that are stored in a separate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed. The MTL file can also reference PNG or BMP files for textures. The Android app uses files in the OBJ format.
 
     \paragraph{STL}
     The STL file type (sterolithography) stores a list of vertices and forms triangles to form the surfaces of an object.  This file type does not support textures.  It is commonly used in 3D printing.
@@ -54,12 +54,12 @@
     \paragraph{FBX}
     The FBX file type (Autodesk FilmBox) is a proprietary file format for Autodesk.  It is commonly used, and is supported, by many different AR devices such as the HoloLens.
 
-    \paragraph{Conculsions}
+    \paragraph{Conclusions}
     The above file types were found to be the most common.  The intermediate file type was agreed to be DAE.  It supported the most features while encapsulating all the data in a single file.
 
     \subsection{Technologies Used}
     
-    The code for the file conversion toolset is written in C++.  There are two main external libraries used:
+    The code for the file conversion tool set is written in C++.  There are two main external libraries used:
     \begin{itemize}
         \item Open Asset Import Library (assimp)
         \begin{itemize}

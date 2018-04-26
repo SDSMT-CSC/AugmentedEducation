@@ -90,15 +90,15 @@ The user interface was designed to be very simple. The UI is comprised of four m
         \item Once a user upload a file it is temporarily save on the server.
         \item If the file is not a FBX file it is converted to a FBX file.
         \item The file is then uploaded to Azure blob storage for long term storage.
-        \item The file on the server is then deleted on a sucessful upload to Azure.
+        \item The file on the server is then deleted on a successful upload to Azure.
     \end{itemize}
 
     \paragraph{Download Data Flow}
     \begin{itemize}
         \item When a user requests to download a file or generate a QR code, the file name and type is sent to the server.
         \item The server pulls the file from Azure and temporarily save it to the server.
-        \item If a download is requested, it does a conversion if nessessary and send the file to the user.
-        \item If a QR code is generated, it does a conversion if nessessary and then saves it back to Azure storage and returns a link to the file in Azure embedded in a QR code.
+        \item If a download is requested, it does a conversion if necessary and send the file to the user.
+        \item If a QR code is generated, it does a conversion if necessary and then saves it back to Azure storage and returns a link to the file in Azure embedded in a QR code.
         \item 
     \end{itemize}
 
