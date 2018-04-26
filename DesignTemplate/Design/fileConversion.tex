@@ -4,7 +4,7 @@
     \subsection{Overview}
     \paragraph{}
     A major tool in the project is the file conversion software.  
-    The file conversion software aims to read in many different 3D model file types (.fbx, .obj, .dae, etc.) and convert them to another desired 3D file types.  
+    The file conversion software aims to read in many different 3D model file types (FBX, .obj, .dae, etc.) and convert them to another desired 3D file types.  
     A brief listing of supported file types is in table \ref{tab:suportedfiletypes}.
     
     \paragraph{}
@@ -22,7 +22,7 @@
             \texttt{-i} & Input file name (can specify full path), infers the input file type from the name \\
             \texttt{-o} & Name (or full path) to write the converted file, infers the export file type from the name \\
             \texttt{-odir} & The path to the directory, the file name is inferred from the input file name \\
-            \texttt{-t} & The file type (.fbx, .obj, .dae, etc.) to export to
+            \texttt{-t} & The file type (FBX, .obj, .dae, etc.) to export to
         \end{tabular}
     \end{table}
     
@@ -106,10 +106,10 @@
         
         This outlines that the program tries to use a single library to convert the file before using both libraries.  If a single library is unable to 
         read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
-        using a single library is if a user wants to read a .obj and write to a .fbx.  The FBX SDK can handle reading and writing those particular file
-        types, so it is used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a .ply to a .fbx.
-        assimp can read .ply files, but cannot write to .fbx.  The FBX SDK can write to .fbx files but not read .ply.  Therefore, assimp is used to 
-        read the .ply, write to a .dae (common file type).  The FBX SDK then reads the .dae and writes to a .fbx.
+        using a single library is if a user wants to read a OBJ and write to a FBX.  The FBX SDK can handle reading and writing those particular file
+        types, so it is used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a PLY to a FBX.
+        assimp can read PLY files, but cannot write to FBX.  The FBX SDK can write to FBX files but not read PLY.  Therefore, assimp is used to 
+        read the PLY, write to a DAE (common file type).  The FBX SDK then reads the DAE and writes to a FBX.
 
     \subsection{Design Details}
 

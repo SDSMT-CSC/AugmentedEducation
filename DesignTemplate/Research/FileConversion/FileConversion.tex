@@ -5,7 +5,7 @@
 
     \subsection{File Types}
 
-        There are a large number of available 3D model file types.  However, a small subset of those file types are supported on most devices.  These include the .fbx, .dae, and .obj file types.  Of the three, the .obj is the simplest to understand and modify, since it is stored in large plain text lists.  The others are more complicated, and research on how the files are actually structured was not pursued.
+        There are a large number of available 3D model file types.  However, a small subset of those file types are supported on most devices.  These include the FBX, .dae, and .obj file types.  Of the three, the .obj is the simplest to understand and modify, since it is stored in large plain text lists.  The others are more complicated, and research on how the files are actually structured was not pursued.
 
         \subsubsection{FBX}
 
@@ -54,7 +54,7 @@
 
         The two libraries used for file conversion were heavily discussed in previous sections.  Therefore, a brief summary of what occurs is described here.
 
-        The Open Asset Import Library (assimp) supports importing and exporting to a wide variety of file types.  However, it has issues when working with the fbx file type.  Therefore, the FBX SDK from AutoDesk is used to handle the conversion to and from fbx files.  If neither library can complete the conversion on its own, then both libraries are used to do the conversion.  In this case, one library creates a .dae file that is consumed by the other library.  This allows for the two libraries to work together and convert to almost any file type desired.
+        The Open Asset Import Library (assimp) supports importing and exporting to a wide variety of file types.  However, it has issues when working with the FBX file type.  Therefore, the FBX SDK from AutoDesk is used to handle the conversion to and from FBX files.  If neither library can complete the conversion on its own, then both libraries are used to do the conversion.  In this case, one library creates a .dae file that is consumed by the other library.  This allows for the two libraries to work together and convert to almost any file type desired.
 
     \subsection{Implementation and Uses}
 
@@ -62,4 +62,4 @@
 
         The website is the main consumer for the file conversion software.  It is the entity that makes a call to convert a file to a different type.  The goal was to abstract the file conversion away from the user so they do not need to worry about different types and what works, and what does not.  
             
-        A call to the file conversion is performed whenever a user uploads a file.  It converts the uploaded file into the .fbx type for storage.  Then, the user can request a download through the website to different file types.  This calls the file conversion software.  Also, if a request comes in through the Rest API (typically through mobile), a file conversion may take place.  A mobile device makes a request for the obj type, as it is what can currently be rendered.
+        A call to the file conversion is performed whenever a user uploads a file.  It converts the uploaded file into the FBX type for storage.  Then, the user can request a download through the website to different file types.  This calls the file conversion software.  Also, if a request comes in through the Rest API (typically through mobile), a file conversion may take place.  A mobile device makes a request for the obj type, as it is what can currently be rendered.
