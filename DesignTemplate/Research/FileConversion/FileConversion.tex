@@ -23,7 +23,7 @@
 
                 The file structure of OBJ files is very easy to understand.  For a more in-depth understanding, the Wikipedia page on the file type gives a very good description (\url{https://en.wikipedia.org/wiki/Wavefront_.obj_file}).  A brief synopsis is given below.
 
-                The main file (<filename>.obj) contains the body of the model, and any additional files are materials.  The material file have a .mtl extension (or appropriate image file extensions for embedded images).  The obj file itself contains a large list of vertices given as Cartesian coordinates in 3-space.  Other lists such as texture coordinates, normal vectors, and parameter space vertices are listed.  The other important list is the list of faces.  A face is defined by a set of interconnected vertices.  A material in the .mtl file can be specified before listing faces to set the currently active material.
+                The main file (<filename>.obj) contains the body of the model, and any additional files are materials.  The material file have a .mtl extension (or appropriate image file extensions for embedded images).  The OBJ file itself contains a large list of vertices given as Cartesian coordinates in 3-space.  Other lists such as texture coordinates, normal vectors, and parameter space vertices are listed.  The other important list is the list of faces.  A face is defined by a set of interconnected vertices.  A material in the .mtl file can be specified before listing faces to set the currently active material.
 
             \paragraph{Embedded Images}
 
@@ -33,7 +33,7 @@
 
             \paragraph{Maple}
 
-                One of the user stories required the need to export the 3D model from the Maple software used by the math department.  The following statement can be used to export a \texttt{plot3d} plot from Maple into an obj file type:
+                One of the user stories required the need to export the 3D model from the Maple software used by the math department.  The following statement can be used to export a \texttt{plot3d} plot from Maple into an OBJ file type:
 
                 \noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
 
@@ -62,4 +62,4 @@
 
         The website is the main consumer for the file conversion software.  It is the entity that makes a call to convert a file to a different type.  The goal was to abstract the file conversion away from the user so they do not need to worry about different types and what works, and what does not.  
             
-        A call to the file conversion is performed whenever a user uploads a file.  It converts the uploaded file into the FBX type for storage.  Then, the user can request a download through the website to different file types.  This calls the file conversion software.  Also, if a request comes in through the Rest API (typically through mobile), a file conversion may take place.  A mobile device makes a request for the obj type, as it is what can currently be rendered.
+        A call to the file conversion is performed whenever a user uploads a file.  It converts the uploaded file into the FBX type for storage.  Then, the user can request a download through the website to different file types.  This calls the file conversion software.  Also, if a request comes in through the Rest API (typically through mobile), a file conversion may take place.  A mobile device makes a request for the OBJ type, as it is what can currently be rendered.
