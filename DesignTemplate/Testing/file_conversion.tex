@@ -2,19 +2,25 @@
 
 \section{File Conversion Testing}
 \tab
-    The file conversion is manually tested using a variety of inputs to ensure robust and consistent performance. As there are two libraries (assimp and FBX SDK), they were both manually tested for simple functionality as they were implemented. We tried sending through file types that can be inputs for assimp and made sure that the file made it to the FBX section and output the correct file format (.fbx). There are many different inputs so we sent through files for the common types we would expect such as .stl, .obj, .dae etc. Unsupported file types were also tested and we received appropriate errors from the conversion libraries. The file types supported for our system are available in Table \ref{tab:suportedfiletypes}. We also tried large files so we would know how long we could expect the system to take to process files of different sizes. There are certain limitations on the HoloLens hardware for file size and complexity that can be rendered, so we are aware of the limitations on that end and will inform our users appropriately.\\ 
+    The file conversion was manually tested using a variety of inputs to ensure robust and consistent performance. As there are two libraries (assimp and FBX SDK), they were both manually tested for simple functionality as they were implemented. Manual tests included sending through file types that could be inputs for assimp and making sure that the files made it to the FBX section and output the correct file format (FBX). Some of the input file types tested included common and expect file types such such as STL, OBJ, DAE etc. Unsupported file types were also tested and appropriate errors from the conversion libraries were received. The file types supported for our system are available in Table \ref{tab:suportedfiletypes}. Large files were also tested to gage how long the system could take to process files of different sizes. There are certain limitations on the HoloLens hardware regarding file size and complexity. Users are properly notified of these limitations by the HoloLens platform should they be an issue. The HoloLens limitations are not formerly noted here as they are already anticipated to change with future updates.  
+
+    Files with embedded textures were also tested to ensure textures get converted with the file. With the file types tested, such as OBJ and FBX, the textures converted with the files as expected. The HoloLen's default 3D file viewer does not currently support colors or textures, thus these features have not yet been able to test.
+
+    Test files of varying complexity were gathered from a variety of sources to ensure maximum coverage by the Augmented Education platform. The following files comprised the original test group used to ensure proper conversion to a FBX format and rendering on the Microsoft HoloLens:
+    \begin{itemize}
+        \item An STL sphere generated in Maple.
+        \item An FBX column provided by Dr. Brent Deschamp of SD Mines.
+        \item An FBX sine wave provided by Dr. Brent Deschamp of SD Mines.
+    \end{itemize} 
     
-    We also tested files with textures embedded in them, to make sure the textures get converted with the file. With the file types we tried such as .obj and .fbx, the textures converted with the files as expected. The default 3d file viewer in the HoloLens currently does not support colors or textures, so we have not been able to test these features on the HoloLens yet.\\
+    A number of files of varying format type from \url{http://free3d.com} were also tested. These sample files included a car, building, spaceship, Batman, and other unique files. 
+    
+    Cheldon was also able to receive large sample architectural files in .fbx format from a relative. One architectural file rendered in the HoloLens, but the other two were too large to be supported by the device's current limitation for meshes and vertices renderable in the viewer.
 
-    The test files we ran through our system came from a variety of sources. We had a simple sphere generated in Maple as a .stl file, which we successfully converted through our system to .fbx to view on the HoloLens. We also received a .fbx representing a column, sent to us from a mathematics professor. The website \url{http://free3d.com} has many 3d files of varying formats and we ran some of them through our system. Sample files included a car, building, space ship, Batman, and other unique files. These files were available as .fbx and were good for testing out the HoloLens, but usually other formats came with them that we could convert them to .fbx as well. Lastly, we received some sample architectural files from one student's family member that were drawings of large buildings in .fbx format. One of these files rendered in the HoloLens, but the other two were too large to render because they exceeded the mesh/vertex limit for the viewer. This was when we looked into the limitations of the built in viewer.\\
-
-    An example of converting a file through our system can be seen below in Figures \ref{Car-FBX}, \ref{Car-OBJ}, and \ref{Car-STL}. 
-    We found a 3d file for a car online in the FBX format. 
-    Our system then converted it to an OBJ format, as the File Converter software determined it only needed the FBX SDK to convert from FBX $\rightarrow$ OBJ. 
-    The third model is an STL file generated from the FBX file, using a DAE file as an intermediate format between the FBX SDK and assimp libraries. 
-    As is apparent in Figure \ref{Car-STL} below, the STL file does not contain the colors or smooth surfaces that are present in the other file types, and this is a limitation of the STL file format. 
-    This system works for converting STL $\rightarrow$ FBX as well, but the colors would not be present in the final file because that information is not contained in the STL. The STL format is one that can be exported from Maple software.\\
-
+    Conversion examples can be seen in Figures \ref{Car-FBX}, \ref{Car-OBJ}, and \ref{Car-STL}.  
+    
+    In Figure \ref{Car-FBX}, a 3D model for a car in .fbx format was acquired. This file was used to test conversion to .obj format, the result of which can be seen in Figure \ref{Car-OBJ}. Figure \ref{Car-STL} is an STL file generated from the FBX file, using a DAE file as an intermediate format between the FBX SDK and assimp libraries. The STL file does not contain the colors or smooth surfaces that are present in the other file types, which is a limitation of the STL file format. This system works for converting STL $\rightarrow$ FBX as well, but the colors would not be present in the final file because that information is not contained in the STL. 
+    
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Car-FBX.png}
