@@ -1,11 +1,10 @@
 % !TEX root = DesignDocument.tex
 
 \section{Risk Analysis}
-There are two main risks associated with the project. These risks pertain to the functionality of the product itself and the security of users' data.
-Minimizing and preventing these risks are vital to providing quality software and positive relationships with users.
+There are two main risks associated with this project. These risks pertain to the functionality of the project itself and the security of its data. Minimizing and preventing these risks are vital to providing quality software and positive relationships with users.
 
-The first risk is that the software may fail to convert or render a given input file.
-This could be caused by the file being too large or complex for the system to handle, or part of the file is corrupt. 
+The first risk is that the software may fail to convert or render a given input file. This could be caused by the file being too large, complex, or corrupt for the system to handle. 
 
-File security poses the other risk to the project, as some of the files uploaded may contain sensitive or confidential data.
-It is a priority to maintain users' privacy and trust, ensuring that the project enforces permissions correctly.
+In regard to file security, some of the files uploaded may contain sensitive or confidential data. The platform has been designed with the most current security precautions available, but cybersecurity is ever-changing. Security precautions included by the developers may become outdated or deprecated. Additional risk lies in trusting third-party hosting services as these services are frequent targets of cybersecurity threat. 
+
+The project also relies on the Identity and Entity Framework for file access authorization. While this framework is well-respected in the professional development community, it should be noted that the development group is trusting the integrity of the authorization process to this third-party resource.
