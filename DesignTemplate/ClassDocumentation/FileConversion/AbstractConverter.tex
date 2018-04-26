@@ -1,0 +1,56 @@
+\hypertarget{fileconversion_abstractconverter}
+{
+    \label{fileconversion_abstractconverter}
+    \index{FileConversion@AbstractConverter}
+}
+
+\subsection{AbstractConverter}
+    \paragraph{}
+        An abstract class to define the interface for child converter classes.  The converter classes perform the conversion from the input file to the output file.
+
+    \subsubsection{Definitions}
+
+    \paragraph{(enum) Result}
+    Provides a more documented way to label the status codes returned from functions.
+
+    The levels of the enum are:
+    
+    \begin{tabular}{l l}
+        \centering
+        Failed &\\
+        IOError &\\
+        SceneNotLoaded &\\
+        NotInitialized &\\
+        FileTypeNotSupported &\\
+        Success &
+    \end{tabular}
+    
+    \subsubsection{Member Functions}
+
+        \begin{itemize}
+            \item virtual bool SupportsInputFileType(string fileType)
+            \item virtual bool SupportsOutputFileType(string fileType)
+            \item virtual Result ConvertFile(string inputFileName, string outputFileName)
+            \item string ExtractFileExtention(string fileName)
+            \item static string ResultString(Result result)
+        \end{itemize}
+
+        \paragraph{virtual bool SupportsInputFileType(string fileType)}  
+        \hfill \break
+        Returns true if the converter that implements this method can successfully read a file with a given file type.
+
+        \paragraph{virtual bool SupportsOutputFileType(string fileType)}
+        \hfill \break
+        Returns true if the converter that implements this method can successfully write a file with a given file type.
+
+        \paragraph{virtual Result ConvertFile(string inputFileName, string outputFileName)}
+        \hfill \break
+        Converts file "inputFileName" to file "outputFileName".  The return value is one level from the Result enum.  An inheritor of this class needs to implement this method.
+
+        \paragraph{string ExtractFileExtention(string fileName)}
+        \hfill \break
+        Parses a file path/name for the file extension.
+
+        \paragraph{static string ResultString(Result result)}
+        \hfill \break
+        Returns a string describing the error from a given Result value.

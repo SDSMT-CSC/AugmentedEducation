@@ -1,0 +1,228 @@
+% !TEX root = DesignDocument.tex
+
+
+\chapter{Overview, Description, and Deliverables}
+
+% The overview should take the form of an executive summary.  Give the reader a feel 
+% for the purpose of the document, what is contained in the document, and an idea 
+% of the purpose for the system or product. 
+
+\section{The Team}
+
+Team Name: Augmented Education
+
+\noindent Team Members:
+\begin{itemize}
+	\item Aaron Alphonsus
+	\item Cheldon Coughlen
+	\item Daniel Hodgin
+	\item Kenneth Petry
+	\item Savoy Schuler
+	\item Brady Shimp
+\end{itemize}
+
+\section{Client}
+% A description of the client or customer.
+% Description of sponsor if different than client.
+% Brief statement of customer's problem or goal for this project
+% List the customer needs
+
+The client for this project is the South Dakota School of Mines and Technology, also known by SD Mines. The client is intending to use the product to enhance the traditional education experience by integrating augmented reality media into the classroom. The client needs a platform through which three-dimensional computer aided design (CAD) files may be uploaded, cloud hosted, and delivered via a QR code to augmented reality devices for rendering.
+
+\section{Sponsor}
+
+This project is being sponsored by InTouch L.L.C., a customer software service provider specializing in mixed reality software. InTouch L.L.C. has provided the intellectual foundation for this project and has supported the development team with guidance and consultation. 
+
+
+\section{Terminology and Acronyms}
+% Provide a list of terms used in the document that warrant definition.  Consider 
+% industry or domain specific terms and acronyms as well as system specific. 
+
+\begin{itemize}
+	\item Augmented Reality (AR): hardware and software that, together, superimpose computer-generated images on a user's view of the real world. Users can usually interact with this composite view.
+
+	\item Virtual Reality (VR): hardware and software that, together, create a computer-generated simulation of a three-dimensional image or environment. Users can usually interact with this composite view.
+
+	\item Mixed Reality (MR): the overlap in domain space of augmented reality and virtual reality. 
+
+	\item Microsoft HoloLens: portable and cordless augmented reality viewing device. 
+
+	\item Meta 2: augmented reality viewing device that must be connected to a computer and power outlet. 
+
+	\item Mira Prism: augmented reality viewing device that leverages a user's mobile device.
+
+	\item Oculus Rift: virtual reality viewing device. 
+
+    \item QR Code: machine readable matrix barcode. Can be scanned by electronic devices and usually contains links to web addresses.
+    
+    \item Unity: video game engine used in creating HoloLens apps.
+
+	\item Cloud: off-site computing and digital storage resources accessed via the internet. 
+
+    \item Azure: Microsoft Cloud hosting feature.
+
+	\item FBX: model file type that may be rendered by most AR devices on the market. 
+
+	\item IIS: Internet Information Services.
+\end{itemize}
+
+
+\section{Product}
+
+\subsection{Description}
+Augmented Education is a platform for managing three-dimensional models generated with common CAD programs.
+The models are cloud hosted, converted, and made available on-demand to augmented reality devices.
+QR codes may be embedded in textbooks, presentations, and other media for simple access and model rendering to enhance the traditional classroom experience. 
+Once a 3D design has been accessed via QR code and rendered, the student may manipulate the rendering as supported by individual AR devices. 
+
+\subsection{Product Vision}
+Product evolution is visualized in two phases each occurring over an academic year with a computer science senior design group. The product will be delivered to end users upon completion of the first phase. The second phase will enhance the platform's existing features and to add new features as future hardware and supported. Phase Two features are presented in Chapter \ref{ch:TODO}.
+
+\begin{itemize}
+\item Phase One - multi-platform visualization delivered through QR code integration.
+\item Phase Two - full platform with API ecosystem that connects data from various applications to visualize and collaborate inside and possible across educational institutions. 
+\end{itemize}
+
+
+\subsection{Phase One Features}
+\begin{itemize}
+	\item Users may use the website interface to upload files generated from a CAD program commonly used in STEM education. 
+	\item  Upon upload files are converted into a common file format available for AR rendering. 
+	\item Upon file upload, the user returned a QR code associated with the uploaded file that may be embedded in textbooks, homeworks handouts, PowerPoint presentations, emails, etc.
+	\item When an AR headset or mobile phone is used to view the QR code, the device locates and renders the associated file in augmented reality for the user.  
+	\item Certain devices allow the user motion control abilities to interact with the renderings so that they may be moved, scaled, rotated, or possibly animated. 
+	\item Cloud hosting makes the user’s files available anywhere at any time. 
+	\item The web interface allows for the management of files (add, delete, update, and download). 
+	\item The web interface allows designs to be private, public, or accessible only by a “group” such as an institution.
+	\item Content pages have filtering and searching capabilities.
+\end{itemize}
+
+\subsection{Summary of Possible Phase Two Features}
+\begin{itemize}
+	\item Password recovery for user accounts.
+	\item Administrator accounts that allow for elevated privileges over groups and content. 
+	\item Settings to allow for custom configured groups. 
+	\item Enhanced privacy settings for uploaded files.
+	\item Improved home page for showcasing popular public designs. 
+	\item Users have a personal feed showcasing designs from groups.
+	\item Design collaboration space. 
+	\item Expand platform to support broad range of file types for the purpose of increasing the number of CAD programs supported. 
+	\item Expand platform to support broad range of hardware for the purpose of increasing number of AR devices supported. This may include adding support for output file types or application development for hardware. 
+	\item Improved mobile app to allow for content management. 
+	\item Improved design manipulation abilities and controls on mobile application. 
+	\item Improved compatibility with textures, colors, and materials on mobile application.
+	\item iOS app for greater coverage of mobile users.
+	\item Support animated files. 
+\end{itemize}
+
+
+\subsection{Value} 
+The time required for an engineer to be trained in the transition between student and working professional averages in the range of 1-2 years. A goal of enhancing the traditional educational experience with this service is to eliminate a portion of the training required for students to make the transition to professionals in their fields. The test results will be able to support the claim that this service will reduce the amount of time is required to successfully make this transition.  With the average entry level engineering salary at about \$70,500, meaning up to \$141,000 or more in training expenses per entry level hire, Augmented Education aims to reduce this need by providing students with a more immersive approach to learning and mastering concepts of design and structure. This is envisioned through noting that, should the new in-classroom experience create more effective learning, more topics and depth will be able to be taught per course.
+
+Additionally, the adaption of AR technology in classrooms is beginning. By being at the forefront of this adoption, institutions like SD Mines will continue to out-pace competition waiting for comfortable trends to be set. 
+
+
+\subsection{Value Testing} 
+A/B testing targeting student engagement, retention, and conceptual clarity will be conducted in classrooms at the South Dakota School of Mines and Technology. Tests will be performed for several semesters where one section of a course taught by a given professor will be able to utilize Augmented Education's technology in the classroom as a learning aid and a control group for comparison will not. For specific courses, aggregate results from previous semesters may also be available for control group comparison. 
+
+\subsection{Value Testimonials}
+“Education is an industry based on entertainment. You can learn everything about Calculus from a 1960’s textbook. The information is the same today as it was then, but new textbooks are sold because they are printed in color and with better pictures. Students use YouTube tutorials to learn math because it is effective. The reason people pay for classes with instructors is because we balance presenting information with entertaining the student’s interest in it. Augmented reality in education is that next step in creating a more engaging and entertaining learning environment.” - Dr. Jeff McGough, Computer Science and Mathematics Professor at SD Mines and founder of InTouch L.L.C.
+
+“As an industrial engineering instructor, I run labs where students build bridges and motors using Lego bricks. I do it because it's interactive and helps communicate some of the early concepts. If I could  have system where students could instead see the components of these structures in an animated 3D environment that they could interact with, I would implement it immediately.” - Dr. Adam Piper, Industrial Engineer Professor at SD Mines
+
+
+
+\subsection{Sponsor Mission Statement}
+InTouch L.L.C. pursues the mission of developing augmented reality and virtual reality (known together as “mixed reality”) solutions for education and enterprise. Hardware and entertainment software for this technology have matured over the past decade while innovators have, until now, overlooked the opportunity to leverage this same technology for applications such as classroom education, 3D advertising, architecture, design, and more.  
+
+Augmented Education seeks to connect higher level education with AR media like never before. By getting Augmented Education into the hands of students today, it will become the standard AR media platform of tomorrow. 
+
+\subsection{Pitch}
+Augmented reality, commonly called AR, is a technological advancement that allows individuals to overlay virtual animations into the real world using an optical viewing aid to augment the user’s vision of their surroundings. While headsets offer the most natural AR experience, mobile devices also capable. Augmented Education provides a platform for harnessing this new technology to enhance the traditional education experience with an effective and engaging new medium. 
+
+To demonstrate the Augmented Education service, think back to the last time you were in class learning about a 3D design, calculus graph, or physics problem. No instructor had a choice other than to present 3D content on a 2D chalkboard or projector. Imagine next year you sit in  a South Dakota School of Mines and Technology classroom where the instructor asks you to use your phone to view their presentation. What was once a QR code in the presentation is now a 3D shape appearing in the environment with you. Using your hands, you may bring it closer, manipulate it, turn it around, and perhaps flip through a sequence of animations using your fingertips. On the next slide, the instructor has changed the equation. Scanning the new QR code would allow you to view the new model, compare the differences, and more clearly conceptualize the impact of the changes.
+
+Architecture and civil engineering students often design structures and buildings with 3D design software. With this platform, a student or instructor need only to upload their file to the Augmented Education website before they are able to use an augmented reality headset to scale their design to real world size and step through it, viewing it from the inside or placing it next to a campus building for scale. As collaboration grows, these students may soon be able to use this platform to virtually inspect the architecture of famous buildings from around the world. 
+
+Augmented Education is being developed by the South Dakota School of Mines and Technology where it will be A/B tested over the 2018-2019 academic year for results in student engagement, speed of learning, rate of retention, and conceptual clarity. South Dakota School of Mines and Technology intends to integrate Augmented Education across a variety of disciplines and majors over the 2018-2019 academic year.
+
+\subsection{Elevator Pitch}
+Augmented Education is a platform designed to revolutionize educational media by bringing augmented reality to your fingertips. It allows you to embed virtual, 3D designs in real world media using QR codes. This platform allows any 3D design to be opened and interacted with by any Android phone or AR headset. Imagine the application in classrooms and textbooks. Augmented reality is the future of engagement. By getting this technology in the hands of students today, South Dakota School of Mines and Technology will set the global standard of educational media tomorrow. 
+
+\subsection{Purpose of the System}
+
+The purpose of this product is to enhance the value of CAD software common to STEM programs and provide a higher quality education by giving students the ability to view CAD visualizations in a true 3D environment allowing students to fully perceive depth, scale, volume, and attributes through object manipulation features.
+
+
+\section{Business/Market Need}
+
+\begin{description}
+	\item [Product Description:] AR CAD visualization platform.
+	
+	\item [Key Business Goals:] Product introduced in the second quarter 2018.
+	\begin{itemize}
+		\item 40\% gross margin
+		\item 80\% share of CAD to AR education market
+	\end{itemize}
+	
+	\item [Primary Market:] CAD software distributors
+	\item [Secondary Markets:] Textbook publishers, higher education institutions
+	
+	\item [Assumptions:]  ~~ \\
+	\begin{itemize}
+		\item Platform integrates with AR devices 
+		\item Platform accepts file formats from wide range of CAD programs
+		\item Higher education institutions invest in AR technologies
+	\end{itemize}
+	
+	\item [Stakeholders:]  ~~ \\
+	\begin{itemize}
+		\item Users (Faculty)
+		\item Users (Students)
+		\item Institutions
+		\item Software Distributor
+		\item Textbook Publisher
+	\end{itemize}
+	
+	\item [Certifications:] South Dakota School of Mines and Technology
+\end{description}
+
+\section{Deliverables}
+
+ 
+\subsection{Software}
+The client deliverable is a software tool chain to save, retrieve, and view 3D models produced in popular modeling software. The three main components are:
+
+\begin{enumerate}
+	\item A website to manage user files
+		\begin{itemize}
+			\item Manage (upload, update, delete) files
+			\item Generate QR code and download link associated with uploaded file
+			\item Run software to convert between 3D file types
+			\item Serve files on-demand to AR device or computer 
+		\end{itemize}
+	\item A file conversion program to convert a users uploaded file into a viewable file type
+		\begin{itemize}
+			\item Convert a given 3D model into a common file type to be stored on the website
+			\item Convert the common file type to the type needed to be viewed on an Augmented Reality device
+		\end{itemize}
+	\item An Android application to view models
+		\begin{itemize}
+			\item Connect to the website to download files
+			\item Get the correct file type that can be displayed
+			\item Allow basic manipulation of AR files
+		\end{itemize}
+\end{enumerate}
+
+\subsection{Hardware}
+
+Test the flow of the website and file conversion software on popular Augmented Reality devices, which may include:
+\begin{itemize}
+	\item Microsoft HoloLens
+	\item Meta 2
+	\item Android devices
+\end{itemize}
+
+\subsection{Documentation}
+
+The client and sponsor will be delivered full product documentation to support further feature development. The client will be provided a product User Manual and in-product use guidance.  These materials are included in this document. 

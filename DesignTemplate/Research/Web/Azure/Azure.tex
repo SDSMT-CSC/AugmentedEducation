@@ -1,0 +1,36 @@
+% Research / Web / Azure / Azure
+
+\subsection{Azure}
+Microsoft Azure was the decided upon web application hosting service.  
+It was decided to use Azure to stay within the Microsoft domain of products and services.
+Items of concern that were learned through the explorative development of Azure include:
+\begin{itemize}
+    \item Subscriptions and Pricing.\\
+
+    While the Azure ``Student Subscription'' was branded as providing \$200 of free Azure credits along with free use of a selection of services for 1 year. 
+    The reality of the matter was that the services were charged full usage price and the ``free'' use was to mean that no additional charges would be incurred once the \$200 credits expired, as no payment option was needed to create the Subscription. 
+    It was soon after discovered that the registered applications and services spent the allotted \$200 relatively quickly. 
+    After that, the account was disabled until a payment option was provided.\\
+
+    It was also found that with the ``Pay-As-You-Go'' subscription, creating an instance of an Azure Web App does not default the registered application to the Free-tier service, but instead to the Standard-tier service.  
+    This information was not presented when the resource was created, and a fee of \$0.10/hour was charged throughout the existence Standard-tier service.\\
+
+    Upon discovery of the Free-tier vs Standard-tier service pricing, it was also discovered that the Free-tier service lacks the ability to support a custom application domain name or even TLS capabilities.\\
+
+    \item Unit testing against cloud services.\\
+
+    Connections to Azure services require connection authentication information, similar to the implementation of SQL database connection strings.  
+    Due to this and the lack of separated production and testing environments, it was found to be next to impossible to create unit tests for any section of the application code that had interactions with Azure cloud services.  
+    The issue of the connection strings could be solved, albeit very insecurely, by providing the string directly to the test code. 
+    However, the issue of running the risk of accidentally altering production materials was still prevalent.\\
+
+    \item Control over stored data.\\
+
+    A large design decision that was made early on was to utilize the ASP.NET Identity and Entity Framework packages.  
+    Identity provides simple user account creation, verification, and management services, while Entity Framework provides a way to translate user account state information to SQL-Server and manages all database CRUD operations.
+    While it is possible to extend and override the default Entity Framework SQL database implementation, it was discovered that this was not possible in conjunction with an Azure hosted SQL-Server instance.
+    The operation is not currently supported between the two products.
+
+\end{itemize}\ \\
+
+Due to the lack of customization and control allowed in areas that are specific to the needs of this application and the inherently expensive nature of Azure, it has been discussed that the application hosting environment will be transitioned to a different service in the months between the Sprint 2018 and Fall 2018 semesters.

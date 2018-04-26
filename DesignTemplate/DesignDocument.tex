@@ -5,10 +5,11 @@
 
 \input{seniordesignstyle.tex} % This sets the format.
 
-% Add your title page contents here 
-\title{{\color{SDColor3} \rule{\linewidth}{0.5mm}}\\[2mm] {\huge \bfseries \color{SDColor3} Augmented Reality For Education (ARFE)}\\[-1mm] {\color{SDColor3}\rule{\linewidth}{0.5mm}} \\  \vfill
+\newcommand{\teamName}{Augmented Education}
+\newcommand{\authors}{Developers and Authors}
+\title{{\color{SDColor3} \rule{\linewidth}{0.5mm}}\\[2mm] {\huge \bfseries \color{SDColor3} \teamName}\\[-1mm] {\color{SDColor3}\rule{\linewidth}{0.5mm}} \\  \vfill
 {\LARGE \bfseries \color{SDColor4} Senior Design Final Documentation }\\  \vfill 
-{\color{SDColor3} ARFE} }
+{\color{SDColor3} \authors} }
 \author
 {
 	\color{SDColor3} Aaron Alphonsus 
@@ -21,101 +22,62 @@
 
 \date{\color{SDColor3} \today}
 
-
 \begin{document}
 
 \frontmatter
 
 \addcontentsline{toc}{chapter}{Title}
 \maketitle
+
+\vspace*{\fill}
+
+\section*{Acknowledgments}
+\label{SpecialThanks}  
+The development team would like to give a special thanks to Dr. Christer Karlsson, Dr. Jeff McGough, Dr. Adam Piper, Dr. Brent Deschamp, and Dr. King Adkins for their time spent ensuring this product will make an impact in the classroom.  The team would also like to thank Todd Gagne for his time spent mentoring development of the InTouch L.L.C. business plan. 
+
+\vspace*{\fill}
+
 \tableofcontents
 \addcontentsline{toc}{chapter}{Contents}
 \listoffigures
 \addcontentsline{toc}{chapter}{List of Figures}
 \listoftables
 \addcontentsline{toc}{chapter}{List of Tables}
-\listofalgorithms
-\addcontentsline{toc}{chapter}{List of Algorithms}
-
-
-\chapter{Document Preparation and Updates}
-\input{preparation.tex}
- 
- 
- %%%   \chapter{Preface}  Uncomment if you want to have a preface ...
-%%%  This is ..
-
 
 \mainmatter
-
-%% The term "cleaning" used in the syllabus means removing all of the sample content I
-%% have provided.   You can comment out by using the comment character or the comment
-%% environment.  
-
 %%  Add to the following chapters
 
-\input{overview.tex}  %% All tracks
-\input{requirements.tex}  %% All tracks (minimal for research track)
-\input{project.tex}   %% All tracks
-\input{design.tex}  %% All tracks
-\input{testing.tex}  %% All tracks
-\input{prototypes.tex}  %% All tracks
-\input{deploy.tex}  %% Normally not research track
-\input{userdocs.tex} %% All tracks
-\input{results.tex}  %% Research track  only
-
-\bibliographystyle{plain}
-\bibliography{designrefs.bib}
-\addcontentsline{toc}{chapter}{Bibliography}
+\input{Overview/overview.tex}  %% All tracks
+\input{Requirements/requirements.tex}  %% All tracks (minimal for research track)
+\input{ProjectManagement/project.tex}   %% All tracks
+\input{Design/design.tex}  %% All tracks
+\input{Testing/testing.tex}  %% All tracks
+\input{SupportingMaterials/prototypes.tex}  %% All tracks
+\input{Deployment/deploy.tex}  %% Normally not research track
+\input{SupportingMaterials/userdocs.tex} %% All tracks
+\input{Research/results.tex}  %% Research track  only
+\input{Todo/todo.tex}
 
 
-% We want to add the Software agreement to the end and number the
-% pages separately from the document.  We don't want to do a standard
-% chapter heading, but we do want it to appear in the table of contents
-% and in the index used for on-line viewing.  We defined the \agreement
-% macro to set things up for us.
 \agreement
 
 \chapter{Software Agreement}
-\includepdf[pages={1-5}]{SoftwareContract.pdf}
+\includepdf[pages={1-4}]{SoftwareContract.pdf}
 
-% In our style file, appendices are numbered with capital letters
 \appendix
 
 \chapter{Product Description}
-\input{productdescription.tex}
+\input{SupportingMaterials/productdescription.tex}
 
+\input{TableOfContents/refman.tex}  %% All tracks
 
-\input{refman.tex}  %% All tracks
+\input{SupportingMaterials/businessplan.tex}   %% Entrepreneur track only 
 
+\input{SupportingMaterials/supporting.tex}
 
-\input{businessplan.tex}   %% Entrepreneur track only 
-\input{log.tex}   %% Research track  only
-
-
-\chapter{Publications}   %% Research track 
-\input{pubs.tex}
-
-\chapter{Acknowledgment}
-\label{SpecialThanks}  
-Thanks  
-
-\chapter{Supporting Materials}
-\input{supporting.tex}
-
-% chapters in backmatter don't have numbers, but they appear in the
+% chapters in back matter don't have numbers, but they appear in the
 % table of contents, and are numbered BM-X where X is the page number
-% relative to where the backmatter begins.
+% relative to where the back matter begins.
 \backmatter
-
-%% Example
-%\chapter{Course Syllabus}
-%\includepdf[pages={1-17}]{syllabus.pdf}
-
-%%% Remove after reading
-\chapter{\LaTeX\ Example}
-\input{latexexample.tex}
-
-
 
 \end{document}

@@ -1,0 +1,219 @@
+
+ \section{File Conversion}
+
+    \subsection{Overview}
+    \paragraph{}
+    A major tool in the project is the file conversion software.  
+    The file conversion software aims to read in many different 3D model file types (FBX, OBJ, DEA, etc.) and convert them to another desired 3D file types.  
+    A brief listing of supported file types is in table \ref{tab:suportedfiletypes}.
+    
+    \paragraph{}
+    This tool is intended to be used on the back end of the website.  Whenever a user uploads a file, it can be converted to a common file type.
+    When the user requests a download on an AR device, the type may be different than what is stored. Therefore, the tool converts the file before
+    it is sent to the user.
+    
+    \paragraph{}
+    Since this tool is intended to be used on the backend of a website, it is appropriate to use a command line interface.  
+    The flags that can be passed to the program are listed below:
+    
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{l  l}
+            \texttt{-i} & Input file name (can specify full path), infers the input file type from the name \\
+            \texttt{-o} & Name (or full path) to write the converted file, infers the export file type from the name \\
+            \texttt{-odir} & The path to the directory, the file name is inferred from the input file name \\
+            \texttt{-t} & The file type (FBX, OBJ, DEA, etc.) to export to
+        \end{tabular}
+    \end{table}
+    
+    Note the \texttt{-t} flag is only needed when using the \texttt{-odir} flag.  The \texttt{-odir} just specifies which directory to write to, but not the file type.
+    Therefore, more information is needed in order to export to a file.  The \texttt{-o} flag parses the file name and extract the file type from the \texttt{-i} file name.
+    
+    An example command to run:
+    
+    \begin{center}
+        \texttt{.\textbackslash FileConversion.exe -i C:\textbackslash SomePath\textbackslash someFile.obj -t fbx -odir C:\textbackslash SomeOtherPath\textbackslash}
+    \end{center}
+    
+    This converts a file named \texttt{someFile.obj} located at \texttt{C:\textbackslash SomePath\textbackslash  to an FBX file named someFile.fbx} located at 
+    \texttt{C:\textbackslash SomeOtherPath\textbackslash}
+    
+    \subsubsection{File Type Research}
+
+    The goal for the file type research was to find the common 3D model file types, and what is commonly used with AR devices.
+
+    \paragraph{OBJ}
+    The OBJ file type (Wavefront OBJ) stores a list of vertices, and constructs faces using the vertices.  OBJ supports textures, applied to each face, that are stored in a separate MTL file.  Each face in the OBJ file can reference a material in the MTL file to provide the texturing needed. The MTL file can also reference PNG or BMP files for textures. The Android app uses files in the OBJ format.
+
+    \paragraph{STL}
+    The STL file type (sterolithography) stores a list of vertices and forms triangles to form the surfaces of an object.  This file type does not support textures.  It is commonly used in 3D printing.
+
+    \paragraph{DAE}
+    The DAE file type (Collada) uses XML to store a 3D model.  It supports textures and animations embedded in the file.  Therefore, a model with textures and/or animations are stored in a single file.
+
+    \paragraph{FBX}
+    The FBX file type (Autodesk FilmBox) is a proprietary file format for Autodesk.  It is commonly used, and is supported, by many different AR devices such as the HoloLens.
+
+    \paragraph{Conclusions}
+    The above file types were found to be the most common.  The intermediate file type was agreed to be DAE.  It supported the most features while encapsulating all the data in a single file.
+
+    \subsection{Technologies Used}
+    
+    The code for the file conversion tool set is written in C++.  There are two main external libraries used:
+    \begin{itemize}
+        \item Open Asset Import Library (assimp)
+        \begin{itemize}
+            \item \url{http://assimp.org/main_downloads.html}
+        \end{itemize}
+
+        \item FBX SDK
+        \begin{itemize}
+            \item \url{http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416244}
+        \end{itemize}
+    \end{itemize}
+
+    Multiple libraries were needed to support the file types that were necessary for common AR rendering.  In the Microsoft HoloLens, the default
+    3D viewer supports FBX files very easily.  Therefore, it was decided that the conversion software needed to export to FBX.  The best tool to do 
+    so is the FBX SDK, since FBX is a proprietary file format from Autodesk.  However, the FBX SDK has a very limited range of file types it reads and writes.
+    Therefore, the Open Asset Import Library is used to better support a wide array of file types.  So in using assimp and the FBX SDK together,
+    the conversion software can support a wide range of both import and export file types.
+
+    \subsection{Data Flow}
+        There are four main paths data can flow.
+        \begin{itemize}
+            \item assimp
+            \begin{itemize}
+                \item import and export all with the assimp library
+            \end{itemize}
+            
+            \item FBX SDK
+            \begin{itemize}
+                \item import and export all with the FBX SDK library
+            \end{itemize}
+
+            \item assimp $\rightarrow$ FBX SDK
+            \begin{itemize}
+                \item import with assimp, export to temporary file type
+                \item import temporary file with FBX SDK, export to final file 
+            \end{itemize}
+
+            \item FBX SDK $\rightarrow$ assimp
+            \begin{itemize}
+                \item import with FBX SDK, export to temporary file type
+                \item import temporary file with assimp, export to final file 
+            \end{itemize}
+        \end{itemize}
+        
+        This outlines that the program tries to use a single library to convert the file before using both libraries.  If a single library is unable to 
+        read and write the needed formats, it tries to import with one, export to a temporary format, and export with the other.  An example of 
+        using a single library is if a user wants to read a OBJ and write to a FBX.  The FBX SDK can handle reading and writing those particular file
+        types, so it is used to do the conversion.  An example of needing to use both libraries is if a user wants to convert a PLY to a FBX.
+        assimp can read PLY files, but cannot write to FBX.  The FBX SDK can write to FBX files but not read PLY.  Therefore, assimp is used to 
+        read the PLY, write to a DAE (common file type).  The FBX SDK then reads the DAE and writes to a FBX.
+
+    \subsection{Design Details}
+
+    \subsubsection{Overview}
+
+    The file conversion software was written in C++.  The structure of the program is object oriented, where classes are defined where the functionality needed
+    in the program is defined.  Instances of the classes are created when needed.  
+    The high level view of the program is:
+    \begin{enumerate}
+        \item Parse command line arguments
+        \item Convert the file
+        \item Print error messages if errors occurred
+    \end{enumerate}
+
+    The parsing the command line arguments section may fail if the user does not supply the correct arguments.  A flag is set after parsing to indicate
+    whether the correct arguments were supplied.  If an error occurs during file conversion, the error is denoted by an integer error code.  
+    During file conversion, if a single library could not convert it on its own, an extra file is created as an intermediate file.
+
+    \subsubsection{Code Structure}
+    The file conversion software is broken into two main sections: parameter parsing and file conversion.
+
+    \paragraph{Parameter Parsing}
+    \hfill \break
+    The parameter parsing code is in a class called ParseParameters.  ParseParameters has a constructor that takes the number of command line arguments, 
+    and the command line arguments.  It parses the values needed out into member variables that are public.  It ignores invalid arguments,
+    and print a usage statement if the correct arguments are not supplied.  When printing the usage statement, cout is used to write to standard out.
+
+    After processing the command line arguments, the member variables in the class are set with the appropriate information.  The member variables are:
+
+    \begin{tabular}{l l}
+        \centering
+        \texttt{success} & \texttt{bool} \\
+        & \texttt{True} if the needed information is set, \texttt{False} otherwise \\
+
+        \texttt{inputFile} & \texttt{string} \\
+        & The name/path of the file to convert \\
+
+        \texttt{outputFile} & \texttt{string} \\
+        & The name/path of the file to export to \\
+
+        \texttt{fileExtension} & \texttt{string} \\
+        & The file extension of the output file
+    \end{tabular}
+
+    If the success variable is \texttt{False}, the other member variables possibly have bad data that should not be used.
+
+    \paragraph{File Conversion}
+    \hfill \break
+    The file conversion portion of the program is the meat of the functionality.  It takes an input file, and tries to convert it to the file type requested.
+    This section implements the two libraries.  Each library is implemented in a class inherited from an abstract \texttt{AbstractConverter} class.  The two 
+    library implementation classes are called \texttt{AssimpConverter} and \texttt{FBXConverter}.  A class named \texttt{FileConverter} contains the logic on determining which 
+    library/libraries to use when converting the file.
+
+    \subparagraph{\texttt{AbstractConverter}}
+    \hfill \break
+    The \texttt{AbstractConverter} is an abstract class that acts like an interface for the child classes.  The abstract methods are:
+    \begin{itemize}
+        \item \texttt{SupportsInputFileType}
+        \begin{itemize}
+            \item Return \texttt{True} if the converter can read in a file with a given file type
+        \end{itemize}
+
+        \item \texttt{SupportsOutputFileType}
+        \begin{itemize}
+            \item Return \texttt{True} if the converter can write to a file with a given type
+        \end{itemize}
+
+        \item \texttt{ConvertFile}
+        \begin{itemize}
+            \item Performs the file conversion
+        \end{itemize}
+    \end{itemize}
+
+    An enum is defined, called \texttt{Result}, that provides a more self documenting way to return information from functions.  Values less than zero are errors, while
+    value greater than zero are successes.  The levels of the enum are:
+    
+    \begin{tabular}{l l}
+        \centering
+        \texttt{Failed} &\\
+        \texttt{IOError} &\\
+        \texttt{SceneNotLoaded} &\\
+        \texttt{NotInitialized} &\\
+        \texttt{FileTypeNotSupported} &\\
+        \texttt{Success} &
+    \end{tabular}
+
+    \subparagraph{\texttt{AssimpConverter}}
+    \hfill \break
+    The \texttt{AssimpConverter} inherits from the \texttt{AbstractConverter} and uses the Open Asset Import Library for file conversion.  
+    The file type supported methods are implemented by adding the supported file types to a set, and checking whether the questionable type is in the set.
+    The list of file types supported is taken from the Open Asset Import Library website's list of supported input file types.  
+    The output file types list comes from the same location.
+    When converting a file, optimizations may be performed on the file to remove unnecessary/duplicate information.  For example, when importing a file, 
+    repeated vertices in the meshes are condensed into one, to help reduce the size of the file.
+
+    \subparagraph{\texttt{FBXConverter}}
+    \hfill \break
+    The \texttt{FBXConverter} inherits the \texttt{AbstractConverter} and uses the FBX SDK to import and export files.
+    The file type input and output lists are derived from the FBX SDK website.
+
+    \subparagraph{\texttt{FileConverter}}
+    \hfill \break
+    The \texttt{FileConverter} looks at the input and output file types, and determines which library/libraries are needed to convert the file.
+    It tries see if a single library can do the conversion.  If not, then both libraries are used by exporting from one into a 
+    temporary file (DAE) and converting that to the final file type. After comparing the read/write lists between the libraries,
+    the DAE file type was common between the two, and included features that other file types did not.  Therefore, it was chosen
+    to have DAE as the common intermediate file type.

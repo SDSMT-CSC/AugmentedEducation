@@ -1,0 +1,140 @@
+﻿<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+
+@{
+    ViewBag.Title = "UploadFile";
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.FileExists))
+{
+    ViewBag.uploadFileName = ViewBag.FileExists;
+    using (Html.BeginForm("OverWriteUpload", "Upload", FormMethod.Post, new { role = "form" }))
+    {
+        <br/>
+        <div id="OverwriteReq" style = "border-radius: 25px; background: #d2def2; padding: 20px; width: auto">
+            <input name="uploadFileName" type="hidden" value="@ViewBag.uploadFileName" style="visibility:hidden" />
+            <p>The file @ViewBag.uploadFileName already exists in storage.</p>
+            <p>Would you like to overwrite it?</p>
+            <button name="overWrite" type="submit" value="Yes">Yes</button>
+            <button name="overWrite" type="submit" value="No">No</button>
+        </div>
+    }
+}
+
+    @using (Html.BeginForm("UploadFile", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <br />
+        <font color="red"> @ViewBag.Message </font>
+        <br />
+        <br />
+        <div>
+            <div id="BaseUpload">
+                <label>Upload Base File </label>
+                @Html.TextBox("BaseFile", "", new { id = "baseFile", type = "file" })
+            </div>
+            <p id="baseWarning" style="color:red">File type unsupported. Excepted types: .fbx, .obj, .dae, .stl, .ply</p>
+            <br />
+            <br />
+            <div id="MatUpload">
+                <label>Upload Material File (Only For .obj File Type: Optional)</label>
+                @Html.TextBox("MatFile", "", new { id = "matFile", type = "file" })
+            </div>
+            <p id="matWarning" style="color:red">Only file type .mtl supported for material file</p>
+            <br />
+            <br />
+            <label>Alternate File Name (Optional)</label><br />
+            @Html.TextBox("AltFileName", "", new { id = "AltFileName", type = "text", maxlength = 255 })
+            <p id="altWarning" style="color:red">Invalid Characters. (Valid characters are: a-z,A-Z,0-9,-,_)</p>
+            <br />
+            <br />
+            <label>File Description (Optional)</label><br />
+            @Html.TextArea("FileDescription", "", new { id = "FileDesc", type = "text", maxlength = 255 })
+            <br />
+            <br />
+            @Html.CheckBox("publicFile", false)
+            <p3>Public File</p3>
+            <br />
+            <br />
+            <br />
+
+            <input id="btnUpload" type="submit" value="Upload" />
+
+        </div>
+    }
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#MatUpload *").prop('disabled', true);
+            $("#btnUpload").prop('disabled', true);
+            $("#baseWarning").prop('hidden', true);
+            $("#matWarning").prop('hidden', true);
+            $("#altWarning").prop('hidden', true);
+
+            $('#baseFile').on('change', function () {
+
+                var fullPath = $('#baseFile').val();
+                if (fullPath) {
+                    var startIndex = fullPath.lastIndexOf('.');
+                    var fileExt = fullPath.substring(startIndex);
+
+                    if (fileExt == ".fbx" || fileExt == ".dae" || fileExt == ".ply" || fileExt == ".stl") {
+
+                        $("#btnUpload").prop('disabled', false);
+                        $("#MatUpload *").prop('disabled', true);
+                        $("#baseWarning").prop('hidden', true);
+                        $('#matFile').val("");
+                    }
+                    else if (fileExt == ".obj") {
+
+                        $("#MatUpload *").prop('disabled', false);
+                        $("#btnUpload").prop('disabled', false);
+                        $("#baseWarning").prop('hidden', true);
+                    }
+                    else {
+
+                        $("#MatUpload *").prop('disabled', true);
+                        $("#btnUpload").prop('disabled', true);
+                        $("#baseWarning").prop('hidden', false);
+                        $('#matFile').val("");
+                        $('#baseFile').val("");
+                    }
+                }
+            });
+
+            $('#matFile').on('change', function () {
+                var fullPath = $('#matFile').val();
+                if (fullPath) {
+                    var startIndex = fullPath.lastIndexOf('.');
+                    var fileExt = fullPath.substring(startIndex);
+
+                    if (fileExt == ".mtl") {
+                        $("#btnUpload").prop('disabled', false);
+                        $("#matWarning").prop('hidden', true);
+                    }
+                    else {
+                        $('#matFile').val("");
+                        $("#matWarning").prop('hidden', false);
+                        $("#btnUpload").prop('disabled', true);
+                    }
+                }
+            });
+
+            $('#AltFileName').on('keyup', function () {
+                var altName = $('#AltFileName').val();
+                var badString = " !@@#$%^&*()?><,./\"\'{]}\\|`~=+";
+
+                for (var i = 0; i < altName.length; i++) {
+                    
+                    if (badString.indexOf(altName.charAt(i)) == -1) {
+                        $("#btnUpload").prop('disabled', false);
+                        $("#altWarning").prop('hidden', true);
+                    }
+                    else {
+                        $("#btnUpload").prop('disabled', true);
+                        $("#altWarning").prop('hidden', false);
+                    }
+                }
+            });
+        });
+    </script>

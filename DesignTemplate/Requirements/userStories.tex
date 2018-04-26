@@ -1,0 +1,75 @@
+\section{User Stories}
+
+User stories are collected through conversations with the stakeholders and
+regularly displaying what the team has accomplished. The senior design team had
+weekly meetings with the client to review progress on the project. The team met
+with other faculty related to the project as necessary in order to receive
+feedback.
+
+The starting point for the requirements and user stories for this project came
+from the a grant proposal by Dr. McGough and other SD Mines faculty,
+which can be found in ~\autoref{ch:support}. Over the course of several
+meetings and conversations with the professors on the grant, the
+requirements for the product were defined.
+
+An example user story from the grant is as follows: "As a Calc III
+professor, I would like to provide visualizations of 3D objects so that
+students can find the volume of an object by being able to view the object
+from different angles, and being able to slice the object's volume."
+
+Some base requirements identified for the platform include:
+\begin{itemize}
+	\item A website to manage files
+	\item Support for 3D files exported from CAD programs commonly used in STEM
+	\item Automatic file conversion
+	\item Render files on the Microsoft HoloLens
+	\item Render files on an Android mobile device
+\end{itemize}
+
+At the advice of faculty advisors, the user stories were grouped into three 
+development rounds. User story defines a test as appropriate. More detail on tests can be found in Chapter \ref{ch:testing}.
+
+\subsection{Phase 1: Senior Design I}
+
+User Stories:
+\begin{itemize}
+	\item As an SD Mines faculty member, I want to:
+		\begin{itemize}
+			\item Upload a 3D file to the cloud.
+			\item Retrieve the file in the proper format.
+			\item Download a QR code for a model.
+			\item Log in to a secure account and view my uploaded files.
+			\item Choose files to be private or public.
+			\item Browse and download public files.
+		\end{itemize}
+\end{itemize}
+Tests:
+\begin{itemize}
+	\item Conversion of multiple types of 3D models.
+	\item Viewing and manipulating the models on the HoloLens.
+	\item Generation of a unique QR code associated with each model.
+	\item Upload and download process for a 3D model.
+\end{itemize}
+
+\subsection{Phase 1: Senior Design II}
+
+User Stories:
+\begin{itemize}
+	\item As a user, I want to:
+	\begin{itemize}
+		\item View surface materials on 3D model.
+		\item Use an Android phone for scanning QR codes and viewing models.
+		\item Switch between models quickly in the AR device.
+	\end{itemize}
+\end{itemize}
+Tests:
+\begin{itemize}
+	\item Upload a file and verify that the AR tag received links to the correct
+	model.
+	\item Test privacy rules and visibility for files by creating multiple 
+	profiles with different privacy settings.
+	\item Gather 3D models of multiple file types and test the rendering of 
+	textures and surface materials.
+	\item Verify that privacy settings work and users are able to download files
+	according to permissions on those files.
+\end{itemize}

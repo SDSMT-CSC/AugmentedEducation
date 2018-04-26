@@ -1,0 +1,83 @@
+% !TEX root = ../../DesignDocument.tex
+
+\section{Sprint 0 Report}
+\label{sec:Sprint0_report}
+    \subsection{Sprint Backlog}
+    \label{sec:Sprint0_backlog}
+        \begin{itemize}
+            \item Define the toolchain
+            \item Define the Minimum Viable Product (MVP)
+            \item Create a data flow diagram to detail the MVP            
+            \item Identify use cases and create user stories
+            \item Estimate a timeline for the development process
+        \end{itemize}
+
+    \subsection{Successes}
+    \label{sec:Sprint0_successes}
+        \begin{itemize} \item Defined the MVP \end{itemize}
+        \hspace{7mm}
+        Upload a Maplesoft 3D object file to a website.  Have the website perform an automatic file conversion and 
+        present the user with an AR Tag.  When the user views the AR Tag through an AR device, download and render 
+        the 3D object file.
+
+        \begin{itemize} \item Decided to develop with the Microsoft HoloLens being the primary supported AR device. \end{itemize}
+        \hspace{7mm} 
+        A conscious decision was made in accordance with current technologies and the Mobile Computing Grant awarded 
+        to the South Dakota School of Mines and Technology that this service aims to satisfy to keep development 
+        centered around the HoloLens and other Microsoft supported or compatible tools and services.
+
+        \begin{itemize} \item Decided to use Azure for cloud hosting services \end {itemize}
+        \hspace{7mm}The decision was between using Azure cloud services or Amazon Web Services. The development team voted to use Azure on the grounds that staying within the Microsoft development network would ensure compatibility with the primary target device, the Microsoft HoloLens, and ease development.
+
+        \begin{itemize} 
+            \item Created initial user stories 
+            \begin{itemize}
+                \item As a faculty member, I want:
+                \begin{itemize} 
+                    \item to upload a Maple file to a cloud server.
+                    \item the Maple file to be automatically converted to an AR tag on the cloud server.
+                    \item to be able to download the AR tag for my document from the cloud server.
+                \end{itemize}
+                \item As a user of this product, I want: 
+                \begin{itemize}
+                    \item to be able to view the AR tag through a Microsoft HoloLens to render a 3D model.
+                \end{itemize}
+            \end{itemize}
+            \item Estimated tentative development timeline.
+        \end{itemize}
+
+    \subsection{Failures}
+    \label{sec:Sprint0_failures}
+        \begin{itemize} \item None \end{itemize}
+
+    \subsection{Deliverables}
+    \label{sec:Sprint0_deliverables}
+        \begin{itemize} 
+            \item Definition of the MVP
+            \item Data flow diagram            
+            \item User stories
+            \item Defined toolchain
+            \item A production timeline (tentative)
+        \end{itemize}
+
+    \subsection{Sprint Review}
+    \label{sec:Sprint0_review}
+        \hspace{7mm}
+        All items on the sprint backlog were resolved in a timely, effective manner.
+
+    \subsection{Sprint Retrospective}
+    \label{sec:Sprint0_retrospective}
+        \hspace{7mm}
+        As this is the `setup' sprint, tasks and discussions were primarily limited to topics of planning and preparation.
+        The team has been split into two subteams, a web team and a file conversion team.\\ 
+
+        The web team was responsible for the development and management of the ASP.NET website.  This includes the
+        structure and design of the website,  as well as the content, account security, organization, and data 
+        storage/access.  Members are Daniel Hodgin, Savoy Schuler, and Brady Shimp.\\
+
+        The file conversion team was responsible for research into file type and structure of commonly used 3D modeling
+        software such as Maplesoft (TM), and file types that are render-able in commonly used Augmented Reality viewing devices.
+        The expected result of the research is to devise a system to convert common 3D modeling software file types into either
+        a common file type that is made render-able by commonly used Augmented Reality viewing devices, or a ubiquitous format
+        that can then be exported to the necessary file format, depending on which Augmented Reality viewing device is 
+        requesting the file. Members are Aaron Alphonsus, Cheldon Coughlen, and Kenneth Petry.
