@@ -1,4 +1,13 @@
 % !TEX root = DesignDocument.tex
 
 \section{System Integration Testing}
-Manual integration tests were performed while integrating the file conversion software with the website. The integration test was relatively simple and only required the executable to be uploaded to Azure and called as it would regularly be with user requests. Website and file conversion software integration was determined to be complete after multiple successful tests of the complete upload $\rightarrow$ conversion $\rightarrow$ download process.
+
+	\subsection{File Conversion and Web}
+		
+		Manual integration tests were performed while integrating the file conversion software with the website. The integration test was relatively simple and only required the executable to be uploaded to Azure and called as it would regularly be with user requests. Website and file conversion software integration was determined to be complete after multiple successful tests of the complete upload $\rightarrow$ conversion $\rightarrow$ download process.
+
+	\subsection{Mobile and Web}
+
+		Integration between the mobile app and the website takes the form of some endpoints the website will respond to when contacted by the mobile app. The endpoints were developed by the web team; however, the mobile team was consulted for what funcitonality was required for the app.  Members from each group conferred to develop the following endpoints: Authentication, List Models, and Download Models.  As stated in Section \ref{sec:Mobile_Auth}, Postman was used to manually test the endpoints.
+
+		One endpoint that could be created in future developments is the ability to get printable name for a file.  Currently, displaying the name of the file, especially from QR codes, works.  However, the name is very ugly as there is no way to get an easily printable file name.  Scanning a QR code will currently use the URL for the file on the website as the file name in the list.  An endpoint for this would allow the phone to better display the models on the mobile device.
